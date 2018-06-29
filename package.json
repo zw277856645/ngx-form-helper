@@ -1,0 +1,45 @@
+{
+  "name": "ng2-form-helper",
+  "version": "0.4.8",
+  "description": "angular2 form validation helper",
+  "scripts": {
+    "build": "ng-packagr -p package.json",
+    "publish": "npm publish dist",
+    "demo": "ng serve"
+  },
+  "$schema": "./node_modules/ng-packagr/package.schema.json",
+  "ngPackage": {
+    "lib": {
+      "entryFile": "public_api.ts"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zw277856645/ng2-form-helper.git"
+  },
+  "keywords": [],
+  "author": "wei.zhang",
+  "license": "MIT",
+  "devDependencies": {
+    "@angular/cli": "1.7.4",
+    "@angular/common": "5.2.0",
+    "@angular/compiler": "5.2.0",
+    "@angular/compiler-cli": "5.2.0",
+    "@angular/core": "5.2.0",
+    "@angular/forms": "5.2.0",
+    "@angular/platform-browser": "5.2.0",
+    "@angular/platform-browser-dynamic": "5.2.0",
+    "@types/jquery": "2.0.43",
+    "@types/node": "6.0.45",
+    "ajv": "6.5.1",
+    "cmjs-lib": "0.2.2",
+    "core-js": "2.4.1",
+    "jquery": "3.2.1",
+    "ng-packagr": "3.0.3",
+    "rxjs": "5.5.6",
+    "semantic-ui-css": "2.3.2",
+    "tsickle": "0.30.0",
+    "typescript": "2.6.2",
+    "zone.js": "0.8.26"
+  }
+}
