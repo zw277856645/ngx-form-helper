@@ -8,7 +8,10 @@
       "polyfills": "polyfills.ts",
       "tsconfig": "../tsconfig-demo.json",
       "styles": [
-        "../node_modules/semantic-ui-css/semantic.css"
+        "../node_modules/semantic-ui-css/semantic.css",
+        "../src/asset/font.css",
+        "../src/form-helper.less",
+        "../src/submit-handler/submit-handler-loader.less"
       ],
       "scripts": [
         "../node_modules/jquery/dist/jquery.min.js",

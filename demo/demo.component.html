@@ -1,5 +1,5 @@
 <div class="ui container">
-  <form class="ui form" formHelper>
+  <form class="ui form" formHelper [config]="config">
     <div class="field">
       <label>名字</label>
       <input type="text" required name="name" [(ngModel)]="name" autocomplete="off">
@@ -19,20 +19,46 @@
     <div *ngIf="type == 0">
       <div class="field">
         <label>说明</label>
-        <textarea name="desc" [(ngModel)]="desc" autocomplete="off" rows="3"></textarea>
+        <textarea name="desc" required [(ngModel)]="desc" autocomplete="off" rows="3" disabled></textarea>
+      </div>
+      <div class="field">
+        <label>选择喜好</label>
+        <select class="ui dropdown" name="love" [(ngModel)]="love" required>
+          <option value="">请选择</option>
+          <option value="1">读书</option>
+          <option value="2">看报</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>组(动态)</label>
+        <div ngModelGroup="group" checkboxRequired>
+          <div class="ui checkbox" *ngFor="let ck of cks;trackBy:trackByCk;index as i">
+            <input type="checkbox" [(ngModel)]="ck.checked" [name]="'ck-' + ck.uuid">
+            <label>
+              {{ck.label}}
+              <i class="icon red remove" (click)="removeCk(i)"></i>
+            </label>
+          </div>
+          <button type="button" class="ui button tiny teal" (click)="addCK()">添加</button>
+        </div>
       </div>
       <div class="field buttons">
-        <button type="button" class="ui button small instagram" #submit>保存1</button>
+        <button type="submit" class="ui button small instagram right labeled icon">
+          <i class="icon save"></i>
+          保存1
+        </button>
+        <a class="ui button small" routerLink="/other">返回</a>
       </div>
     </div>
 
     <div *ngIf="type == 1">
       <div class="field">
         <label>性别</label>
-        <input type="text" required name="sex" [(ngModel)]="sex" autocomplete="off">
+        <input type="text" name="sex" required [(ngModel)]="sex" autocomplete="off">
       </div>
       <div class="field buttons">
-        <button type="button" class="ui button small instagram" #submit>保存2</button>
+        <button type="submit" class="ui button small instagram">保存2</button>
+        <a class="ui button small" routerLink="/other">返回</a>
       </div>
     </div>
   </form>

@@ -1,0 +1,25 @@
+.error() {
+  background: #fff6f6;
+  border-color: #e0b4b4;
+  color: #9f3a38;
+  box-shadow: none;
+}
+
+.fh-theme-default {
+  select.ng-dirty:enabled,
+  input.ng-dirty:enabled,
+  textarea.ng-dirty:enabled {
+    border-left-width: 4px !important;
+    transition: background .1s linear, border-left-color .1s linear, border-left-width .1s linear;
+    &.ng-valid {
+      border-left-color: #49b14f !important;
+    }
+    &.ng-invalid, &.fh-error {
+      .error() !important;
+    }
+  }
+  .fh-scroll-target.fh-error {
+    .error() !important;
+  }
+}
+

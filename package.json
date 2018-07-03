@@ -15,7 +15,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/zw277856645/ng2-form-helper.git"
+    "url": "https://gitlab.com/zw277856645/ngx-form-helper"
   },
   "keywords": [],
   "author": "wei.zhang",
@@ -25,6 +25,7 @@
     "@angular/common": "5.2.0",
     "@angular/compiler": "5.2.0",
     "@angular/compiler-cli": "5.2.0",
+    "@angular/router": "5.2.0",
     "@angular/core": "5.2.0",
     "@angular/forms": "5.2.0",
     "@angular/platform-browser": "5.2.0",
