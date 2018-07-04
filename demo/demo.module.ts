@@ -8,6 +8,8 @@ import { DemoRouterModule } from './demo-router.module';
 import { OtherComponent } from './other.component';
 import { AppComponent } from './app.component';
 import { GroupedCheckboxRequiredDirective } from './directive/grouped-checkbox-required.directive';
+import { NameUniqueDirective } from './directive/name-unique.directive';
+import { NameValidateService } from './directive/name-unique.service';
 
 @NgModule({
     imports: [
@@ -21,7 +23,11 @@ import { GroupedCheckboxRequiredDirective } from './directive/grouped-checkbox-r
         AppComponent,
         DemoComponent,
         OtherComponent,
-        GroupedCheckboxRequiredDirective
+        GroupedCheckboxRequiredDirective,
+        NameUniqueDirective
+    ],
+    providers: [
+        NameValidateService
     ],
     bootstrap: [ AppComponent ]
 })

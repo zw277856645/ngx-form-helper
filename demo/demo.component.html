@@ -2,7 +2,7 @@
   <form class="ui form" formHelper [config]="config">
     <div class="field">
       <label>名字</label>
-      <input type="text" required name="name" [(ngModel)]="name" autocomplete="off">
+      <input type="text" name="name" [(ngModel)]="name" autocomplete="off" required>
     </div>
     <div class="field">
       <label>类型</label>
@@ -40,6 +40,26 @@
             </label>
           </div>
           <button type="button" class="ui button tiny teal" (click)="addCK()">添加</button>
+        </div>
+      </div>
+      <div class="field">
+        <label>远程</label>
+        <input type="text" name="remote" [(ngModel)]="remote" nameUnique>
+      </div>
+      <div class="field">
+        <label>滚动对象(scrollTarget)</label>
+        <div class="ui styled fluid accordion">
+          <div class="title fh-scroll-target" [class.active]="accordionActive"
+               (click)="accordionActive = !accordionActive">
+            <i class="dropdown icon"></i>
+            Accordion
+          </div>
+          <div class="content active" [class.active]="accordionActive" ngModelGroup="gp">
+            <div class="field">
+              <label>生日</label>
+              <input type="text" name="birth" [(ngModel)]="birth" required>
+            </div>
+          </div>
         </div>
       </div>
       <div class="field buttons">

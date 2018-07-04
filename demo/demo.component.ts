@@ -20,7 +20,10 @@ export class DemoComponent implements OnInit {
     sex: string;
     love: string;
     cks: any[] = [];
+    remote: string;
+    birth: string;
     uuid = uuid;
+    accordionActive = false;
 
     constructor() {
         this.cks = [
