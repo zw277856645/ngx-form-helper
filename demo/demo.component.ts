@@ -21,9 +21,11 @@ export class DemoComponent implements OnInit {
     love: string;
     cks: any[] = [];
     remote: string;
+    remote2: string;
     birth: string;
     uuid = uuid;
     accordionActive = false;
+    pageHeight = 0;
 
     constructor() {
         this.cks = [
@@ -65,5 +67,9 @@ export class DemoComponent implements OnInit {
 
     trackByCk(i: number, ck: any) {
         return ck.uuid;
+    }
+
+    addHeight() {
+        this.pageHeight += 200;
     }
 }

@@ -30,7 +30,7 @@
         </select>
       </div>
       <div class="field">
-        <label>组(动态)</label>
+        <label class="fh-scroll-target">组(动态)</label>
         <div ngModelGroup="group" checkboxRequired>
           <div class="ui checkbox" *ngFor="let ck of cks;trackBy:trackByCk;index as i">
             <input type="checkbox" [(ngModel)]="ck.checked" [name]="'ck-' + ck.uuid">
@@ -44,7 +44,7 @@
       </div>
       <div class="field">
         <label>远程</label>
-        <input type="text" name="remote" [(ngModel)]="remote" nameUnique>
+        <input type="text" name="remote" [(ngModel)]="remote" autocomplete="off" nameUnique>
       </div>
       <div class="field">
         <label>滚动对象(scrollTarget)</label>
@@ -59,6 +59,10 @@
               <label>生日</label>
               <input type="text" name="birth" [(ngModel)]="birth" required>
             </div>
+            <div class="field">
+              <label>远程2</label>
+              <input type="text" name="remote2" [(ngModel)]="remote2" autocomplete="off" nameUnique>
+            </div>
           </div>
         </div>
       </div>
@@ -67,7 +71,7 @@
           <i class="icon save"></i>
           保存1
         </button>
-        <a class="ui button small" routerLink="/other">返回</a>
+        <a class="ui button small" routerLink="/other">other</a>
       </div>
     </div>
 
@@ -78,8 +82,12 @@
       </div>
       <div class="field buttons">
         <button type="submit" class="ui button small instagram">保存2</button>
-        <a class="ui button small" routerLink="/other">返回</a>
+        <a class="ui button small" routerLink="/other">other</a>
       </div>
     </div>
   </form>
+
+  <div class="ui divider"></div>
+  <button type="button" class="ui button tiny" (click)="addHeight()">增加页面高度(+200px)</button>
+  <div class="blank" [style.height.px]="pageHeight"></div>
 </div>
