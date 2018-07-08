@@ -13,8 +13,8 @@ import 'rxjs/add/observable/timer';
 import { FormHelperConfig } from './form-helper-config';
 import { SubmitHandlerLoader } from './submit-handler/submit-handler-loader';
 import { SubmitHandler } from './submit-handler/submit-handler';
-import { doAfter, ELEMENT_BIND_TO_CONTROL_KEY } from './form-helper-utils';
-import { isString } from 'util';
+import { doAfter, ELEMENT_BIND_TO_CONTROL_KEY, getScrollProxy } from './form-helper-utils';
+import { isArray, isString } from 'util';
 import { ErrorHandlerTooltip } from './error-handler/error-handler-tooltip';
 const $ = require('jquery');
 const TWEEN = require('@tweenjs/tween.js');
@@ -23,11 +23,14 @@ const TWEEN = require('@tweenjs/tween.js');
  * --------------------------------------------------------------------------------------------------------
  * data-* api
  *  1)debounce-time：远程验证时使用，指定请求抖动时间。单位ms，使用方表单域
+ *  2)scroll-proxy：设置表单域/表单组滚动代理。
+ *                  语法：^ -> 父节点，~ -> 前一个兄弟节点，+ -> 后一个兄弟节点。可以任意组合
+ *                  示例：^^^，^2，~3^4+2
  *
  * --------------------------------------------------------------------------------------------------------
  * angular表单存在的bug
  *  1)bug：表单域name使用模板表达式生成(如：name="name-{{attr}}")，则最终的html标签中name属性会丢失
- *    fix：同时使用name和[attr.name]
+ *    fix：同时使用name和[attr.name]。使用本插件不需要[attr.name]
  *  2)bug：当使用ngFor迭代表单域，且name使用数组下标(如：name-{{i}})，此时若动态新增/删除表单域，会造成表单域数量混乱
  *    fix：这种情况下请保证name唯一，且必须使用trackBy返回唯一标识，推荐使用uuid等工具(如：name-{{uuid}})
  */
@@ -141,38 +144,41 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
     private bindSubmitButtons() {
         let handlerName = this._config.submitHandler ? (<any>this._config.submitHandler).name : undefined;
 
-        this.$form.find(':submit').each((i, btn) => {
-            let $btn = $(btn),
-                clickEvent = 'click.formHelper',
-                bindData = $btn.data(this.submitHandlerKey);
+        this.$form
+            .find(':submit')
+            .add($(this._config.extraSubmits))
+            .each((i, btn) => {
+                let $btn = $(btn),
+                    clickEvent = 'click.formHelper',
+                    bindData = $btn.data(this.submitHandlerKey);
 
-            if (bindData && bindData.name == handlerName) {
-                return;
-            } else if (bindData && bindData.name != handlerName) {
-                $btn.off(clickEvent);
-            }
-
-            if (handlerName) {
-                let HandlerClass = FormHelperDirective.submitHandlerMap.get(handlerName);
-                if (HandlerClass instanceof Function) {
-                    let handlerInstance = new HandlerClass($btn, (<any>this._config.submitHandler).config);
-                    if (handlerInstance.destroy) {
-                        this.destroys.push(() => handlerInstance.destroy());
-                    }
-
-                    $btn.on(clickEvent, () => this.submit(handlerInstance));
-                    this.destroys.push(() => $btn.off(clickEvent));
-
-                    $btn.data(this.submitHandlerKey, { name: handlerName, data: handlerInstance });
+                if (bindData && bindData.name == handlerName) {
                     return;
+                } else if (bindData && bindData.name != handlerName) {
+                    $btn.off(clickEvent);
                 }
-            }
 
-            // submitHandler=false或指定的submitHandler找不到
-            $btn.on(clickEvent, () => this.submit());
-            this.destroys.push(() => $btn.off(clickEvent));
-            $btn.data(this.submitHandlerKey, {});
-        });
+                if (handlerName) {
+                    let HandlerClass = FormHelperDirective.submitHandlerMap.get(handlerName);
+                    if (HandlerClass instanceof Function) {
+                        let handlerInstance = new HandlerClass($btn, (<any>this._config.submitHandler).config);
+                        if (handlerInstance.destroy) {
+                            this.destroys.push(() => handlerInstance.destroy());
+                        }
+
+                        $btn.on(clickEvent, () => this.submit(handlerInstance));
+                        this.destroys.push(() => $btn.off(clickEvent));
+
+                        $btn.data(this.submitHandlerKey, { name: handlerName, data: handlerInstance });
+                        return;
+                    }
+                }
+
+                // submitHandler=false或指定的submitHandler找不到
+                $btn.on(clickEvent, () => this.submit());
+                this.destroys.push(() => $btn.off(clickEvent));
+                $btn.data(this.submitHandlerKey, {});
+            });
     }
 
     private bindErrorHandlers(controls: { [key: string]: AbstractControl; } = this.ngForm.controls) {
@@ -281,6 +287,11 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
             }
         } else {
             this.validateControls();
+
+            if (this._config.onDeny instanceof Function) {
+                this._config.onDeny();
+            }
+
             if (this._config.autoScrollToTopError) {
                 let pendings = this.getPendingControls();
                 if (pendings.length) {
@@ -333,8 +344,8 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
         }
         minOffsetTop -= this._config.offsetTop;
 
-        let $context = $(this._config.context);
-        if ($context.length == 0) {
+        let $context = this.findContext();
+        if (!$context || $context.length == 0) {
             return;
         }
 
@@ -359,6 +370,29 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
         animate();
     }
 
+    private findContext() {
+        let context = this._config.context,
+            dotsPathReg = /^(\.\/?|\.\.(\/\.\.)*\/?)$/;
+        if (isString(context) && dotsPathReg.test(<string>context)) {
+            if (/^\.\/?$/.test(<string>context)) {
+                return this.$form;
+            } else {
+                let num = (<string>context).split('/').filter(v => v).length,
+                    $field = this.$form,
+                    n = 0;
+                while (n++ < num) {
+                    $field = $field.parent();
+                    if ($field.length == 0) {
+                        return null;
+                    }
+                }
+                return $field;
+            }
+        } else {
+            return $(context);
+        }
+    }
+
     private calcMinOffsetTop(controls: { [key: string]: AbstractControl; } = this.ngForm.controls) {
         let minOffsetTop = Number.MAX_SAFE_INTEGER;
         for (let name in controls) {
@@ -376,7 +410,7 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
                     // 此场景为ngModelGroup -> invalid，ngModelGroup.controls -> valid
                     // 原因：ngModelGroup约束条件失败，但没有子组件或所有子控件不具备约束条件
                     // 结果：其所有子组件状态都是valid
-                    // fix：这种场景下将ngModelGroup不跳过，加入下面的计算
+                    // fix：这种场景下ngModelGroup不跳过，加入下面的计算
                 }
 
                 let $item = this.findClosestVisibleItem(control);
@@ -389,8 +423,15 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
     }
 
     private findClosestVisibleItem(control: AbstractControl) {
-        // 表单域本身
         let $field = $(control[ ELEMENT_BIND_TO_CONTROL_KEY ]);
+
+        // 滚动代理
+        let $proxy = FormHelperDirective.findScrollProxy($field);
+        if ($proxy && $proxy.is(':visible')) {
+            return $proxy;
+        }
+
+        // 表单域/表单组本身
         if ($field.is(':visible')) {
             return $field;
         }
@@ -402,6 +443,103 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
 
         // 没有找到符合元素，此表单域会被滚动定位忽略
         return null;
+    }
+
+    private static findScrollProxy($field: JQuery) {
+        let expr = getScrollProxy($field);
+        let reg = /^([\\^~+]+\d*)+$/;
+
+        if (!reg.test(expr)) {
+            return null;
+        }
+
+        // 表达式合并/分组，如：^2^^3++~2~~+3^ -> ^6+2~4+3^1 -> [^6,+2,~4,+3,^1] -> [^6,+1,^1]
+        let groups = FormHelperDirective.parseScrollProxyExpression(expr);
+        if (!groups || groups.length == 0) {
+            return null;
+        }
+
+        out: for (let i = 0, len = groups.length; i < len; i++) {
+            let char = groups[ i ].charAt(0),
+                num = parseInt(groups[ i ].substring(1)),
+                n = 0;
+
+            while (n++ < num) {
+                if (char == '^') {
+                    $field = $field.parent();
+                } else if (char == '~') {
+                    $field = $field.prev();
+                } else {
+                    $field = $field.next();
+                }
+
+                if ($field.length == 0) {
+                    break out;
+                }
+            }
+
+        }
+
+        return $field;
+    }
+
+    private static parseScrollProxyExpression(expr: string) {
+        let matches = expr.match(/[\\^~+]+?\d*/g);
+        if (!matches || matches.length == 0) {
+            return null;
+        }
+
+        matches = matches.map(m => m.length == 1 ? m + '1' : m);
+
+        // 相同的相邻元素累加
+        let groups = [], gpLen, prevNum, curNum;
+        for (let i = 0, len = matches.length; i < len; i++) {
+            gpLen = groups.length;
+            if (i == 0 || !groups[ gpLen - 1 ].startsWith(matches[ i ].charAt(0))) {
+                groups.push(matches[ i ]);
+            } else {
+                prevNum = parseInt(groups[ gpLen - 1 ].substring(1));
+                curNum = parseInt(matches[ i ].substring(1));
+                groups[ gpLen - 1 ] = groups[ gpLen - 1 ].charAt(0) + (prevNum + curNum);
+            }
+        }
+
+        // ^/+~分组
+        let splits = [], canPush;
+        for (let i = 0, len = groups.length; i < len; i++) {
+            if (groups[ i ].charAt(0) == '^') {
+                splits.push(groups[ i ]);
+            } else {
+                canPush = isArray(splits[ splits.length - 1 ]);
+                if (i == 0 || !canPush) {
+                    splits.push([ groups[ i ] ]);
+                } else if (canPush) {
+                    splits[ splits.length - 1 ].push(groups[ i ]);
+                }
+            }
+        }
+
+        // 相邻~+合并
+        return splits
+            .map(v => {
+                if (isArray(v)) {
+                    let prevNum = 0, nextNum = 0;
+                    v.forEach(ch => {
+                        if (ch.startsWith('~')) {
+                            prevNum += parseInt(ch.substring(1));
+                        } else {
+                            nextNum += parseInt(ch.substring(1));
+                        }
+                    });
+                    if (prevNum == nextNum) {
+                        return null;
+                    } else {
+                        return (prevNum > nextNum ? '~' : '+') + Math.abs(prevNum - nextNum);
+                    }
+                }
+                return v;
+            })
+            .filter(v => v);
     }
 
     private reset() {

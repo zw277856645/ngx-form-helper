@@ -30,7 +30,7 @@
         </select>
       </div>
       <div class="field">
-        <label class="fh-scroll-target">组(动态)</label>
+        <label>组(动态)</label>
         <div ngModelGroup="group" checkboxRequired>
           <div class="ui checkbox" *ngFor="let ck of cks;trackBy:trackByCk;index as i">
             <input type="checkbox" [(ngModel)]="ck.checked" [name]="'ck-' + ck.uuid">
@@ -48,13 +48,12 @@
       </div>
       <div class="field">
         <label>滚动对象(scrollTarget)</label>
-        <div class="ui styled fluid accordion">
-          <div class="title fh-scroll-target" [class.active]="accordionActive"
-               (click)="accordionActive = !accordionActive">
+        <div class="ui styled fluid accordion" ngModelGroup="group2">
+          <div class="title" [class.active]="accordionActive" (click)="accordionActive = !accordionActive">
             <i class="dropdown icon"></i>
             Accordion
           </div>
-          <div class="content active" [class.active]="accordionActive" ngModelGroup="gp">
+          <div class="content active" [class.active]="accordionActive" ngModelGroup="gp" data-scroll-proxy="~">
             <div class="field">
               <label>生日</label>
               <input type="text" name="birth" [(ngModel)]="birth" required>
@@ -62,6 +61,17 @@
             <div class="field">
               <label>远程2</label>
               <input type="text" name="remote2" [(ngModel)]="remote2" autocomplete="off" nameUnique>
+            </div>
+          </div>
+
+          <div class="title" [class.active]="accordionActive2" (click)="accordionActive2 = !accordionActive2">
+            <i class="dropdown icon"></i>
+            Accordion2
+          </div>
+          <div class="content active" [class.active]="accordionActive2" ngModelGroup="gp2" data-scroll-proxy="~">
+            <div class="field">
+              <label>生日2</label>
+              <input type="text" name="birth2" [(ngModel)]="birth2" required>
             </div>
           </div>
         </div>
@@ -88,6 +98,34 @@
   </form>
 
   <div class="ui divider"></div>
-  <button type="button" class="ui button tiny" (click)="addHeight()">增加页面高度(+200px)</button>
+  <button type="button" class="ui button tiny" (click)="addHeight()">增加页面高度(+1000px)</button>
+  <button type="button" class="ui small button modal-button">Modal</button>
   <div class="blank" [style.height.px]="pageHeight"></div>
+</div>
+
+<div class="ui small modal" #modal>
+  <div class="header">
+    弹层表单
+  </div>
+  <div class="content">
+    <form class="ui form" formHelper [config]="config2">
+      <div class="field">
+        <label>地址</label>
+        <input type="text" name="addr" [(ngModel)]="addr" autocomplete="off" required>
+      </div>
+      <div class="field">
+        <label>评论</label>
+        <textarea name="issue" required [(ngModel)]="issue" autocomplete="off" rows="30"></textarea>
+      </div>
+    </form>
+  </div>
+  <div class="actions">
+    <div class="ui deny button">
+      关闭
+    </div>
+    <div class="ui instagram approve right labeled icon button">
+      提交
+      <i class="checkmark icon"></i>
+    </div>
+  </div>
 </div>

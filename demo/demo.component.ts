@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { FormHelperConfig } from '../src/form-helper-config';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/interval';
@@ -11,9 +11,12 @@ import { uuid } from 'cmjs-lib';
     templateUrl: './demo.component.html',
     styleUrls: [ './demo.component.less' ]
 })
-export class DemoComponent implements OnInit {
+export class DemoComponent implements AfterViewInit {
+
+    @ViewChild('modal') modal: ElementRef;
 
     config: FormHelperConfig;
+    config2: FormHelperConfig;
     name: string;
     desc: string;
     type: number = 0;
@@ -26,6 +29,10 @@ export class DemoComponent implements OnInit {
     uuid = uuid;
     accordionActive = false;
     pageHeight = 0;
+    accordionActive2 = false;
+    birth2: string;
+    addr: string;
+    issue: string;
 
     constructor() {
         this.cks = [
@@ -33,24 +40,27 @@ export class DemoComponent implements OnInit {
             { label: 'ck2', checked: false, uuid: uuid(8) },
             { label: 'ck3', checked: false, uuid: uuid(8) }
         ];
-    }
 
-    ngOnInit() {
         this.config = {
-            submitHandler: {
-                name: 'loader',
-                config: {
-                    //iconClassName: 'icon notched circle loading',
-                    //iconToggleStrategy: 'replace',
-                    //iconSelector: false
-                }
-            },
             onSuccess: () => {
                 return Observable.interval(0).map(() => {
                     console.log(444);
                 }).first();
             }
         };
+
+        this.config2 = {
+            context: '.ui.page.modals',
+            extraSubmits: '.modal .actions .approve'
+        };
+    }
+
+    ngAfterViewInit() {
+        $(this.modal.nativeElement)
+            .modal({
+                onApprove: () => false
+            })
+            .modal('attach events', '.modal-button', 'show');
     }
 
     addCK() {
@@ -70,6 +80,6 @@ export class DemoComponent implements OnInit {
     }
 
     addHeight() {
-        this.pageHeight += 200;
+        this.pageHeight += 1000;
     }
 }

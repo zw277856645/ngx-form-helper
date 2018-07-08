@@ -16,3 +16,7 @@ export function doAfter(fn: () => Promise<any> | Observable<any> | void, cb: () 
 export function getDebounceTime($ele: JQuery, defVal: number = 300) {
     return parseInt($ele.data('debounceTime')) || defVal;
 }
+
+export function getScrollProxy($ele: JQuery) {
+    return ($ele.data('scrollProxy') || '').replace(/\s/g, '');
+}
