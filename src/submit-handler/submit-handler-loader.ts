@@ -38,7 +38,7 @@ export class SubmitHandlerLoader implements SubmitHandler {
         }
 
         this.startTime = new Date().getTime();
-        this.$ele.prop('disabled', true);
+        this.$ele.prop('disabled', true).addClass('disabled');
 
         if (this.$loading && this.$loading.length) {
             if (this.config.iconToggleStrategy == 'replace') {
@@ -55,7 +55,7 @@ export class SubmitHandlerLoader implements SubmitHandler {
         let duration = diff < this.config.duration ? this.config.duration - diff : 0;
 
         return Observable.interval(duration).first().map(() => {
-            this.$ele.prop('disabled', false);
+            this.$ele.prop('disabled', false).removeClass('disabled');
 
             if (this.$loading && this.$loading.length) {
                 this.$loading.removeClass(this.config.iconClassName);

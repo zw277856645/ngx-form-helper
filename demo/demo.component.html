@@ -2,7 +2,11 @@
   <form class="ui form" formHelper [config]="config">
     <div class="field">
       <label>名字</label>
-      <input type="text" name="name" [(ngModel)]="name" autocomplete="off" required>
+      <input type="text" name="name" #nameCtrl="ngModel" [(ngModel)]="name" autocomplete="off" required nameUnique>
+      <div class="fh-tooltip">
+        <div [class.error]="nameCtrl.errors?.required">不能为空</div>
+        <div [class.error]="nameCtrl.errors?.nameUnique">重复</div>
+      </div>
     </div>
     <div class="field">
       <label>类型</label>
@@ -23,15 +27,18 @@
       </div>
       <div class="field">
         <label>选择喜好</label>
-        <select class="ui dropdown" name="love" [(ngModel)]="love" required>
+        <select class="ui dropdown" name="love" #loveCtrl="ngModel" [(ngModel)]="love" required>
           <option value="">请选择</option>
           <option value="1">读书</option>
           <option value="2">看报</option>
         </select>
+        <div class="fh-tooltip">
+          <div [class.error]="loveCtrl.errors?.required">至少选择一项</div>
+        </div>
       </div>
       <div class="field">
         <label>组(动态)</label>
-        <div ngModelGroup="group" checkboxRequired>
+        <div ngModelGroup="group" #groupCtrl="ngModelGroup" checkboxRequired>
           <div class="ui checkbox" *ngFor="let ck of cks;trackBy:trackByCk;index as i">
             <input type="checkbox" [(ngModel)]="ck.checked" [name]="'ck-' + ck.uuid">
             <label>
@@ -41,26 +48,40 @@
           </div>
           <button type="button" class="ui button tiny teal" (click)="addCK()">添加</button>
         </div>
+        <div class="fh-tooltip" data-position="right center">
+          <div [class.error]="groupCtrl.errors?.checkboxRequired">至少选择一项</div>
+        </div>
       </div>
       <div class="field">
         <label>远程</label>
-        <input type="text" name="remote" [(ngModel)]="remote" autocomplete="off" nameUnique>
+        <input type="text" name="remote" #remoteCtrl="ngModel" [(ngModel)]="remote" autocomplete="off" nameUnique>
+        <div class="fh-tooltip">
+          <div [class.error]="remoteCtrl.errors?.nameUnique">重复</div>
+        </div>
       </div>
       <div class="field">
         <label>滚动对象(scrollTarget)</label>
-        <div class="ui styled fluid accordion" ngModelGroup="group2">
+        <div class="ui styled fluid accordion">
           <div class="title" [class.active]="accordionActive" (click)="accordionActive = !accordionActive">
             <i class="dropdown icon"></i>
             Accordion
           </div>
-          <div class="content active" [class.active]="accordionActive" ngModelGroup="gp" data-scroll-proxy="~">
+          <div class="content active" [class.active]="accordionActive" ngModelGroup="gp" #gpCtrl="ngModelGroup"
+               data-scroll-proxy="~">
             <div class="field">
               <label>生日</label>
-              <input type="text" name="birth" [(ngModel)]="birth" required>
+              <input type="text" name="birth" #birthCtrl="ngModel" [(ngModel)]="birth" required>
+              <div class="fh-tooltip">
+                <div [class.error]="birthCtrl.errors?.required">不能为空</div>
+              </div>
             </div>
             <div class="field">
               <label>远程2</label>
-              <input type="text" name="remote2" [(ngModel)]="remote2" autocomplete="off" nameUnique>
+              <input type="text" name="remote2" #remote2Ctrl="ngModel" [(ngModel)]="remote2" autocomplete="off"
+                     nameUnique>
+              <div class="fh-tooltip">
+                <div [class.error]="remote2Ctrl.errors?.nameUnique">重复</div>
+              </div>
             </div>
           </div>
 
@@ -68,10 +89,14 @@
             <i class="dropdown icon"></i>
             Accordion2
           </div>
-          <div class="content active" [class.active]="accordionActive2" ngModelGroup="gp2" data-scroll-proxy="~">
+          <div class="content active" [class.active]="accordionActive2" ngModelGroup="gp2" #gp2Ctrl="ngModelGroup"
+               data-scroll-proxy="~">
             <div class="field">
               <label>生日2</label>
-              <input type="text" name="birth2" [(ngModel)]="birth2" required>
+              <input type="text" name="birth2" #birth2Ctrl="ngModel" [(ngModel)]="birth2" required>
+              <div class="fh-tooltip">
+                <div [class.error]="birth2Ctrl.errors?.required">不能为空</div>
+              </div>
             </div>
           </div>
         </div>
@@ -94,7 +119,6 @@
         <button type="submit" class="ui button small instagram">保存2</button>
         <a class="ui button small" routerLink="/other">other</a>
       </div>
-      I
     </div>
   </form>
 
@@ -113,7 +137,10 @@
     <form class="ui form" formHelper [config]="config2">
       <div class="field">
         <label>地址</label>
-        <input type="text" name="addr" [(ngModel)]="addr" autocomplete="off" required>
+        <input type="text" name="addr" #addrCtrl="ngModel" [(ngModel)]="addr" autocomplete="off" required>
+        <div class="fh-tooltip">
+          <div [class.error]="addrCtrl.errors?.required">不能为空</div>
+        </div>
       </div>
       <div class="field">
         <label>评论</label>
@@ -125,10 +152,10 @@
     <div class="ui deny button">
       关闭
     </div>
-    <div class="ui instagram approve right labeled icon button">
+    <button class="ui instagram approve right labeled icon button">
       提交
       <i class="checkmark icon"></i>
-    </div>
+    </button>
   </div>
 </div>
 
@@ -140,11 +167,14 @@
     <form class="ui form" formHelper [config]="config3">
       <div class="field">
         <label>地址</label>
-        <input type="text" name="addr" [(ngModel)]="addr2" autocomplete="off" required>
+        <input type="text" name="addr2" #addr2Ctrl="ngModel" [(ngModel)]="addr2" autocomplete="off" required>
+        <div class="fh-tooltip">
+          <div [class.error]="addr2Ctrl.errors?.required">不能为空</div>
+        </div>
       </div>
       <div class="field">
         <label>评论</label>
-        <textarea name="issue" required [(ngModel)]="issue2" autocomplete="off" rows="20"></textarea>
+        <textarea name="issue2" required [(ngModel)]="issue2" autocomplete="off" rows="20"></textarea>
       </div>
     </form>
   </div>

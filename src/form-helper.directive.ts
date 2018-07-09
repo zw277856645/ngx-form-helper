@@ -13,8 +13,8 @@ import 'rxjs/add/observable/timer';
 import { FormHelperConfig } from './form-helper-config';
 import { SubmitHandlerLoader } from './submit-handler/submit-handler-loader';
 import { SubmitHandler } from './submit-handler/submit-handler';
-import { doAfter, ELEMENT_BIND_TO_CONTROL_KEY, getScrollProxy } from './form-helper-utils';
-import { isArray, isString } from 'util';
+import { doAfter, ELEMENT_BIND_TO_CONTROL_KEY, findProxyItem, getScrollProxy, noop } from './form-helper-utils';
+import { isString } from 'util';
 import { ErrorHandlerTooltip } from './error-handler/error-handler-tooltip';
 const $ = require('jquery');
 const TWEEN = require('@tweenjs/tween.js');
@@ -22,8 +22,8 @@ const TWEEN = require('@tweenjs/tween.js');
 /**
  * --------------------------------------------------------------------------------------------------------
  * data-* api
- *  1)debounce-time：远程验证时使用，指定请求抖动时间。单位ms，使用方表单域
- *  2)scroll-proxy：设置表单域/表单组滚动代理。
+ *  1)debounce-time：远程验证时使用，指定请求抖动时间。单位ms，使用方表单域/表单组
+ *  2)scroll-proxy：设置表单域/表单组滚动代理
  *                  语法：^ -> 父节点，~ -> 前一个兄弟节点，+ -> 后一个兄弟节点。可以任意组合
  *                  示例：^^^，^2，~3^4+2
  *
@@ -79,7 +79,6 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
     private mutationObserver: MutationObserver;
     private $form: JQuery;
     private destroys: (Subscription | Function)[] = [];
-    private noop = new Function();
 
     private readonly submitHandlerKey = 'formHelper.submitHandler';
     private readonly errorHandlerKey = 'formHelper.errorHandler';
@@ -101,7 +100,10 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
             errorClassName: 'fh-error',
             errorGroupClassName: 'fh-group-error',
             errorHandler: { name: 'tooltip' },
-            submitHandler: { name: 'loader' }
+            submitHandler: { name: 'loader' },
+            onSuccess: noop,
+            onDeny: noop,
+            onComplete: noop
         };
 
         this.$form = $(form.nativeElement);
@@ -274,7 +276,7 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
                 submitHandler.start();
             }
 
-            let endFn = submitHandler ? submitHandler.end.bind(submitHandler) : this.noop;
+            let endFn = submitHandler ? submitHandler.end.bind(submitHandler) : noop;
             if (this._config.onSuccess instanceof Function) {
                 doAfter(this._config.onSuccess, () => {
                     doAfter(endFn, () => {
@@ -349,12 +351,10 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
         }
         minOffsetTop -= this._config.offsetTop;
 
-        // 非context:window滚动窗体中表单域/表单组实际offset.top需要减去滚动体offset.top
+        // 非context:window滚动窗体中表单域/表单组实际offset.top需要减去滚动体offset.top，加上滚动体当前scrollTop
         if ($context[ 0 ] != window && $context[ 0 ].nodeName.toUpperCase() != 'HTML') {
             minOffsetTop -= $context.offset().top;
-            if (minOffsetTop < 0) {
-                minOffsetTop += $context.scrollTop();
-            }
+            minOffsetTop += $context.scrollTop();
         }
 
         let animationRequest;
@@ -434,7 +434,7 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
         let $field = $(control[ ELEMENT_BIND_TO_CONTROL_KEY ]);
 
         // 滚动代理
-        let $proxy = FormHelperDirective.findScrollProxy($field);
+        let $proxy = findProxyItem($field, getScrollProxy($field));
         if ($proxy && $proxy.is(':visible')) {
             return $proxy;
         }
@@ -451,103 +451,6 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
 
         // 没有找到符合元素，此表单域会被滚动定位忽略
         return null;
-    }
-
-    private static findScrollProxy($field: JQuery) {
-        let expr = getScrollProxy($field);
-        let reg = /^([\\^~+]+\d*)+$/;
-
-        if (!reg.test(expr)) {
-            return null;
-        }
-
-        // 表达式合并/分组，如：^2^^3++~2~~+3^ -> ^6+2~4+3^1 -> [^6,+2,~4,+3,^1] -> [^6,+1,^1]
-        let groups = FormHelperDirective.parseScrollProxyExpression(expr);
-        if (!groups || groups.length == 0) {
-            return null;
-        }
-
-        out: for (let i = 0, len = groups.length; i < len; i++) {
-            let char = groups[ i ].charAt(0),
-                num = parseInt(groups[ i ].substring(1)),
-                n = 0;
-
-            while (n++ < num) {
-                if (char == '^') {
-                    $field = $field.parent();
-                } else if (char == '~') {
-                    $field = $field.prev();
-                } else {
-                    $field = $field.next();
-                }
-
-                if ($field.length == 0) {
-                    break out;
-                }
-            }
-
-        }
-
-        return $field;
-    }
-
-    private static parseScrollProxyExpression(expr: string) {
-        let matches = expr.match(/[\\^~+]+?\d*/g);
-        if (!matches || matches.length == 0) {
-            return null;
-        }
-
-        matches = matches.map(m => m.length == 1 ? m + '1' : m);
-
-        // 相同的相邻元素累加
-        let groups = [], gpLen, prevNum, curNum;
-        for (let i = 0, len = matches.length; i < len; i++) {
-            gpLen = groups.length;
-            if (i == 0 || !groups[ gpLen - 1 ].startsWith(matches[ i ].charAt(0))) {
-                groups.push(matches[ i ]);
-            } else {
-                prevNum = parseInt(groups[ gpLen - 1 ].substring(1));
-                curNum = parseInt(matches[ i ].substring(1));
-                groups[ gpLen - 1 ] = groups[ gpLen - 1 ].charAt(0) + (prevNum + curNum);
-            }
-        }
-
-        // ^/+~分组
-        let splits = [], canPush;
-        for (let i = 0, len = groups.length; i < len; i++) {
-            if (groups[ i ].charAt(0) == '^') {
-                splits.push(groups[ i ]);
-            } else {
-                canPush = isArray(splits[ splits.length - 1 ]);
-                if (i == 0 || !canPush) {
-                    splits.push([ groups[ i ] ]);
-                } else if (canPush) {
-                    splits[ splits.length - 1 ].push(groups[ i ]);
-                }
-            }
-        }
-
-        // 相邻~+合并
-        return splits
-            .map(v => {
-                if (isArray(v)) {
-                    let prevNum = 0, nextNum = 0;
-                    v.forEach(ch => {
-                        if (ch.startsWith('~')) {
-                            prevNum += parseInt(ch.substring(1));
-                        } else {
-                            nextNum += parseInt(ch.substring(1));
-                        }
-                    });
-                    if (prevNum == nextNum) {
-                        return null;
-                    } else {
-                        return (prevNum > nextNum ? '~' : '+') + Math.abs(prevNum - nextNum);
-                    }
-                }
-                return v;
-            })
-            .filter(v => v);
     }
 
     private reset() {

@@ -9,9 +9,11 @@
       "tsconfig": "../tsconfig-demo.json",
       "styles": [
         "../node_modules/semantic-ui-css/semantic.css",
+        "../node_modules/animate.css/animate.css",
         "../src/asset/font.css",
         "../src/form-helper.less",
-        "../src/submit-handler/submit-handler-loader.less"
+        "../src/submit-handler/submit-handler-loader.less",
+        "../src/error-handler/error-handler-tooltip.less"
       ],
       "scripts": [
         "../node_modules/jquery/dist/jquery.min.js",

@@ -1,7 +1,9 @@
 export interface SubmitHandlerLoaderConfig {
 
+    // 主题样式
     className?: string;
 
+    // loader主题样式
     iconClassName?: string;
 
     // 寻找图标的jquery选择器，若找到，则用iconClassName替换找到的图标类名，否则在整个按钮区域使用className

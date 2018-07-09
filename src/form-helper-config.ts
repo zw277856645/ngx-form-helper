@@ -19,7 +19,7 @@ export interface FormHelperConfig {
     // 若触发提交的按钮在form外部，可设置此参数指定
     extraSubmits?: Selector;
 
-    // 错误定位使用，错误项距离浏览器顶部偏移量
+    // 错误定位使用，错误项距离浏览器顶部偏移量，负数向上，正数向下
     offsetTop?: number;
 
     // 错误定位使用，是否自动滚动到第一个错误项

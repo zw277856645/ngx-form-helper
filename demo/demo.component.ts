@@ -46,6 +46,12 @@ export class DemoComponent implements AfterViewInit {
         ];
 
         this.config = {
+            errorHandler: {
+                name: 'tooltip',
+                config: {
+                    //contextProxy: '^10+2~3+8'
+                }
+            },
             onSuccess: () => {
                 return Observable.interval(0).map(() => {
                     console.log(444);
