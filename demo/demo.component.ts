@@ -14,9 +14,11 @@ import { uuid } from 'cmjs-lib';
 export class DemoComponent implements AfterViewInit {
 
     @ViewChild('modal') modal: ElementRef;
+    @ViewChild('modalInner') modalInner: ElementRef;
 
     config: FormHelperConfig;
     config2: FormHelperConfig;
+    config3: FormHelperConfig;
     name: string;
     desc: string;
     type: number = 0;
@@ -33,6 +35,8 @@ export class DemoComponent implements AfterViewInit {
     birth2: string;
     addr: string;
     issue: string;
+    addr2: string;
+    issue2: string;
 
     constructor() {
         this.cks = [
@@ -51,7 +55,12 @@ export class DemoComponent implements AfterViewInit {
 
         this.config2 = {
             context: '.ui.page.modals',
-            extraSubmits: '.modal .actions .approve'
+            extraSubmits: '.modal-scroll .actions .approve'
+        };
+
+        this.config3 = {
+            context: '..',
+            extraSubmits: '.modal-inner-scroll .actions .approve'
         };
     }
 
@@ -61,6 +70,12 @@ export class DemoComponent implements AfterViewInit {
                 onApprove: () => false
             })
             .modal('attach events', '.modal-button', 'show');
+
+        $(this.modalInner.nativeElement)
+            .modal({
+                onApprove: () => false
+            })
+            .modal('attach events', '.modal-inner-button', 'show');
     }
 
     addCK() {

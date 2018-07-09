@@ -94,16 +94,18 @@
         <button type="submit" class="ui button small instagram">保存2</button>
         <a class="ui button small" routerLink="/other">other</a>
       </div>
+      I
     </div>
   </form>
 
   <div class="ui divider"></div>
   <button type="button" class="ui button tiny" (click)="addHeight()">增加页面高度(+1000px)</button>
-  <button type="button" class="ui small button modal-button">Modal</button>
+  <button type="button" class="ui small button modal-button">Modal Scroll</button>
+  <button type="button" class="ui small button modal-inner-button">Modal Inner Scroll</button>
   <div class="blank" [style.height.px]="pageHeight"></div>
 </div>
 
-<div class="ui small modal" #modal>
+<div class="ui small modal modal-scroll" #modal>
   <div class="header">
     弹层表单
   </div>
@@ -115,7 +117,34 @@
       </div>
       <div class="field">
         <label>评论</label>
-        <textarea name="issue" required [(ngModel)]="issue" autocomplete="off" rows="30"></textarea>
+        <textarea name="issue" required [(ngModel)]="issue" autocomplete="off" rows="60"></textarea>
+      </div>
+    </form>
+  </div>
+  <div class="actions">
+    <div class="ui deny button">
+      关闭
+    </div>
+    <div class="ui instagram approve right labeled icon button">
+      提交
+      <i class="checkmark icon"></i>
+    </div>
+  </div>
+</div>
+
+<div class="ui small modal modal-inner-scroll" #modalInner>
+  <div class="header">
+    弹层表单
+  </div>
+  <div class="content">
+    <form class="ui form" formHelper [config]="config3">
+      <div class="field">
+        <label>地址</label>
+        <input type="text" name="addr" [(ngModel)]="addr2" autocomplete="off" required>
+      </div>
+      <div class="field">
+        <label>评论</label>
+        <textarea name="issue" required [(ngModel)]="issue2" autocomplete="off" rows="20"></textarea>
       </div>
     </form>
   </div>

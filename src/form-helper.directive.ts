@@ -338,15 +338,23 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
     }
 
     private scrollToTopError() {
+        let $context = this.findContext();
+        if (!$context || $context.length == 0) {
+            return;
+        }
+
         let minOffsetTop = this.calcMinOffsetTop();
         if (minOffsetTop == Number.MAX_SAFE_INTEGER) {
             minOffsetTop = this.$form.offset().top;
         }
         minOffsetTop -= this._config.offsetTop;
 
-        let $context = this.findContext();
-        if (!$context || $context.length == 0) {
-            return;
+        // 非context:window滚动窗体中表单域/表单组实际offset.top需要减去滚动体offset.top
+        if ($context[ 0 ] != window && $context[ 0 ].nodeName.toUpperCase() != 'HTML') {
+            minOffsetTop -= $context.offset().top;
+            if (minOffsetTop < 0) {
+                minOffsetTop += $context.scrollTop();
+            }
         }
 
         let animationRequest;
