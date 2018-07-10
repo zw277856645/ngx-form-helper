@@ -5,6 +5,7 @@ import 'rxjs/add/observable/interval';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/first';
 import { uuid } from 'cmjs-lib';
+import { FormHelperDirective } from '../src/form-helper.directive';
 
 @Component({
     selector: 'my-app',
@@ -15,6 +16,7 @@ export class DemoComponent implements AfterViewInit {
 
     @ViewChild('modal') modal: ElementRef;
     @ViewChild('modalInner') modalInner: ElementRef;
+    @ViewChild(FormHelperDirective) formHelper: FormHelperDirective;
 
     config: FormHelperConfig;
     config2: FormHelperConfig;
@@ -85,16 +87,18 @@ export class DemoComponent implements AfterViewInit {
             .modal('attach events', '.modal-inner-button', 'show');
     }
 
-    addCK() {
+    addCK(name: string) {
         this.cks.push({
             label: 'ck' + (this.cks.length + 1),
             checked: false,
             uuid: uuid(8)
         });
+        setTimeout(() => this.formHelper.reposition(name));
     }
 
-    removeCk(i: number) {
+    removeCk(i: number, name: string) {
         this.cks.splice(i, 1);
+        setTimeout(() => this.formHelper.reposition(name));
     }
 
     trackByCk(i: number, ck: any) {

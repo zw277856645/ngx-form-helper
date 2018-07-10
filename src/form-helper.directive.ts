@@ -60,17 +60,7 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
 
     @HostListener('window:resize')
     resize() {
-        for (let name in this.ngForm.controls) {
-            let control = this.ngForm.controls[ name ],
-                $field = $(control[ ELEMENT_BIND_TO_CONTROL_KEY ]);
-            if ($field.length) {
-                let bindData = $field.data(this.errorHandlerKey),
-                    errorHandler = bindData && bindData.data;
-                if (errorHandler && errorHandler.reposition) {
-                    errorHandler.reposition();
-                }
-            }
-        }
+        this.reposition();
     }
 
     submitted: boolean;
@@ -133,6 +123,33 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
                 destroy();
             }
         });
+    }
+
+    reposition(ele?: string) {
+        if (isString(ele)) {
+            for (let name in this.ngForm.controls) {
+                if (name == ele) {
+                    this.triggerReposition(name);
+                    break;
+                }
+            }
+        } else {
+            for (let name in this.ngForm.controls) {
+                this.triggerReposition(name);
+            }
+        }
+    }
+
+    private triggerReposition(name: string) {
+        let control = this.ngForm.controls[ name ],
+            $field = $(control[ ELEMENT_BIND_TO_CONTROL_KEY ]);
+        if ($field.length) {
+            let bindData = $field.data(this.errorHandlerKey),
+                errorHandler = bindData && bindData.data;
+            if (errorHandler && errorHandler.reposition) {
+                errorHandler.reposition();
+            }
+        }
     }
 
     static registerSubmitHandler(name: string, handler: Function) {

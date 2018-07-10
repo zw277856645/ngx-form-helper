@@ -36,17 +36,17 @@
           <div [class.error]="loveCtrl.errors?.required">至少选择一项</div>
         </div>
       </div>
-      <div class="field">
+      <div class="field" style="display:inline-block">
         <label>组(动态)</label>
         <div ngModelGroup="group" #groupCtrl="ngModelGroup" checkboxRequired>
           <div class="ui checkbox" *ngFor="let ck of cks;trackBy:trackByCk;index as i">
             <input type="checkbox" [(ngModel)]="ck.checked" [name]="'ck-' + ck.uuid">
             <label>
               {{ck.label}}
-              <i class="icon red remove" (click)="removeCk(i)"></i>
+              <i class="icon red remove" (click)="removeCk(i,'group')"></i>
             </label>
           </div>
-          <button type="button" class="ui button tiny teal" (click)="addCK()">添加</button>
+          <button type="button" class="ui button tiny teal" (click)="addCK('group')">添加</button>
         </div>
         <div class="fh-tooltip" data-position="right center">
           <div [class.error]="groupCtrl.errors?.checkboxRequired">至少选择一项</div>

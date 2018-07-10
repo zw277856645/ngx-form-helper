@@ -22,14 +22,13 @@ export class ErrorHandlerTooltip implements ErrorHandler {
     private offsetY = 0;
     private offsetX = 0;
     private subscription: Subscription;
-    private $pendings: JQuery;
+    private timeoutFlag: any;
 
     constructor(private $ele: JQuery,
                 config: ErrorHandlerTooltipConfig,
                 private control: AbstractControl) {
         this.config = {
             selector: '.fh-tooltip, [fh-tooltip]',
-            pendingSelector: '.pending, [pending]',
             contextProxy: '^',
             className: 'fh-tooltip-theme-default',
             pendingClassName: 'pending',
@@ -49,11 +48,14 @@ export class ErrorHandlerTooltip implements ErrorHandler {
         }
         if (this.$tooltip && this.$tooltip.length) {
             this.lastStatusValid = true;
+
             this.$tooltip
                 .addClass('visible')
                 .removeClass(this.config.animationIn)
                 .addClass(this.config.animationOut);
-            setTimeout(() => {
+
+            clearTimeout(this.timeoutFlag);
+            this.timeoutFlag = setTimeout(() => {
                 this.$tooltip.removeClass('visible').removeClass(this.config.animationOut);
             }, this.config.duration);
         }
@@ -67,11 +69,16 @@ export class ErrorHandlerTooltip implements ErrorHandler {
         if (this.$tooltip && this.$tooltip.length) {
             this.lastStatusValid = false;
             this.setLocation();
+
             this.$tooltip
                 .addClass('visible')
                 .removeClass(this.config.animationOut)
                 .addClass(this.config.animationIn);
-            setTimeout(() => this.$tooltip.removeClass(this.config.animationIn), this.config.duration);
+
+            clearTimeout(this.timeoutFlag);
+            this.timeoutFlag = setTimeout(() => {
+                this.$tooltip.removeClass(this.config.animationIn);
+            }, this.config.duration);
         }
     }
 
@@ -105,9 +112,6 @@ export class ErrorHandlerTooltip implements ErrorHandler {
                     if (this.$tooltip && this.$tooltip.length) {
                         // 使tooltip定位相对于父元素
                         this.$tooltip.parent().css('position', 'relative');
-
-                        // 查找pending项
-                        this.$pendings = this.$tooltip.find(this.config.pendingSelector);
 
                         // 初始化固定样式
                         if (this.config.className) {
