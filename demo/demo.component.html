@@ -5,7 +5,7 @@
       <input type="text" name="name" #nameCtrl="ngModel" [(ngModel)]="name" autocomplete="off" required nameUnique>
       <div class="fh-tooltip">
         <div [class.error]="nameCtrl.errors?.required">不能为空</div>
-        <div [class.error]="nameCtrl.errors?.nameUnique">重复</div>
+        <div class="pending" [class.error]="nameCtrl.errors?.nameUnique">重复</div>
       </div>
     </div>
     <div class="field">
@@ -56,7 +56,7 @@
         <label>远程</label>
         <input type="text" name="remote" #remoteCtrl="ngModel" [(ngModel)]="remote" autocomplete="off" nameUnique>
         <div class="fh-tooltip">
-          <div [class.error]="remoteCtrl.errors?.nameUnique">重复</div>
+          <div class="pending" [class.error]="remoteCtrl.errors?.nameUnique">重复</div>
         </div>
       </div>
       <div class="field">
@@ -66,8 +66,8 @@
             <i class="dropdown icon"></i>
             Accordion
           </div>
-          <div class="content active" [class.active]="accordionActive" ngModelGroup="gp" #gpCtrl="ngModelGroup"
-               data-scroll-proxy="~">
+          <div class="content active" [class.active]="accordionActive" ngModelGroup="gp" data-scroll-proxy="~"
+               data-context-proxy="false">
             <div class="field">
               <label>生日</label>
               <input type="text" name="birth" #birthCtrl="ngModel" [(ngModel)]="birth" required>
@@ -80,7 +80,7 @@
               <input type="text" name="remote2" #remote2Ctrl="ngModel" [(ngModel)]="remote2" autocomplete="off"
                      nameUnique>
               <div class="fh-tooltip">
-                <div [class.error]="remote2Ctrl.errors?.nameUnique">重复</div>
+                <div class="pending" [class.error]="remote2Ctrl.errors?.nameUnique">重复</div>
               </div>
             </div>
           </div>
@@ -89,8 +89,8 @@
             <i class="dropdown icon"></i>
             Accordion2
           </div>
-          <div class="content active" [class.active]="accordionActive2" ngModelGroup="gp2" #gp2Ctrl="ngModelGroup"
-               data-scroll-proxy="~">
+          <div class="content active" [class.active]="accordionActive2" ngModelGroup="gp2" data-scroll-proxy="~"
+               data-context-proxy="false">
             <div class="field">
               <label>生日2</label>
               <input type="text" name="birth2" #birth2Ctrl="ngModel" [(ngModel)]="birth2" required>
@@ -113,7 +113,11 @@
     <div *ngIf="type == 1">
       <div class="field">
         <label>性别</label>
-        <input type="text" name="sex" required [(ngModel)]="sex" autocomplete="off">
+        <input type="text" name="sex" #sexCtrl="ngModel" required [(ngModel)]="sex" autocomplete="off" pattern="^\d*$">
+        <div class="fh-tooltip">
+          <div [class.error]="sexCtrl.errors?.required">不能为空</div>
+          <div [class.error]="sexCtrl.errors?.pattern">只能为数字</div>
+        </div>
       </div>
       <div class="field buttons">
         <button type="submit" class="ui button small instagram">保存2</button>
@@ -124,8 +128,8 @@
 
   <div class="ui divider"></div>
   <button type="button" class="ui button tiny" (click)="addHeight()">增加页面高度(+1000px)</button>
-  <button type="button" class="ui small button modal-button">Modal Scroll</button>
-  <button type="button" class="ui small button modal-inner-button">Modal Inner Scroll</button>
+  <button type="button" class="ui tiny button modal-button">Modal Scroll</button>
+  <button type="button" class="ui tiny button modal-inner-button">Modal Inner Scroll</button>
   <div class="blank" [style.height.px]="pageHeight"></div>
 </div>
 
@@ -174,7 +178,11 @@
       </div>
       <div class="field">
         <label>评论</label>
-        <textarea name="issue2" required [(ngModel)]="issue2" autocomplete="off" rows="20"></textarea>
+        <textarea name="issue2" #issue2Ctrl="ngModel" required [(ngModel)]="issue2" autocomplete="off"
+                  rows="20"></textarea>
+        <div class="fh-tooltip">
+          <div [class.error]="issue2Ctrl.errors?.required">不能为空</div>
+        </div>
       </div>
     </form>
   </div>

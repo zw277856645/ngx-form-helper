@@ -1,3 +1,14 @@
+@font-face {
+  font-family: 'fonts-error-handler';
+  src: url('./fonts/icomoon.eot?99kdkf');
+  src: url('./fonts/icomoon.eot?99kdkf#iefix') format('embedded-opentype'),
+  url('./fonts/icomoon.ttf?99kdkf') format('truetype'),
+  url('./fonts/icomoon.woff?99kdkf') format('woff'),
+  url('./fonts/icomoon.svg?99kdkf#icomoon') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
 .fh-tooltip, [fh-tooltip] {
   display: none;
 }
@@ -8,12 +19,14 @@
   position: absolute;
   top: 0;
   right: 0;
+  z-index: 1;
   min-width: min-content;
   border: 1px solid #D4D4D5;
   line-height: 1.4285em;
   max-width: 250px;
   background: #FFFFFF;
-  padding: 0.833em 1em;
+  padding: 0.6em 1em;
+  font-size: 13px;
   font-weight: normal;
   font-style: normal;
   color: rgba(0, 0, 0, 0.87);
@@ -34,6 +47,7 @@
     z-index: 2;
     box-shadow: 1px 1px 0 0 #bababc;
   }
+
   &.bottom {
     margin: .71428571em 0 0;
   }
@@ -49,82 +63,189 @@
 
   &.bottom.left {
     margin-left: 0;
-  }
-  &.bottom.left:before {
-    top: -0.30714286em;
-    left: 1em;
-    right: auto;
     bottom: auto;
-    margin-left: 0;
-    box-shadow: -1px -1px 0 0 #bababc;
+    right: auto;
+    &:before {
+      top: -0.30714286em;
+      left: 1em;
+      right: auto;
+      bottom: auto;
+      margin-left: 0;
+      box-shadow: -1px -1px 0 0 #bababc;
+    }
   }
-
   &.bottom.right {
     margin-right: 0;
-  }
-  &.bottom.right:before {
-    top: -0.30714286em;
-    right: 1em;
     bottom: auto;
     left: auto;
-    margin-left: 0;
-    box-shadow: -1px -1px 0 0 #bababc;
+    &:before {
+      top: -0.30714286em;
+      right: 1em;
+      bottom: auto;
+      left: auto;
+      margin-left: 0;
+      box-shadow: -1px -1px 0 0 #bababc;
+    }
   }
-
-  &.bottom.center:before {
-    margin-left: -0.30714286em;
-    top: -0.30714286em;
-    left: 50%;
-    right: auto;
+  &.bottom.center {
     bottom: auto;
-    box-shadow: -1px -1px 0 0 #bababc;
+    right: auto;
+    &:before {
+      margin-left: -0.30714286em;
+      top: -0.30714286em;
+      left: 50%;
+      right: auto;
+      bottom: auto;
+      box-shadow: -1px -1px 0 0 #bababc;
+    }
   }
-
   &.top.left {
     margin-left: 0;
-  }
-  &.top.left:before {
-    bottom: -0.30714286em;
-    left: 1em;
     top: auto;
     right: auto;
-    margin-left: 0;
+    &:before {
+      bottom: -0.30714286em;
+      left: 1em;
+      top: auto;
+      right: auto;
+      margin-left: 0;
+    }
   }
-
   &.top.right {
     margin-right: 0;
+    top: auto;
+    left: auto;
+    &:before {
+      bottom: -0.30714286em;
+      right: 1em;
+      top: auto;
+      left: auto;
+      margin-left: 0;
+    }
   }
+  &.top.center {
+    top: auto;
+    right: auto;
+    &:before {
+      top: auto;
+      right: auto;
+      bottom: -0.30714286em;
+      left: 50%;
+      margin-left: -0.30714286em;
+    }
+  }
+  &.left.center {
+    bottom: auto;
+    left: auto;
+    &:before {
+      top: 50%;
+      right: -0.30714286em;
+      bottom: auto;
+      left: auto;
+      margin-top: -0.30714286em;
+      box-shadow: 1px -1px 0 0 #bababc;
+    }
+  }
+  &.right.center {
+    bottom: auto;
+    right: auto;
+    &:before {
+      top: 50%;
+      left: -0.30714286em;
+      bottom: auto;
+      right: auto;
+      margin-top: -0.30714286em;
+      box-shadow: -1px 1px 0 0 #bababc;
+    }
+  }
+
+  & > *, .item {
+    display: flex;
+    align-items: center;
+    &:before {
+      font-family: 'fonts-error-handler' !important;
+      speak: none;
+      font-style: normal;
+      font-weight: normal;
+      font-variant: normal;
+      text-transform: none;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-right: .5em;
+      width: 1em;
+      height: 1em;
+      line-height: 1em;
+      text-align: center;
+      font-size: 14px;
+    }
+    & + *, & + .item {
+      margin-top: 2px;
+    }
+  }
+  & {
+    .statusTheme(#A3C293);
+    box-shadow: 0 2px 4px 0 hsla(100, 27.81%, 66.86%, .42), 0 2px 10px 0 hsla(100, 27.81%, 66.86%, .45);
+    color: #6fba33;
+    & > *:before, .item:before {
+      content: '\e900';
+      background-image: linear-gradient(to right bottom, #d0f669 8%, #5eb210);
+    }
+  }
+  &.pending {
+    .statusTheme(#f1a274);
+    box-shadow: 0 2px 4px 0 hsla(22, 81.70%, 70.00%, .42), 0 2px 10px 0 hsla(22, 81.70%, 70.00%, .45);
+    .pending, [pending] {
+      color: #f2711b;
+      &:before {
+        content: '\1f32b';
+        color: #f2711b;
+        background-image: none;
+        animation: fh-icon-loading .8s linear infinite;
+        -webkit-background-clip: unset;
+        -webkit-text-fill-color: unset;
+      }
+    }
+  }
+  &.invalid {
+    .statusTheme(#e0b4b4);
+    box-shadow: 0 2px 4px 0 hsla(0, 42%, 79%, .42), 0 2px 10px 0 hsla(0, 42%, 79%, .45);
+  }
+  & > *.error, .item.error {
+    color: #9f3a38;
+    &:before {
+      content: '\e901';
+      background-image: linear-gradient(to right bottom, #f8bcab 8%, #cc2f14);
+    }
+  }
+}
+
+@keyframes fh-icon-loading {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.statusTheme(@color) {
+  border-color: @color;
+  &.bottom.left:before,
+  &.bottom.center:before,
+  &.bottom.right:before {
+    box-shadow: -1px -1px 0 0 @color;
+  }
+  &.top.left:before,
+  &.top.center:before,
   &.top.right:before {
-    bottom: -0.30714286em;
-    right: 1em;
-    top: auto;
-    left: auto;
-    margin-left: 0;
+    box-shadow: 1px 1px 0 0 @color;
   }
-
-  &.top.center:before {
-    top: auto;
-    right: auto;
-    bottom: -0.30714286em;
-    left: 50%;
-    margin-left: -0.30714286em;
-  }
-
-  &.left.center:before {
-    top: 50%;
-    right: -0.30714286em;
-    bottom: auto;
-    left: auto;
-    margin-top: -0.30714286em;
-    box-shadow: 1px -1px 0 0 #bababc;
-  }
-
   &.right.center:before {
-    top: 50%;
-    left: -0.30714286em;
-    bottom: auto;
-    right: auto;
-    margin-top: -0.30714286em;
-    box-shadow: -1px 1px 0 0 #bababc;
+    box-shadow: -1px 1px 0 0 @color;
+  }
+  &.left.center:before {
+    box-shadow: 1px -1px 0 0 @color;
   }
 }

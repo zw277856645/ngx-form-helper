@@ -220,7 +220,7 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
         if (handlerName) {
             let HandlerClass = FormHelperDirective.errorHandlerMap.get(handlerName);
             if (HandlerClass instanceof Function) {
-                let handlerInstance = new HandlerClass($field, (<any>this._config.errorHandler).config);
+                let handlerInstance = new HandlerClass($field, (<any>this._config.errorHandler).config, control);
                 if (handlerInstance.destroy) {
                     this.destroys.push(() => handlerInstance.destroy());
                 }

@@ -119,7 +119,8 @@ export function getScrollProxy($ele: JQuery) {
 }
 
 export function getContextProxy($ele: JQuery) {
-    return ($ele.data('contextProxy') || '').replace(/\s/g, '');
+    let data = $ele.data('contextProxy');
+    return data === false ? false : (data || '').replace(/\s/g, '');
 }
 
 export function getPosition($ele: JQuery) {
