@@ -134,3 +134,19 @@ export function getOffsetY($ele: JQuery) {
 export function getOffsetX($ele: JQuery) {
     return parseInt($ele.data('offsetX')) || 0;
 }
+
+export function getLeft($ele: JQuery) {
+    return $ele.data('left');
+}
+
+export function getRight($ele: JQuery) {
+    return $ele.data('right');
+}
+
+export function getTop($ele: JQuery) {
+    return $ele.data('top');
+}
+
+export function getBottom($ele: JQuery) {
+    return $ele.data('bottom');
+}

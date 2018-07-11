@@ -71,7 +71,7 @@
             <div class="field">
               <label>生日</label>
               <input type="text" name="birth" #birthCtrl="ngModel" [(ngModel)]="birth" required>
-              <div class="fh-tooltip">
+              <div class="fh-tooltip" data-top="61">
                 <div [class.error]="birthCtrl.errors?.required">不能为空</div>
               </div>
             </div>
@@ -79,7 +79,7 @@
               <label>远程2</label>
               <input type="text" name="remote2" #remote2Ctrl="ngModel" [(ngModel)]="remote2" autocomplete="off"
                      nameUnique>
-              <div class="fh-tooltip">
+              <div class="fh-tooltip" data-top="61">
                 <div class="pending" [class.error]="remote2Ctrl.errors?.nameUnique">重复</div>
               </div>
             </div>
@@ -94,7 +94,7 @@
             <div class="field">
               <label>生日2</label>
               <input type="text" name="birth2" #birth2Ctrl="ngModel" [(ngModel)]="birth2" required>
-              <div class="fh-tooltip">
+              <div class="fh-tooltip" data-top="61">
                 <div [class.error]="birth2Ctrl.errors?.required">不能为空</div>
               </div>
             </div>
