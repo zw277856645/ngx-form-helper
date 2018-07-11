@@ -1,10 +1,12 @@
 {
-  "name": "ng2-form-helper",
+  "name": "ngx-form-helper",
   "version": "0.4.8",
   "description": "angular2 form validation helper",
   "scripts": {
-    "build": "ng-packagr -p package.json",
+    "build": "ng-packagr -p package.json && npm run build-style",
+    "build-style": "webpack --config config/webpack.js && rimraf dist/ngx-form-helper.js",
     "publish": "npm publish dist",
+    "clean": "rimraf dist",
     "demo": "ng serve"
   },
   "$schema": "./node_modules/ng-packagr/package.schema.json",
@@ -38,8 +40,10 @@
     "animate.css": "3.6.1",
     "cmjs-lib": "0.2.2",
     "core-js": "2.4.1",
+    "css-loader": "0.26.1",
     "jquery": "3.2.1",
     "ng-packagr": "3.0.3",
+    "rimraf": "2.6.1",
     "rxjs": "5.5.6",
     "semantic-ui-css": "2.3.2",
     "tsickle": "0.30.0",

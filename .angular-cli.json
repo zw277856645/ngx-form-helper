@@ -2,17 +2,14 @@
   "apps": [
     {
       "root": "demo",
-      "outDir": "dist",
+      "outDir": "demo/dist",
       "index": "index.html",
       "main": "main.ts",
       "polyfills": "polyfills.ts",
       "tsconfig": "../tsconfig-demo.json",
       "styles": [
         "../node_modules/semantic-ui-css/semantic.css",
-        "../node_modules/animate.css/animate.css",
-        "../src/form-helper.less",
-        "../src/submit-handler/submit-handler-loader.less",
-        "../src/error-handler/error-handler-tooltip.less"
+        "../dist/ngx-form-helper.css"
       ],
       "scripts": [
         "../node_modules/jquery/dist/jquery.min.js",

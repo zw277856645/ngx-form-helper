@@ -51,7 +51,6 @@ export class DemoComponent implements AfterViewInit {
             errorHandler: {
                 name: 'tooltip',
                 config: {
-                    //contextProxy: '^10+2~3+8',
                     zIndex: 100
                 }
             },
