@@ -1,7 +1,7 @@
 {
   "name": "ngx-form-helper",
-  "version": "0.4.8",
-  "description": "angular2 form validation helper",
+  "version": "0.0.1",
+  "description": "angular form validation helper",
   "scripts": {
     "build": "ng-packagr -p package.json && npm run build-style",
     "build-style": "webpack --config config/webpack.js && rimraf dist/ngx-form-helper.js",
