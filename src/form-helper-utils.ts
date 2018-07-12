@@ -6,12 +6,17 @@ export const ELEMENT_BIND_TO_CONTROL_KEY = '__element__';
 export const noop = () => void(0);
 
 export function doAfter(fn: () => Promise<any> | Observable<any> | void, cb: () => void) {
-    let ret = fn();
-    if (ret instanceof Promise) {
-        ret.catch(() => null).then(cb);
-    } else if (ret instanceof Observable) {
-        ret.catch(() => Observable.of(null)).subscribe(cb);
-    } else {
+    try {
+        let ret = fn();
+        if (ret instanceof Promise) {
+            ret.catch(() => null).then(cb);
+        } else if (ret instanceof Observable) {
+            ret.catch(() => Observable.of(null)).subscribe(cb);
+        } else {
+            cb();
+        }
+    } catch (e) {
+        console.error(e);
         cb();
     }
 }
