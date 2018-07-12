@@ -47,14 +47,14 @@ export interface FormHelperConfig {
     submitHandler?: string | false | { name: string; config?: { [key: string]: any; } };
 
     // 验证通过后的回调
-    onSuccess?: () => Promise<any> | Observable<any> | void;
+    onSuccess?: () => Promise<any> | Observable<any> | any;
 
     // 验证不通过后的回调
     onDeny?: () => void;
 
     // 前提：开启了submitHandler
-    // submitHandler处理完成后的回调
-    onComplete?: () => void;
+    // submitHandler处理完成后的回调。参数为onSuccess返回值
+    onComplete?: (...args: any[]) => void;
 }
 
 

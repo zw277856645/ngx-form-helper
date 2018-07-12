@@ -299,10 +299,10 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
 
             let endFn = submitHandler ? submitHandler.end.bind(submitHandler) : noop;
             if (this._config.onSuccess instanceof Function) {
-                doAfter(this._config.onSuccess, () => {
+                doAfter(this._config.onSuccess, (res) => {
                     doAfter(endFn, () => {
                         if (this._config.onComplete instanceof Function) {
-                            this._config.onComplete();
+                            this._config.onComplete(res);
                         }
                         this.reset();
                     });

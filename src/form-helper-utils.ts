@@ -1,23 +1,26 @@
 import { Observable } from 'rxjs/Observable';
-import { isArray } from 'util';
+import { isArray, isNullOrUndefined } from 'util';
 import 'rxjs/add/operator/catch';
 
 export const ELEMENT_BIND_TO_CONTROL_KEY = '__element__';
 export const noop = () => void(0);
 
-export function doAfter(fn: () => Promise<any> | Observable<any> | void, cb: () => void) {
+const emptyObject = {};
+
+export function doAfter(fn: () => Promise<any> | Observable<any> | void, cb: (...args: any[]) => void) {
+    let ret;
     try {
-        let ret = fn();
+        ret = fn();
         if (ret instanceof Promise) {
-            ret.catch(() => null).then(cb);
+            ret.catch(() => emptyObject).then(cb);
         } else if (ret instanceof Observable) {
-            ret.catch(() => Observable.of(null)).subscribe(cb);
+            ret.catch(() => Observable.of(emptyObject)).subscribe(cb);
         } else {
-            cb();
+            cb(isNullOrUndefined(ret) ? emptyObject : ret);
         }
     } catch (e) {
         console.error(e);
-        cb();
+        cb(emptyObject);
     }
 }
 

@@ -57,7 +57,8 @@ export class DemoComponent implements AfterViewInit {
             },
             onSuccess: () => {
                 return Observable.interval(0).map(() => {
-                    console.log(444);
+                    console.log('ok');
+                    return 'ok';
                 }).first();
             }
         };
