@@ -45,7 +45,7 @@ const TWEEN = require('@tweenjs/tween.js');
 export class FormHelperDirective implements AfterViewInit, OnDestroy {
 
     @Input()
-    set config(config: FormHelperConfig) {
+    set formHelper(config: FormHelperConfig) {
         $.extend(true, this._config, config);
         if (isString(this._config.submitHandler)) {
             this._config.submitHandler = <any>{ name: this._config.submitHandler };

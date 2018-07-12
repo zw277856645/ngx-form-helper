@@ -1,5 +1,5 @@
 <div class="ui container">
-  <form class="ui form" formHelper [config]="config">
+  <form class="ui form" [formHelper]="config">
     <div class="field">
       <label>名字</label>
       <input type="text" name="name" #nameCtrl="ngModel" [(ngModel)]="name" autocomplete="off" trimmedRequired
@@ -139,7 +139,7 @@
     弹层表单
   </div>
   <div class="content">
-    <form class="ui form" formHelper [config]="config2">
+    <form class="ui form" [formHelper]="config2">
       <div class="field">
         <label>地址</label>
         <input type="text" name="addr" #addrCtrl="ngModel" [(ngModel)]="addr" autocomplete="off" required>
@@ -169,7 +169,7 @@
     弹层表单
   </div>
   <div class="content">
-    <form class="ui form" formHelper [config]="config3">
+    <form class="ui form" [formHelper]="config3">
       <div class="field">
         <label>地址</label>
         <input type="text" name="addr2" #addr2Ctrl="ngModel" [(ngModel)]="addr2" autocomplete="off" required>
