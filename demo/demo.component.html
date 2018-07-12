@@ -4,7 +4,7 @@
       <label>名字</label>
       <input type="text" name="name" #nameCtrl="ngModel" [(ngModel)]="name" autocomplete="off" trimmedRequired
              nameUnique>
-      <div class="fh-tooltip">
+      <div class="fh-message">
         <div [class.error]="nameCtrl.errors?.trimmedRequired">不能为空</div>
         <div class="pending" [class.error]="nameCtrl.errors?.nameUnique">重复</div>
       </div>
@@ -33,7 +33,7 @@
           <option value="1">读书</option>
           <option value="2">看报</option>
         </select>
-        <div class="fh-tooltip">
+        <div class="fh-message">
           <div [class.error]="loveCtrl.errors?.required">至少选择一项</div>
         </div>
       </div>
@@ -49,14 +49,14 @@
           </div>
           <button type="button" class="ui button tiny teal" (click)="addCK('group')">添加</button>
         </div>
-        <div class="fh-tooltip" data-position="right center">
+        <div class="fh-message" data-position="right center">
           <div [class.error]="groupCtrl.errors?.checkboxRequired">至少选择一项</div>
         </div>
       </div>
       <div class="field">
         <label>远程</label>
         <input type="text" name="remote" #remoteCtrl="ngModel" [(ngModel)]="remote" autocomplete="off" nameUnique>
-        <div class="fh-tooltip">
+        <div class="fh-message">
           <div class="pending" [class.error]="remoteCtrl.errors?.nameUnique">重复</div>
         </div>
       </div>
@@ -72,7 +72,7 @@
             <div class="field">
               <label>生日</label>
               <input type="text" name="birth" #birthCtrl="ngModel" [(ngModel)]="birth" required>
-              <div class="fh-tooltip" data-top="61">
+              <div class="fh-message" data-top="61">
                 <div [class.error]="birthCtrl.errors?.required">不能为空</div>
               </div>
             </div>
@@ -80,7 +80,7 @@
               <label>远程2</label>
               <input type="text" name="remote2" #remote2Ctrl="ngModel" [(ngModel)]="remote2" autocomplete="off"
                      nameUnique>
-              <div class="fh-tooltip" data-top="61">
+              <div class="fh-message" data-top="61">
                 <div class="pending" [class.error]="remote2Ctrl.errors?.nameUnique">重复</div>
               </div>
             </div>
@@ -95,7 +95,7 @@
             <div class="field">
               <label>生日2</label>
               <input type="text" name="birth2" #birth2Ctrl="ngModel" [(ngModel)]="birth2" required>
-              <div class="fh-tooltip" data-top="61">
+              <div class="fh-message" data-top="61">
                 <div [class.error]="birth2Ctrl.errors?.required">不能为空</div>
               </div>
             </div>
@@ -107,7 +107,6 @@
           <i class="icon save"></i>
           保存1
         </button>
-        <a class="ui button small" routerLink="/other">other</a>
       </div>
     </div>
 
@@ -115,14 +114,13 @@
       <div class="field">
         <label>性别</label>
         <input type="text" name="sex" #sexCtrl="ngModel" required [(ngModel)]="sex" autocomplete="off" pattern="^\d*$">
-        <div class="fh-tooltip">
+        <div class="fh-message">
           <div [class.error]="sexCtrl.errors?.required">不能为空</div>
           <div [class.error]="sexCtrl.errors?.pattern">只能为数字</div>
         </div>
       </div>
       <div class="field buttons">
         <button type="submit" class="ui button small instagram">保存2</button>
-        <a class="ui button small" routerLink="/other">other</a>
       </div>
     </div>
   </form>
@@ -131,6 +129,7 @@
   <button type="button" class="ui button tiny" (click)="addHeight()">增加页面高度(+1000px)</button>
   <button type="button" class="ui tiny button modal-button">Modal Scroll</button>
   <button type="button" class="ui tiny button modal-inner-button">Modal Inner Scroll</button>
+  <a class="ui tiny button" routerLink="/error-handler-text">error handler text</a>
   <div class="blank" [style.height.px]="pageHeight"></div>
 </div>
 
@@ -143,7 +142,7 @@
       <div class="field">
         <label>地址</label>
         <input type="text" name="addr" #addrCtrl="ngModel" [(ngModel)]="addr" autocomplete="off" required>
-        <div class="fh-tooltip">
+        <div class="fh-message">
           <div [class.error]="addrCtrl.errors?.required">不能为空</div>
         </div>
       </div>
@@ -173,7 +172,7 @@
       <div class="field">
         <label>地址</label>
         <input type="text" name="addr2" #addr2Ctrl="ngModel" [(ngModel)]="addr2" autocomplete="off" required>
-        <div class="fh-tooltip">
+        <div class="fh-message">
           <div [class.error]="addr2Ctrl.errors?.required">不能为空</div>
         </div>
       </div>
@@ -181,7 +180,7 @@
         <label>评论</label>
         <textarea name="issue2" #issue2Ctrl="ngModel" required [(ngModel)]="issue2" autocomplete="off"
                   rows="20"></textarea>
-        <div class="fh-tooltip">
+        <div class="fh-message">
           <div [class.error]="issue2Ctrl.errors?.required">不能为空</div>
         </div>
       </div>

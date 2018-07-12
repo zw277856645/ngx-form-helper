@@ -1,7 +1,7 @@
 import { RouterModule, Routes } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { DemoComponent } from './demo.component';
-import { OtherComponent } from './other.component';
+import { ErrorHandlerTextComponent } from './error-handler-text.component';
 
 const routes: Routes = [
     {
@@ -9,8 +9,8 @@ const routes: Routes = [
         component: DemoComponent
     },
     {
-        path: 'other',
-        component: OtherComponent
+        path: 'error-handler-text',
+        component: ErrorHandlerTextComponent
     }
 ];
 

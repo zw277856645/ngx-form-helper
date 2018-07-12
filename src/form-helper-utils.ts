@@ -159,3 +159,7 @@ export function getTop($ele: JQuery) {
 export function getBottom($ele: JQuery) {
     return $ele.data('bottom');
 }
+
+export function getInline($ele: JQuery) {
+    return $ele.data('inline');
+}

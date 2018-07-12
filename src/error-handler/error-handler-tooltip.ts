@@ -31,7 +31,7 @@ export class ErrorHandlerTooltip implements ErrorHandler {
                 config: ErrorHandlerTooltipConfig,
                 private control: AbstractControl) {
         this.config = {
-            selector: '.fh-tooltip, [fh-tooltip]',
+            selector: '.fh-message, [fh-message]',
             contextProxy: '^',
             className: 'fh-tooltip-theme-default',
             pendingClassName: 'pending',
@@ -111,8 +111,7 @@ export class ErrorHandlerTooltip implements ErrorHandler {
 
                 let $proxy = findProxyItem(this.$ele, <string>contextProxy);
                 if ($proxy && $proxy.length) {
-                    this.$tooltip = (<string>contextProxy).includes('^') ? $proxy.find(this.config.selector).eq(0)
-                        : ($proxy.hasClass(this.config.selector) ? $proxy : null);
+                    this.$tooltip = $proxy.is(this.config.selector) ? $proxy : $proxy.find(this.config.selector).eq(0);
                     if (this.$tooltip && this.$tooltip.length) {
                         // 使tooltip定位相对于父元素
                         this.$tooltip.parent().css('position', 'relative');

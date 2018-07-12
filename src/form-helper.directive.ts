@@ -16,6 +16,7 @@ import { SubmitHandler } from './submit-handler/submit-handler';
 import { doAfter, ELEMENT_BIND_TO_CONTROL_KEY, findProxyItem, getScrollProxy, noop } from './form-helper-utils';
 import { isString } from 'util';
 import { ErrorHandlerTooltip } from './error-handler/error-handler-tooltip';
+import { ErrorHandlerText } from './error-handler/error-handler-text';
 const $ = require('jquery');
 const TWEEN = require('@tweenjs/tween.js');
 
@@ -483,3 +484,4 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
 
 FormHelperDirective.registerSubmitHandler('loader', SubmitHandlerLoader);
 FormHelperDirective.registerErrorHandler('tooltip', ErrorHandlerTooltip);
+FormHelperDirective.registerErrorHandler('text', ErrorHandlerText);

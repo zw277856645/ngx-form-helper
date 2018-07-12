@@ -1,0 +1,42 @@
+<div class="ui container">
+  <h3 class="ui dividing header">表单1</h3>
+  <form class="ui form" [formHelper]="config1">
+    <div class="field">
+      <div class="ui action input small">
+        <input type="text" placeholder="数字" name="host" #hostCtrl="ngModel" [(ngModel)]="host"
+               trimmedRequired pattern="^\d*$" autocomplete="off" data-context-proxy="^^">
+        <button type="submit" class="ui teal right labeled icon button">
+          <i class="add icon"></i>
+          添加
+        </button>
+      </div>
+      <div class="fh-message">
+        <div *ngIf="hostCtrl.errors?.trimmedRequired">不能为空</div>
+        <div *ngIf="hostCtrl.errors?.pattern">格式不合法</div>
+      </div>
+      <div>{{hosts.join('、')}}</div>
+    </div>
+  </form>
+
+  <h3 class="ui dividing header">表单2</h3>
+  <form class="ui form" [formHelper]="config2">
+    <div class="field required">
+      <label class="inline">名字</label>
+      <div class="fh-message">
+        <div *ngIf="nameCtrl.errors?.trimmedRequired">不能为空</div>
+        <div *ngIf="nameCtrl.errors?.nameUnique">重复</div>
+      </div>
+      <input type="text" name="name" #nameCtrl="ngModel" [(ngModel)]="name" autocomplete="off" trimmedRequired
+             nameUnique>
+    </div>
+    <div class="field buttons">
+      <button type="submit" class="ui button small instagram right labeled icon">
+        <i class="icon save"></i>
+        保存
+      </button>
+    </div>
+  </form>
+
+  <div class="ui divider"></div>
+  <a class="ui tiny button" routerLink="/">error handler tooltip</a>
+</div>

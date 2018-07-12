@@ -9,7 +9,8 @@ module.exports = {
             "./node_modules/animate.css/animate.css",
             "./src/form-helper.less",
             "./src/submit-handler/submit-handler-loader.less",
-            "./src/error-handler/error-handler-tooltip.less"
+            "./src/error-handler/error-handler-tooltip.less",
+            "./src/error-handler/error-handler-text.less"
         ]
     },
 
