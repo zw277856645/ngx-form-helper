@@ -1,5 +1,6 @@
 import { Observable } from 'rxjs/Observable';
 import { isArray } from 'util';
+import 'rxjs/add/operator/catch';
 
 export const ELEMENT_BIND_TO_CONTROL_KEY = '__element__';
 export const noop = () => void(0);
@@ -7,9 +8,9 @@ export const noop = () => void(0);
 export function doAfter(fn: () => Promise<any> | Observable<any> | void, cb: () => void) {
     let ret = fn();
     if (ret instanceof Promise) {
-        ret.then(cb);
+        ret.catch(() => null).then(cb);
     } else if (ret instanceof Observable) {
-        ret.subscribe(cb);
+        ret.catch(() => Observable.of(null)).subscribe(cb);
     } else {
         cb();
     }
