@@ -9,7 +9,7 @@ export type Selector = string | JQuery | HTMLElement;
 export interface FormHelperConfig {
 
     // 成功提交后是否自动重置表单
-    resetAfterSubmitted?: boolean;
+    autoReset?: boolean;
 
     // 表单所处上下文，通常为window或含有滚动条的对象，影响滚动条正确滚动到第一条错误
     // 点号表达式：. -> 当前form，.. -> 父元素，../../ etc
@@ -25,7 +25,7 @@ export interface FormHelperConfig {
     // 错误定位使用，是否自动滚动到第一个错误项
     // PS：当表单域不可见时，自动寻找包含该元素的表单组，不可见继续寻找直到ngForm(不包含)，以此元素为定位对象
     //     若通过data api设置了滚动代理，则以滚动代理为优先定位对象
-    autoScrollToTopError?: boolean;
+    autoScroll?: boolean;
 
     // 表单域主题
     className?: string | false;

@@ -87,10 +87,10 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
                 private form: ElementRef,
                 private zone: NgZone) {
         this._config = {
-            resetAfterSubmitted: true,
+            autoReset: true,
             context: window,
             offsetTop: 0,
-            autoScrollToTopError: true,
+            autoScroll: true,
             className: 'fh-theme-default',
             errorClassName: 'fh-error',
             errorGroupClassName: 'fh-group-error',
@@ -316,7 +316,7 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
                 this._config.onDeny();
             }
 
-            if (this._config.autoScrollToTopError) {
+            if (this._config.autoScroll) {
                 let pendings = this.getPendingControls();
                 if (pendings.length) {
                     Observable.forkJoin(pendings).subscribe(() => this.scrollToTopError());
@@ -476,7 +476,7 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
     }
 
     private reset() {
-        if (this._config.resetAfterSubmitted) {
+        if (this._config.autoReset) {
             this.ngForm.reset();
         }
     }
