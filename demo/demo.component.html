@@ -1,5 +1,5 @@
 <div class="ui container">
-  <form class="ui form" [formHelper]="config">
+  <form class="ui form" [formHelper]="config" #formHelper="formHelper" #form="ngForm">
     <div class="field">
       <label>名字</label>
       <input type="text" name="name" #nameCtrl="ngModel" [(ngModel)]="name" autocomplete="off" trimmedRequired
@@ -107,6 +107,7 @@
           <i class="icon save"></i>
           保存1
         </button>
+        <button type="button" class="ui button small" (click)="reset(formHelper)">重置(formHelper)</button>
       </div>
     </div>
 
@@ -121,6 +122,7 @@
       </div>
       <div class="field buttons">
         <button type="submit" class="ui button small instagram">保存2</button>
+        <button type="button" class="ui button small" (click)="reset(form)">重置(form)</button>
       </div>
     </div>
   </form>

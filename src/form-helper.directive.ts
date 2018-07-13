@@ -305,7 +305,9 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
                         if (this._config.onComplete instanceof Function) {
                             this._config.onComplete(res);
                         }
-                        this.reset();
+                        if (this._config.autoReset) {
+                            this.reset();
+                        }
                     });
                 });
             }
@@ -475,11 +477,37 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
         return null;
     }
 
-    private reset() {
-        if (this._config.autoReset) {
+    reset(controls: { [key: string]: AbstractControl; } = this.ngForm.controls) {
+        // 提前设置pristine，防止后面的ngForm.reset子控件FormControl.reset级联影响
+        // FormGroup状态检测执行(listenStatusChanges)，导致错误提示不正常显示(闪烁)
+        for (let name in controls) {
+            controls[ name ].markAsPristine();
+        }
+
+        // 递归重置，只在最外层执行ngForm.reset
+        if (controls == this.ngForm.controls) {
             this.ngForm.reset();
         }
+
+        // 递归关闭错误提示
+        if (this._config.errorHandler) {
+            let control, $field, bindData;
+            for (let name in controls) {
+                control = controls[ name ];
+                $field = $(control[ ELEMENT_BIND_TO_CONTROL_KEY ]);
+                if ($field.length) {
+                    bindData = $field.data(this.errorHandlerKey);
+                    if (bindData.data) {
+                        bindData.data.whenValid();
+                    }
+                }
+                if (control instanceof FormGroup) {
+                    this.reset(control.controls);
+                }
+            }
+        }
     }
+
 }
 
 FormHelperDirective.registerSubmitHandler('loader', SubmitHandlerLoader);

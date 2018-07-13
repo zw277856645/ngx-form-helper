@@ -19,7 +19,7 @@
   </form>
 
   <h3 class="ui dividing header">表单2</h3>
-  <form class="ui form" [formHelper]="config2">
+  <form class="ui form" [formHelper]="config2" #formHelper="formHelper">
     <div class="field required">
       <label class="inline">名字</label>
       <div class="fh-message">
@@ -34,6 +34,7 @@
         <i class="icon save"></i>
         保存
       </button>
+      <button type="button" class="ui button small" (click)="reset(formHelper)">重置</button>
     </div>
   </form>
 

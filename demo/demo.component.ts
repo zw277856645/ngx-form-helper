@@ -7,6 +7,7 @@ import 'rxjs/add/operator/first';
 import 'rxjs/add/observable/throw';
 import { uuid } from 'cmjs-lib';
 import { FormHelperDirective } from '../src/form-helper.directive';
+import { NgForm } from '@angular/forms';
 
 @Component({
     selector: 'my-app',
@@ -108,5 +109,9 @@ export class DemoComponent implements AfterViewInit {
 
     addHeight() {
         this.pageHeight += 1000;
+    }
+
+    reset(form: any) {
+        form.reset();
     }
 }

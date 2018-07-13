@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { FormHelperConfig } from '../src/form-helper-config';
+import { FormHelperDirective } from '../src/form-helper.directive';
 
 @Component({
     templateUrl: './error-handler-text.component.html',
@@ -26,6 +27,10 @@ export class ErrorHandlerTextComponent {
         this.config2 = {
             errorHandler: 'text'
         };
+    }
+
+    reset(form: FormHelperDirective) {
+        form.reset();
     }
 
 }
