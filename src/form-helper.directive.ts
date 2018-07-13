@@ -134,25 +134,29 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
         if (isString(ele)) {
             for (let name in this.ngForm.controls) {
                 if (name == ele) {
-                    this.triggerReposition(name);
+                    this.triggerReposition(this.ngForm.controls[ name ]);
                     break;
                 }
             }
         } else {
             for (let name in this.ngForm.controls) {
-                this.triggerReposition(name);
+                this.triggerReposition(this.ngForm.controls[ name ]);
             }
         }
     }
 
-    private triggerReposition(name: string) {
-        let control = this.ngForm.controls[ name ],
-            $field = $(control[ ELEMENT_BIND_TO_CONTROL_KEY ]);
+    private triggerReposition(control: AbstractControl) {
+        let $field = $(control[ ELEMENT_BIND_TO_CONTROL_KEY ]);
         if ($field.length) {
             let bindData = $field.data(this.errorHandlerKey),
                 errorHandler = bindData && bindData.data;
             if (errorHandler && errorHandler.reposition) {
                 errorHandler.reposition();
+            }
+        }
+        if (control instanceof FormGroup) {
+            for (let name in control.controls) {
+                this.triggerReposition(control.controls[ name ]);
             }
         }
     }
