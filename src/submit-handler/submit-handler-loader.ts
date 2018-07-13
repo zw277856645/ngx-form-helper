@@ -44,6 +44,9 @@ export class SubmitHandlerLoader implements SubmitHandler {
             if (this.config.iconToggleStrategy == 'replace') {
                 this.$loading.removeClass();
             }
+            if ([ 'static' ].indexOf(this.$loading.css('position')) >= 0) {
+                this.$loading.addClass('relative');
+            }
             this.$loading.addClass(this.config.iconClassName);
         } else {
             this.$ele.addClass(this.config.className);
