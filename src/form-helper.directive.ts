@@ -14,7 +14,7 @@ import { FormHelperConfig } from './form-helper-config';
 import { SubmitHandlerLoader } from './submit-handler/submit-handler-loader';
 import { SubmitHandler } from './submit-handler/submit-handler';
 import { doAfter, ELEMENT_BIND_TO_CONTROL_KEY, findProxyItem, getScrollProxy, noop } from './form-helper-utils';
-import { isString } from 'util';
+import { isNumber, isString } from 'util';
 import { ErrorHandlerTooltip } from './error-handler/error-handler-tooltip';
 import { ErrorHandlerText } from './error-handler/error-handler-text';
 const $ = require('jquery');
@@ -264,30 +264,55 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
     private listenStatusChanges(control: AbstractControl, $field: JQuery) {
         return control.statusChanges.subscribe(() => {
             if (control.enabled && control.dirty && !control.pending) {
-                let bindData = $field.data(this.errorHandlerKey),
-                    errorHandler = bindData && bindData.data;
-
                 if (control.valid) {
-                    if (control instanceof FormControl && this._config.errorClassName) {
-                        $field.removeClass(this._config.errorClassName);
-                    } else if (control instanceof FormGroup && this._config.errorGroupClassName) {
-                        $field.removeClass(this._config.errorGroupClassName);
-                    }
-                    if (errorHandler) {
-                        errorHandler.whenValid();
-                    }
+                    this.whenValid(control, $field);
                 } else if (control.invalid) {
-                    if (control instanceof FormControl && this._config.errorClassName) {
-                        $field.addClass(this._config.errorClassName);
-                    } else if (control instanceof FormGroup && this._config.errorGroupClassName) {
-                        $field.addClass(this._config.errorGroupClassName);
-                    }
-                    if (errorHandler) {
-                        errorHandler.whenInvalid();
-                    }
+                    this.whenInvalid(control, $field);
                 }
             }
         });
+    }
+
+    private whenValid(control: AbstractControl, $field?: JQuery) {
+        if (!$field) {
+            $field = $(control[ ELEMENT_BIND_TO_CONTROL_KEY ]);
+        }
+        if ($field.length == 0) {
+            return;
+        }
+
+        if (control instanceof FormControl && this._config.errorClassName) {
+            $field.removeClass(this._config.errorClassName);
+        } else if (control instanceof FormGroup && this._config.errorGroupClassName) {
+            $field.removeClass(this._config.errorGroupClassName);
+        }
+
+        let bindData = $field.data(this.errorHandlerKey),
+            errorHandler = bindData && bindData.data;
+        if (errorHandler) {
+            errorHandler.whenValid();
+        }
+    }
+
+    private whenInvalid(control: AbstractControl, $field?: JQuery) {
+        if (!$field) {
+            $field = $(control[ ELEMENT_BIND_TO_CONTROL_KEY ]);
+        }
+        if ($field.length == 0) {
+            return;
+        }
+
+        if (control instanceof FormControl && this._config.errorClassName) {
+            $field.addClass(this._config.errorClassName);
+        } else if (control instanceof FormGroup && this._config.errorGroupClassName) {
+            $field.addClass(this._config.errorGroupClassName);
+        }
+
+        let bindData = $field.data(this.errorHandlerKey),
+            errorHandler = bindData && bindData.data;
+        if (errorHandler) {
+            errorHandler.whenInvalid();
+        }
     }
 
     private submit(submitHandler?: SubmitHandler) {
@@ -477,34 +502,44 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
         return null;
     }
 
-    reset(controls: { [key: string]: AbstractControl; } = this.ngForm.controls) {
+    private resetControls(controls: { [key: string]: AbstractControl; } = this.ngForm.controls) {
         // 提前设置pristine，防止后面的ngForm.reset子控件FormControl.reset级联影响
         // FormGroup状态检测执行(listenStatusChanges)，导致错误提示不正常显示(闪烁)
         for (let name in controls) {
             controls[ name ].markAsPristine();
         }
 
-        // 递归重置，只在最外层执行ngForm.reset
+        // form重置，只在最外层执行
         if (controls == this.ngForm.controls) {
             this.ngForm.reset();
         }
 
         // 递归关闭错误提示
         if (this._config.errorHandler) {
-            let control, $field, bindData;
+            let control;
             for (let name in controls) {
                 control = controls[ name ];
-                $field = $(control[ ELEMENT_BIND_TO_CONTROL_KEY ]);
-                if ($field.length) {
-                    bindData = $field.data(this.errorHandlerKey);
-                    if (bindData.data) {
-                        bindData.data.whenValid();
-                    }
-                }
+                this.whenValid(control);
                 if (control instanceof FormGroup) {
-                    this.reset(control.controls);
+                    this.resetControls(control.controls);
                 }
             }
+        }
+    }
+
+    // track=true，跟踪所有control状态直到全部为pristine
+    // 原因：重置后触发一些不可控操作导致表单再次赋值，触发状态监听(listenStatusChanges)
+    reset(track?: boolean | number) {
+        this.resetControls();
+        if (track) {
+            setTimeout(() => {
+                for (let name in this.ngForm.controls) {
+                    if (this.ngForm.controls[ name ].dirty) {
+                        this.reset(track);
+                        break;
+                    }
+                }
+            }, isNumber(track) ? track : 0);
         }
     }
 
