@@ -3,7 +3,7 @@
     <div class="field">
       <label>名字</label>
       <input type="text" name="name" #nameCtrl="ngModel" [(ngModel)]="name" autocomplete="off" trimmedRequired
-             nameUnique>
+             nameUnique class="ignore">
       <div class="fh-message">
         <div [class.error]="nameCtrl.errors?.trimmedRequired">不能为空</div>
         <div class="pending" [class.error]="nameCtrl.errors?.nameUnique">重复</div>
