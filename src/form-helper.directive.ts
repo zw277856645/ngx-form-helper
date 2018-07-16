@@ -130,6 +130,60 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
         });
     }
 
+    // --------------------------- ngForm status shortcut ------------------
+
+    get form() {
+        return this.ngForm;
+    }
+
+    get valid() {
+        return this.ngForm.valid;
+    }
+
+    get invalid() {
+        return this.ngForm.invalid;
+    }
+
+    get pending() {
+        return this.ngForm.pending;
+    }
+
+    get dirty() {
+        return this.ngForm.dirty;
+    }
+
+    get pristine() {
+        return this.ngForm.pristine;
+    }
+
+    get disabled() {
+        return this.ngForm.disabled;
+    }
+
+    get enabled() {
+        return this.ngForm.enabled;
+    }
+
+    get touched() {
+        return this.ngForm.touched;
+    }
+
+    get untouched() {
+        return this.ngForm.untouched;
+    }
+
+    // ------------------------- registers -------------------------------
+
+    static registerSubmitHandler(name: string, handler: Function) {
+        this.submitHandlerMap.set(name, handler);
+    }
+
+    static registerErrorHandler(name: string, handler: Function) {
+        this.errorHandlerMap.set(name, handler);
+    }
+
+    // ------------------------- publics -------------------------------
+
     reposition(ele?: string) {
         if (isString(ele)) {
             for (let name in this.ngForm.controls) {
@@ -145,6 +199,24 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
         }
     }
 
+    // track=true，跟踪所有control状态直到全部为pristine
+    // 原因：重置后触发一些不可控操作导致表单再次赋值，触发状态监听(listenStatusChanges)
+    reset(track?: boolean | number) {
+        this.resetControls();
+        if (track) {
+            setTimeout(() => {
+                for (let name in this.ngForm.controls) {
+                    if (this.ngForm.controls[ name ].dirty) {
+                        this.reset(track);
+                        break;
+                    }
+                }
+            }, isNumber(track) ? track : 0);
+        }
+    }
+
+    // ------------------------- privates --------------------------------
+
     private triggerReposition(control: AbstractControl) {
         let $field = $(control[ ELEMENT_BIND_TO_CONTROL_KEY ]);
         if ($field.length) {
@@ -159,14 +231,6 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
                 this.triggerReposition(control.controls[ name ]);
             }
         }
-    }
-
-    static registerSubmitHandler(name: string, handler: Function) {
-        this.submitHandlerMap.set(name, handler);
-    }
-
-    static registerErrorHandler(name: string, handler: Function) {
-        this.errorHandlerMap.set(name, handler);
     }
 
     private bindSubmitButtons() {
@@ -528,22 +592,6 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
                     this.resetControls(control.controls);
                 }
             }
-        }
-    }
-
-    // track=true，跟踪所有control状态直到全部为pristine
-    // 原因：重置后触发一些不可控操作导致表单再次赋值，触发状态监听(listenStatusChanges)
-    reset(track?: boolean | number) {
-        this.resetControls();
-        if (track) {
-            setTimeout(() => {
-                for (let name in this.ngForm.controls) {
-                    if (this.ngForm.controls[ name ].dirty) {
-                        this.reset(track);
-                        break;
-                    }
-                }
-            }, isNumber(track) ? track : 0);
         }
     }
 
