@@ -83,7 +83,7 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
 
     // ------------------- 分割线 ------------------------------
 
-    constructor(private ngForm: NgForm,
+    constructor(private _ngForm: NgForm,
                 private form: ElementRef,
                 private zone: NgZone) {
         this._config = {
@@ -132,8 +132,8 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
 
     // --------------------------- ngForm status shortcut ------------------
 
-    get form() {
-        return this.ngForm;
+    get ngForm() {
+        return this._ngForm;
     }
 
     get valid() {
