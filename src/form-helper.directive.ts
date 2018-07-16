@@ -184,18 +184,29 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
 
     // ------------------------- publics -------------------------------
 
-    reposition(ele?: string) {
-        if (isString(ele)) {
-            for (let name in this.ngForm.controls) {
-                if (name == ele) {
-                    this.triggerReposition(this.ngForm.controls[ name ]);
-                    break;
-                }
+    reposition(name?: string) {
+        if (isString(name)) {
+            let control = this.findControlByName(name);
+            if (control) {
+                this.triggerReposition(control);
             }
         } else {
             for (let name in this.ngForm.controls) {
                 this.triggerReposition(this.ngForm.controls[ name ]);
             }
+        }
+    }
+
+    validate(name?: string) {
+        if (isString(name)) {
+            let control = this.findControlByName(name);
+            if (control && (control instanceof FormGroup)) {
+                this.validateControls((<FormGroup>control).controls);
+            } else if (control && (control instanceof FormControl)) {
+                FormHelperDirective.validateControl(control);
+            }
+        } else {
+            this.validateControls();
         }
     }
 
@@ -422,6 +433,14 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
         }
     }
 
+    private static validateControl(control: AbstractControl) {
+        // 设置control为dirty状态，使错误信息显示
+        control.markAsDirty();
+
+        // 触发control.statusChanges。默认会自动触发FormGroup的状态检测
+        control.updateValueAndValidity();
+    }
+
     private validateControls(controls: { [key: string]: AbstractControl; } = this.ngForm.controls) {
         for (let name in controls) {
             let control = controls[ name ];
@@ -429,12 +448,7 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
                 this.validateControls(control.controls);
                 continue;
             }
-
-            // 设置control为dirty状态，使错误信息显示
-            control.markAsDirty();
-
-            // 触发control.statusChanges。默认会自动触发FormGroup的状态检测
-            control.updateValueAndValidity();
+            FormHelperDirective.validateControl(control);
         }
     }
 
@@ -593,6 +607,18 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
                 }
             }
         }
+    }
+
+    private findControlByName(name: string, controls: { [key: string]: AbstractControl; } = this.ngForm.controls) {
+        for (let ele in controls) {
+            if (name == ele) {
+                return controls[ ele ];
+            }
+            if (controls[ ele ] instanceof FormGroup) {
+                return this.findControlByName(name, (<FormGroup>controls[ ele ]).controls);
+            }
+        }
+        return null;
     }
 
 }
