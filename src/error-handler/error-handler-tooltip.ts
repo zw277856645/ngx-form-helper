@@ -1,11 +1,11 @@
 import { ErrorHandler } from './error-handler';
 import { ErrorHandlerTooltipConfig } from './error-handler-tooltip-config';
 import {
-    findProxyItem, getBottom, getContextProxy, getLeft, getOffsetX, getOffsetY, getPosition, getRight, getTop
+    findProxyItem, getBottom, getContextProxy, getLeft, getOffsetX, getOffsetY, getPosition, getRight,
+    getTop
 } from '../form-helper-utils';
 import { isNullOrUndefined, isUndefined } from 'util';
 import { AbstractControl } from '@angular/forms';
-import { Subscription } from 'rxjs/Subscription';
 const $ = require('jquery');
 
 /**
@@ -24,7 +24,6 @@ export class ErrorHandlerTooltip implements ErrorHandler {
     private $tooltip: JQuery;
     private offsetY = 0;
     private offsetX = 0;
-    private subscription: Subscription;
     private timeoutFlag: any;
 
     constructor(private $ele: JQuery,
@@ -91,9 +90,6 @@ export class ErrorHandlerTooltip implements ErrorHandler {
 
     destroy() {
         clearTimeout(this.timeoutFlag);
-        if (this.subscription) {
-            this.subscription.unsubscribe();
-        }
     }
 
     private init() {
@@ -146,7 +142,7 @@ export class ErrorHandlerTooltip implements ErrorHandler {
                         }
 
                         // 监听状态变化，绑定相应样式
-                        this.subscription = this.control.statusChanges.subscribe(() => this.applyStyle());
+                        this.control.statusChanges.subscribe(() => this.applyStyle());
 
                         // 立即触发一次
                         this.applyStyle();

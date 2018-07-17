@@ -13,8 +13,10 @@ import 'rxjs/add/observable/timer';
 import { FormHelperConfig } from './form-helper-config';
 import { SubmitHandlerLoader } from './submit-handler/submit-handler-loader';
 import { SubmitHandler } from './submit-handler/submit-handler';
-import { doAfter, ELEMENT_BIND_TO_CONTROL_KEY, findProxyItem, getScrollProxy, noop } from './form-helper-utils';
-import { isNumber, isString } from 'util';
+import {
+    doAfter, ELEMENT_BIND_TO_CONTROL_KEY, findProxyItem, getScrollProxy, getValidateImmediate, noop
+} from './form-helper-utils';
+import { isNullOrUndefined, isNumber, isString } from 'util';
 import { ErrorHandlerTooltip } from './error-handler/error-handler-tooltip';
 import { ErrorHandlerText } from './error-handler/error-handler-text';
 const $ = require('jquery');
@@ -23,8 +25,9 @@ const TWEEN = require('@tweenjs/tween.js');
 /**
  * --------------------------------------------------------------------------------------------------------
  * data-* api
- *  1)debounce-time：远程验证时使用，指定请求抖动时间。单位ms，使用方表单域/表单组
- *  2)scroll-proxy：设置表单域/表单组滚动代理
+ *  1)effect-on-dirty：覆盖config中配置。使用方表单域/表单组
+ *  2)debounce-time：远程验证时使用，指定请求抖动时间。单位ms，使用方表单域/表单组
+ *  3)scroll-proxy：设置表单域/表单组滚动代理
  *                  语法：^ -> 父节点，~ -> 前一个兄弟节点，+ -> 后一个兄弟节点。可以任意组合
  *                  示例：^^^，^2，~3^4+2
  *
@@ -88,6 +91,7 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
                 private zone: NgZone) {
         this._config = {
             autoReset: true,
+            validateImmediate: false,
             context: window,
             offsetTop: 0,
             autoScroll: true,
@@ -313,36 +317,35 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
             if (bindData.data) {
                 bindData.data.whenValid();
             }
-            if (bindData.subscription) {
-                bindData.subscription.unsubscribe();
-            }
         }
 
         if (handlerName) {
             let HandlerClass = FormHelperDirective.errorHandlerMap.get(handlerName);
             if (HandlerClass instanceof Function) {
-                let handlerInstance = new HandlerClass($field, (<any>this._config.errorHandler).config, control);
+                let handlerInstance = new HandlerClass(
+                    $field,
+                    (<any>this._config.errorHandler).config,
+                    control,
+                    this._config
+                );
                 if (handlerInstance.destroy) {
                     this.destroys.push(() => handlerInstance.destroy());
                 }
 
-                let subscription = this.listenStatusChanges(control, $field);
-                this.destroys.push(subscription);
-
-                $field.data(this.errorHandlerKey, { name: handlerName, data: handlerInstance, subscription });
+                $field.data(this.errorHandlerKey, { name: handlerName, data: handlerInstance });
+                this.listenStatusChanges(control, $field);
                 return;
             }
         }
 
         // errorHandler=false或指定的errorHandler找不到
-        let subscription = this.listenStatusChanges(control, $field);
-        this.destroys.push(subscription);
-        $field.data(this.errorHandlerKey, { subscription });
+        $field.data(this.errorHandlerKey, {});
+        this.listenStatusChanges(control, $field);
     }
 
     private listenStatusChanges(control: AbstractControl, $field: JQuery) {
-        return control.statusChanges.subscribe(() => {
-            if (control.enabled && control.dirty && !control.pending) {
+        control.statusChanges.subscribe(() => {
+            if (control.enabled && !control.pending && control.dirty) {
                 if (control.valid) {
                     this.whenValid(control, $field);
                 } else if (control.invalid) {
@@ -350,6 +353,12 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
                 }
             }
         });
+
+        let data = getValidateImmediate($field),
+            immediate = isNullOrUndefined(data) ? this._config.validateImmediate : data;
+        if (immediate) {
+            FormHelperDirective.validateControl(control);
+        }
     }
 
     private whenValid(control: AbstractControl, $field?: JQuery) {

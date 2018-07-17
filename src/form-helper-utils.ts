@@ -163,3 +163,7 @@ export function getBottom($ele: JQuery) {
 export function getInline($ele: JQuery) {
     return $ele.data('inline');
 }
+
+export function getValidateImmediate($ele: JQuery) {
+    return $ele.data('validate-immediate');
+}

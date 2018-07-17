@@ -11,6 +11,10 @@ export interface FormHelperConfig {
     // 成功提交后是否自动重置表单
     autoReset?: boolean;
 
+    // 默认只在控件dirty状态触发，设置为true可立即触发验证
+    // 可被表单域/表单组的data api配置覆盖
+    validateImmediate?: boolean;
+
     // 表单所处上下文，通常为window或含有滚动条的对象，影响滚动条正确滚动到第一条错误
     // 点号表达式：. -> 当前form，.. -> 父元素，../../ etc
     context?: Window | Selector;
