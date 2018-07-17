@@ -60,7 +60,7 @@ import 'ngx-form-helper/ngx-form-helper.css';
 | 配置项                 | 参数类型 | 说明 |
 | :--------------------- | :------- | :--- |
 | validate-immediate     | boolean  | 覆盖FormHelperConfig中配置。使用方表单域/表单组
-| debounce-time          | number   | 远程验证时使用，指定请求抖动时间。单位ms，使用方表单域/表单组。推荐使用AsyncValidatorLimit，详情参见远程验证章节
+| debounce-time          | number   | 远程验证时使用，指定请求抖动时间。单位ms，使用方表单域/表单组。推荐使用AsyncValidatorLimit，详情参见远程验证辅助类章节
 | scroll-proxy           | string   | 设置表单域/表单组滚动代理。<br><br>语法：^ -> 父节点，~ -> 前一个兄弟节点，+ -> 后一个兄弟节点，可以任意组合。<br>示例：\^\^\^，\^2，\~3\^4\+2
 
 
@@ -100,7 +100,7 @@ tooltip示例
 
 
 ## 错误处理组件配置(ErrorHandlerTextConfig)
-错误文本示例：  
+错误文本示例  
 ```html
 <div class="fh-message">  
   <div *ngIf="nameCtrl.errors?.required">不能为空</div>  
@@ -120,7 +120,7 @@ tooltip示例
 
 ## 提交处理组件配置(SubmitHandlerLoaderConfig)
 | 配置项                 | 参数类型                | 默认值                         | 说明 |
-| :--------------------- | :---------------------- | :------------------------------| :--- |
+| :--------------------- | :---------------------- | :----------------------------- | :--- |
 | className              | string                  | fh-loader-theme-default        | 按钮主题样式
 | iconClassName          | string                  | fh-loader-theme-icon-default   | 按钮中图标主题样式
 | iconSelector           | string/false            | i.icon, i.fa                   | 寻找按钮中图标的css选择器，若找到，则用iconClassName替换找到的图标类名，否则在整个按钮区域使用className
@@ -128,6 +128,32 @@ tooltip示例
 | duration               | number                  | 400                            | 动画时长(ms)
 
 
-## 远程验证
+## 远程验证辅助类
+自动读取data-debounce-time(如果有)，默认为300。在抖动时间内的重复请求，之前的请求订阅会被取消
+```javascript
+@Directive({
+    selector: '[nameUnique]',
+    providers: [
+        { provide: NG_ASYNC_VALIDATORS, useExisting: NameUniqueDirective, multi: true }
+    ]
+})
+export class NameUniqueDirective extends AsyncValidatorLimit implements AsyncValidator {
+
+    constructor(private nameValidateService: NameValidateService,
+                private ele: ElementRef) {
+        super(ele);
+    }
+
+    validate(c: AbstractControl) {
+        return super.limit(
+            this.nameValidateService.isNameUnique(c.value).map(exist => {
+                return exist ? { nameUnique: true } : null;
+            })
+        );
+    }
+}
+```
 
 
+## 内置的验证指令
+- **trimmedRequired** - 去除左右空格后再验证非空
