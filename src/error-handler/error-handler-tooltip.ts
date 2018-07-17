@@ -116,7 +116,7 @@ export class ErrorHandlerTooltip implements ErrorHandler {
                         if (this.config.className) {
                             this.$tooltip.addClass(this.config.className);
                         }
-                        if (this.config.duration !== false) {
+                        if (!isNullOrUndefined(this.config.duration)) {
                             this.$tooltip.css('animation-duration', this.config.duration + 'ms');
                         }
                         if (!isNullOrUndefined(this.config.zIndex)) {

@@ -30,7 +30,7 @@ export interface ErrorHandlerTooltipConfig {
     animationOut?: string;
 
     // 动画时长(ms)
-    duration?: number | false;
+    duration?: number;
 
     // tooltip z-index
     zIndex?: number;
