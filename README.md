@@ -67,7 +67,7 @@ import 'ngx-form-helper/ngx-form-helper.css';
 ## 错误处理组件配置(ErrorHandlerTooltipConfig)
 
 > *名词解释*  
-> 验证项：具体的某一错误语句所在节点
+> 验证项：具体的某一错误语句所在节点  
 > 示例：  
 >   \<div class="fh-message"\>  
 >   &ensp;&ensp;\<div [class.error]="nameCtrl.errors?.required"\>不能为空\</div\>  
