@@ -64,6 +64,8 @@ import 'ngx-form-helper/ngx-form-helper.css';
 | scroll-proxy           | string   | 设置表单域/表单组滚动代理。<br><br>语法：^ -> 父节点，~ -> 前一个兄弟节点，+ -> 后一个兄弟节点，可以任意组合。<br>示例：\^\^\^，\^2，\~3\^4\+2
 
 
+## 错误处理组件配置(ErrorHandlerTooltipConfig)
+
 > *名词解释*  
 > 验证项：具体的某一错误语句所在节点
 > 示例：  
@@ -72,8 +74,6 @@ import 'ngx-form-helper/ngx-form-helper.css';
 >   &ensp;&ensp;\<div class="pending" [class.error]="nameCtrl.errors?.nameUnique"\>重复\</div\>  
 >   \</div\> 
 
-
-## 错误处理组件配置(ErrorHandlerTooltipConfig)
 | 配置项                 | 参数类型                                                                                       | 默认值                    | 说明 |
 | :--------------------- | :--------------------------------------------------------------------------------------------- | :------------------------ | :--- |
 | selector               | string                                                                                         | .fh-message, [fh-message] | 如何查找tooltip的选择器
