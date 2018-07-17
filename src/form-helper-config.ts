@@ -56,7 +56,6 @@ export interface FormHelperConfig {
     // 验证不通过后的回调
     onDeny?: () => void;
 
-    // 前提：开启了submitHandler
     // submitHandler处理完成后的回调。参数为onSuccess返回值
     onComplete?: (...args: any[]) => void;
 }
