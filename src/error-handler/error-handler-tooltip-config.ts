@@ -15,7 +15,7 @@ export interface ErrorHandlerTooltipConfig {
     pendingClassName?: string;
 
     // invalid状态自动添加的类名，加在tooltip上
-    // 相应的验证项需使用[class.error]指明错误时的类名
+    // 相应的验证项需使用[class.error]指明错误时的条件
     invalidClassName?: string;
 
     // 提示相对表单域/表单组的位置
