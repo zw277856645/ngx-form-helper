@@ -59,7 +59,7 @@ export class ErrorHandlerTooltip implements ErrorHandler {
             clearTimeout(this.timeoutFlag);
             this.timeoutFlag = setTimeout(() => {
                 this.$tooltip.removeClass('visible').removeClass(this.config.animationOut);
-            }, this.config.duration);
+            }, this.config.duration || 0);
         }
     }
 
@@ -80,7 +80,7 @@ export class ErrorHandlerTooltip implements ErrorHandler {
             clearTimeout(this.timeoutFlag);
             this.timeoutFlag = setTimeout(() => {
                 this.$tooltip.removeClass(this.config.animationIn);
-            }, this.config.duration);
+            }, this.config.duration || 0);
         }
     }
 
