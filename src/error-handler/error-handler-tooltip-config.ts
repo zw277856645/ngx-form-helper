@@ -3,7 +3,7 @@ export interface ErrorHandlerTooltipConfig {
     // 如何查找tooltip的选择器
     selector?: string;
 
-    // 查找tooltip的上下文代理，会在指定的代理对象子节点中寻找。语法同form-helper -> data-scroll-proxy
+    // 查找tooltip的上下文代理，会在指定的代理对象节点本身或子节点中寻找。语法同form-helper -> data-scroll-proxy
     // 默认为当前表单域/表单组的父元素
     contextProxy?: string;
 

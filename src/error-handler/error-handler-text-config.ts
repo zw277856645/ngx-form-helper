@@ -3,7 +3,7 @@ export class ErrorHandlerTextConfig {
     // 如何查找错误文本的选择器
     selector?: string;
 
-    // 查找错误文本的上下文代理，会在指定的代理对象子节点中寻找。语法同form-helper -> data-scroll-proxy
+    // 查找错误文本的上下文代理，会在指定的代理对象节点本身或子节点中寻找。语法同form-helper -> data-scroll-proxy
     // 默认为当前表单域/表单组的父元素
     contextProxy?: string;
 
