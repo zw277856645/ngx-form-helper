@@ -37,18 +37,18 @@ import 'ngx-form-helper/ngx-form-helper.css';
 | :--------------------- | :---     | :---   | :-   |
 | autoReset              | boolean
 | validateImmediate      | boolean
-| context                | window/
-| extraSubmits           |
-| autoScroll             |
-| offsetTop              |
-| className              |
-| errorClassName         |
-| errorGroupClassName    |
-| errorHandler           |
-| submitHandler          |
-| onSuccess              |
-| onComplete             |
-| onDeny                 |
+| context                | window/selector
+| extraSubmits           | selector
+| autoScroll             | boolean
+| offsetTop              | number | 0
+| className              | string | false | fh-theme-default
+| errorClassName         | string | false | fh-error
+| errorGroupClassName    | string | false | fh-group-error
+| errorHandler           | string | false | { name: string; config?: { [key: string]: any; } }
+| submitHandler          | string | false | { name: string; config?: { [key: string]: any; } }
+| onSuccess              | function
+| onComplete             | function
+| onDeny                 | function
 
 
 
