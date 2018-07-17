@@ -1,6 +1,6 @@
 {
   "name": "ngx-form-helper",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "angular form validation helper",
   "scripts": {
     "build": "ng-packagr -p package.json && npm run build-style",
@@ -13,7 +13,13 @@
   "ngPackage": {
     "lib": {
       "entryFile": "public_api.ts"
-    }
+    },
+    "whitelistedNonPeerDependencies": [
+      "@tweenjs/tween.js",
+      "@types/tween.js",
+      "@types/jquery",
+      "jquery"
+    ]
   },
   "repository": {
     "type": "git",
@@ -22,6 +28,12 @@
   "keywords": [],
   "author": "wei.zhang",
   "license": "MIT",
+  "dependencies": {
+    "@tweenjs/tween.js": "17.2.0",
+    "@types/tween.js": "16.9.0",
+    "@types/jquery": "2.0.43",
+    "jquery": "3.2.1"
+  },
   "devDependencies": {
     "@angular/cli": "1.7.4",
     "@angular/common": "5.2.0",
@@ -32,16 +44,12 @@
     "@angular/platform-browser": "5.2.0",
     "@angular/platform-browser-dynamic": "5.2.0",
     "@angular/router": "5.2.0",
-    "@tweenjs/tween.js": "17.2.0",
-    "@types/jquery": "2.0.43",
     "@types/node": "6.0.45",
-    "@types/tween.js": "16.9.0",
     "ajv": "6.5.1",
     "animate.css": "3.6.1",
     "cmjs-lib": "0.2.2",
     "core-js": "2.4.1",
     "css-loader": "0.26.1",
-    "jquery": "3.2.1",
     "ng-packagr": "3.0.3",
     "rimraf": "2.6.1",
     "rxjs": "5.5.6",
