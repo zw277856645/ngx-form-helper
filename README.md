@@ -64,19 +64,28 @@ import 'ngx-form-helper/ngx-form-helper.css';
 | scroll-proxy           | string   | 设置表单域/表单组滚动代理。<br><br>语法：^ -> 父节点，~ -> 前一个兄弟节点，+ -> 后一个兄弟节点，可以任意组合。<br>示例：\^\^\^，\^2，\~3\^4\+2
 
 
+> *名词解释*  
+> 验证项：具体的某一错误语句所在节点
+> 示例：  
+>   \<div class="fh-message"\>  
+>   &ensp;&ensp;\<div [class.error]="nameCtrl.errors?.required"\>不能为空\</div\>  
+>   &ensp;&ensp;\<div class="pending" [class.error]="nameCtrl.errors?.nameUnique"\>重复\</div\>  
+>   \</div\> 
+
+
 ## 错误处理组件配置(ErrorHandlerTooltipConfig)
 | 配置项                 | 参数类型                                                                                       | 默认值                    | 说明 |
 | :--------------------- | :--------------------------------------------------------------------------------------------- | :------------------------ | :--- |
 | selector               | string                                                                                         | .fh-message, [fh-message] | 如何查找tooltip的选择器
 | contextProxy           | string                                                                                         | \^                        | 查找tooltip的上下文代理，会在指定的代理对象`节点本身`或`子节点`中寻找selector指定的节点。语法同data-scroll-proxy
-| className              | string/false                                                                                   | fh-tooltip-theme-default  |
-| pendingClassName       | string                                                                                         | pending                   |
-| invalidClassName       | string                                                                                         | invalid                   |
-| position               | top left/top center/top right/bottom left/bottom center/bottom right/right center/left center  | bottom right              |
-| animationIn            | string                                                                                         | animated fadeIn           |
-| animationOut           | string                                                                                         | animated fadeOut          |
-| duration               | number/false                                                                                   | 200                       |
-| zIndex                 | number                                                                                         | 1                         |
+| className              | string/false                                                                                   | fh-tooltip-theme-default  | 主题样式。指定的字符串会添加到tooltip类名中。可修改默认值实现自定义主题
+| pendingClassName       | string                                                                                         | pending                   | pending状态自动添加到tooltip的类名。相应的验证项需指定pending类名或属性
+| invalidClassName       | string                                                                                         | invalid                   | invalid状态自动添加到tooltip的类名。相应的验证项需使用[class.error]指明错误时的条件
+| position               | top left/top center/top right/bottom left/bottom center/bottom right/right center/left center  | bottom right              | 提示相对表单域/表单组的位置
+| animationIn            | string                                                                                         | animated fadeIn           | 显示动画。可使用animate.css
+| animationOut           | string                                                                                         | animated fadeOut          | 隐藏动画
+| duration               | number/false                                                                                   | 200                       | 动画时长(ms)。该设置会覆盖animationIn和animationOut动画的animation-duration。设为false则使用animationIn和animationOut动画本身的animation-duration
+| zIndex                 | number                                                                                         | 1                         | tooltip z-index
 
 ## 错误处理组件配置(ErrorHandlerTextConfig)
 
