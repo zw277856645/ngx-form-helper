@@ -51,9 +51,9 @@ import 'ngx-form-helper/ngx-form-helper.css';
 | errorGroupClassName    | string/false                                               | fh-group-error        | 验证失败时表单组自动添加的类名
 | errorHandler           | string/false/{name:string; config?:{[key: string]:any;}}   | tooltip               | 错误提示处理组件。<br>1. false：不使用错误处理组件<br>2. string：表示处理组件的名称<br>3. object：name表示处理组件的名称，config表示配置参数，覆盖组件中的默认参数
 | submitHandler          | string/false/{name:string; config?:{[key: string]:any;}}   | loader                | 表单验证通过后，提交请求到请求结束之间状态的处理。<br>1. false：不使用提交处理组件<br>2. string：表示提交处理组件的名称<br>3. name表示提交处理组件的名称，config表示配置参数，覆盖组件中的默认参数
-| onSuccess              | function                                                   |                       |
-| onComplete             | function                                                   |                       |
-| onDeny                 | function                                                   |                       |
+| onSuccess              | () => Promise<any> | Observable<any> | any                 |                       | 验证通过后的回调。如果含有异步处理，请返回异步句柄，否则submitHandler会立即执行结束，且后续的onSuccess获取不到正确的参数
+| onComplete             | (...res: any[]) => void                                    |                       | submitHandler处理完成后的回调。在onSuccess后面执行，参数为onSuccess返回值
+| onDeny                 | () => void                                                 |                       | 验证不通过后的回调
 
 
 
