@@ -84,7 +84,7 @@ import 'ngx-form-helper/ngx-form-helper.css';
 | position               | top left/top center/top right/bottom left/bottom center/bottom right/right center/left center  | bottom right              | 提示相对表单域/表单组的位置
 | animationIn            | string                                                                                         | animated fadeIn           | 显示动画。可使用animate.css
 | animationOut           | string                                                                                         | animated fadeOut          | 隐藏动画
-| duration               | number/false                                                                                   | 200                       | 动画时长(ms)。该设置会覆盖animationIn和animationOut动画的animation-duration。设为false则使用animationIn和animationOut动画本身的animation-duration
+| duration               | number                                                                                         | 200                       | 动画时长(ms)。该设置会覆盖animationIn和animationOut动画的animation-duration
 | zIndex                 | number                                                                                         | 1                         | tooltip z-index
 
 ## 错误处理组件配置(ErrorHandlerTextConfig)
