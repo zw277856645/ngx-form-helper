@@ -157,3 +157,143 @@ export class NameUniqueDirective extends AsyncValidatorLimit implements AsyncVal
 
 ## 内置的验证指令
 - **trimmedRequired** - 去除左右空格后再验证非空
+
+
+## 自定义错误处理组件
+第一步：创建一个类并实现ErrorHandler接口
+```javascript
+export interface ErrorHandler {
+
+    // 组件验证通过时调用
+    whenValid(): void;
+
+    // 组件验证不通过时调用
+    whenInvalid(): void;
+
+    // 窗口改变大小时调用(window.resize)，非必须
+    reposition?(): void;
+
+    // 组件销毁时释放资源，非必须
+    destroy?(): void;
+}
+
+export class MyErrorHandlerConfig {
+}
+
+export class MyErrorHandler implements ErrorHandler {
+
+    private config: MyErrorHandlerConfig;
+
+    // 系统会自动创建该实例，并注入4个参数，可根据需要自行选择
+    // $ele：与之想关的表单域/表单组jQuery对象
+    // config：FormHelperConfig中定义的errorHandler参数，可能为空
+    // control：与之想关的表单域/表单组控件
+    // formConfig：完整的FormHelperConfig参数
+    constructor(private $ele: JQuery,
+                config: MyErrorHandlerConfig,
+                private control: AbstractControl,
+                private formConfig: FormHelperConfig) {
+        // 在此定义默认参数
+        this.config = {};
+        
+        // 用外部参数覆盖默认参数
+        extend(this.config, config);
+    }
+    
+    whenValid() {}
+    
+    whenInvalid() {}
+}
+```
+
+第二步：注册错误处理组件
+```javascript
+FormHelperDirective.registerErrorHandler('myErrorHandlerName', MyErrorHandler);
+```
+
+第三步：使用
+```javascript
+<form [formHelper]="formConfig"></form>
+
+// 带参
+this.formConfig = {
+    errorHandler: {
+        name: 'myErrorHandlerName',
+        config: {}
+    }
+};
+
+// 不带参
+this.formConfig = {
+    errorHandler: 'myErrorHandlerName'
+};
+```
+
+
+## 自定义提交处理组件
+第一步：创建一个类并实现SubmitHandler接口
+```javascript
+export interface SubmitHandler {
+
+    // 点击提交按钮时触发
+    // 执行后会调用FormHelperConfig中定义的onSuccess方法
+    start(): void;
+    
+    // 结束状态处理时触发
+    // 在onSuccess之后调用，end执行完后调用FormHelperConfig中定义的onComplete方法
+    end(): Promise | Observable | void;
+
+    // 组件销毁时释放资源，非必须
+    destroy?(): void;
+}
+
+export class MySubmitHandlerConfig {
+}
+
+export class MySubmitHandler implements SubmitHandler {
+
+    private config: MySubmitHandlerConfig;
+    
+    // 系统会自动创建该实例，并注入2个参数，可根据需要自行选择
+    // $ele：与之想关的表单域/表单组jQuery对象
+    // config：FormHelperConfig中定义的submitHandler参数，可能为空
+    constructor(private $ele: JQuery,
+                config: MySubmitHandlerConfig) {
+        // 在此定义默认参数
+        this.config = {};
+        
+        // 用外部参数覆盖默认参数
+        extend(this.config, config);
+    }
+    
+    start() {}
+    
+    end() {}
+}
+```
+
+第二步：注册提交处理组件
+```javascript
+FormHelperDirective.registerSubmitHandler('mySubmitHandlerName', MySubmitHandler);
+```
+
+第三步：使用
+```javascript
+<form [formHelper]="formConfig"></form>
+
+// 带参
+this.formConfig = {
+    submitHandler: {
+        name: 'mySubmitHandlerName',
+        config: {}
+    }
+};
+
+// 不带参
+this.formConfig = {
+    submitHandler: 'mySubmitHandlerName'
+};
+```
+
+
+
