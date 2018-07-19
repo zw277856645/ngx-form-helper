@@ -4,6 +4,8 @@ export * from './src/form-helper.directive';
 
 export * from './src/async-validator-limit';
 
+export { findProxyItem, doAfter } from './src/form-helper-utils';
+
 export * from './src/validator/trimmed-required.directive';
 
 export * from './src/error-handler/error-handler-tooltip';
