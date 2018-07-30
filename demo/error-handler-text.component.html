@@ -2,7 +2,7 @@
   <h3 class="ui dividing header">表单1</h3>
   <form class="ui form" [formHelper]="config1">
     <div class="field">
-      <div class="ui action input small">
+      <div class="ui action input small spe">
         <input type="text" placeholder="数字" name="host" #hostCtrl="ngModel" [(ngModel)]="host"
                trimmedRequired pattern="^\d*$" autocomplete="off" data-context-proxy="^^">
         <button type="submit" class="ui teal right labeled icon button">
@@ -28,6 +28,25 @@
       </div>
       <input type="text" name="name" #nameCtrl="ngModel" [(ngModel)]="name" autocomplete="off" trimmedRequired
              nameUnique>
+    </div>
+    <div class="field required">
+      <label class="inline">Action Input</label>
+      <div class="fh-message">
+        <div *ngIf="actionInputCtrl?.errors?.trimmedRequired">不能为空</div>
+      </div>
+      <div class="ui small left action input">
+        <div class="ui selection dropdown" dropdown [(ngModel)]="actionInputType"
+             [ngModelOptions]="{standalone:true}" [class.fluid]="actionInputType == 0">
+          <div class="text"></div>
+          <i class="icon dropdown"></i>
+          <div class="menu">
+            <div class="item" data-value="0">不限</div>
+            <div class="item" data-value="1">限制</div>
+          </div>
+        </div>
+        <input type="text" trimmedRequired maxlength="10" [(ngModel)]="actionInput" name="actionInput"
+               autocomplete="off" #actionInputCtrl="ngModel" data-context-proxy="^~" *ngIf="actionInputType == 1">
+      </div>
     </div>
     <div class="field buttons">
       <button type="submit" class="ui button small instagram right labeled icon">

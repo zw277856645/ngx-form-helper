@@ -10,6 +10,7 @@ import { GroupedCheckboxRequiredDirective } from './directive/grouped-checkbox-r
 import { NameUniqueDirective } from './directive/name-unique.directive';
 import { NameValidateService } from './directive/name-unique.service';
 import { ErrorHandlerTextComponent } from './error-handler-text.component';
+import { DropdownDirective } from './directive/dropdown.directive';
 
 @NgModule({
     imports: [
@@ -24,7 +25,8 @@ import { ErrorHandlerTextComponent } from './error-handler-text.component';
         DemoComponent,
         ErrorHandlerTextComponent,
         GroupedCheckboxRequiredDirective,
-        NameUniqueDirective
+        NameUniqueDirective,
+        DropdownDirective
     ],
     providers: [
         NameValidateService
