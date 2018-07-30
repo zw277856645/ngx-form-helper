@@ -45,7 +45,8 @@
           </div>
         </div>
         <input type="text" trimmedRequired maxlength="10" [(ngModel)]="actionInput" name="actionInput"
-               autocomplete="off" #actionInputCtrl="ngModel" data-context-proxy="^~" *ngIf="actionInputType == 1">
+               autocomplete="off" #actionInputCtrl="ngModel" data-context-proxy="^~"
+               [hidden]="actionInputType == 0" [disabled]="actionInputType == 0">
       </div>
     </div>
     <div class="field buttons">

@@ -1,7 +1,6 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormHelperConfig } from '../src/form-helper-config';
 import { FormHelperDirective } from '../src/form-helper.directive';
-import { NgModel } from '@angular/forms';
 
 @Component({
     templateUrl: './error-handler-text.component.html',
@@ -11,8 +10,6 @@ import { NgModel } from '@angular/forms';
     ]
 })
 export class ErrorHandlerTextComponent {
-
-    @ViewChild('actionInputCtrl') actionInputCtrl: NgModel;
 
     config1: FormHelperConfig;
     config2: FormHelperConfig;
