@@ -9,7 +9,6 @@ import { uuid } from 'cmjs-lib';
 import { FormHelperDirective } from '../src/form-helper.directive';
 
 @Component({
-    selector: 'my-app',
     templateUrl: './demo.component.html',
     styleUrls: [ './demo.component.less' ]
 })
