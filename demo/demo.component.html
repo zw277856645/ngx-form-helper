@@ -2,9 +2,11 @@
   <form class="ui form" [formHelper]="config" #formHelper="formHelper" #form="ngForm">
     <div class="field">
       <label>名字</label>
-      <input type="text" name="name" #nameCtrl="ngModel" [(ngModel)]="name" autocomplete="off" trimmedRequired
-             nameUnique>
-      <div class="fh-message">
+      <div class="ui input">
+        <input type="text" name="name" #nameCtrl="ngModel" [(ngModel)]="name" autocomplete="off" trimmedRequired
+               nameUnique data-context-proxy="^+">
+      </div>
+      <div class="fh-message" data-offset-y="23">
         <div [class.error]="nameCtrl.errors?.trimmedRequired">不能为空</div>
         <div class="pending" [class.error]="nameCtrl.errors?.nameUnique">重复</div>
       </div>
