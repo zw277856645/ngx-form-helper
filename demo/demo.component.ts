@@ -39,6 +39,7 @@ export class DemoComponent implements AfterViewInit {
     issue: string;
     addr2: string;
     issue2: string;
+    url: string;
 
     constructor() {
         this.cks = [
@@ -56,7 +57,9 @@ export class DemoComponent implements AfterViewInit {
             },
             onSuccess: () => {
                 return Observable.interval(0).map(() => {
+                    // tslint:disable-next-line:no-console
                     console.log('ok');
+
                     return 'ok';
                 }).first();
             }

@@ -16,8 +16,10 @@ export class GroupedCheckboxRequiredDirective implements Validator {
                     return null;
                 }
             }
+
             return { checkboxRequired: true };
         }
+
         return null;
     }
 }

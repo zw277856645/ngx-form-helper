@@ -105,7 +105,7 @@ export class ErrorHandlerTooltip implements ErrorHandler {
                     contextProxy = this.config.contextProxy;
                 }
 
-                let $proxy = findProxyItem(this.$ele, <string>contextProxy);
+                let $proxy = findProxyItem(this.$ele, <string> contextProxy);
                 if ($proxy && $proxy.length) {
                     this.$tooltip = $proxy.is(this.config.selector) ? $proxy : $proxy.find(this.config.selector).eq(0);
                     if (this.$tooltip && this.$tooltip.length) {
@@ -180,61 +180,72 @@ export class ErrorHandlerTooltip implements ErrorHandler {
 
                     fieldWidth = this.$ele.outerWidth(),
                     fieldHeight = this.$ele.outerHeight(),
-                    position = this.$ele.position(),
 
                     width = this.$tooltip.outerWidth(),
                     height = this.$tooltip.outerHeight();
+
+                /* $ele到$parent之间可能有多个非position:static父元素，需要计算出$ele到$parent的position累加值 */
+
+                let $tmp = this.$ele, positions = [];
+                do {
+                    positions.push($tmp.position());
+                    $tmp = $tmp.offsetParent();
+                } while (!$tmp.is($parent) && !$tmp.is('html,body'));
+
+                let position = positions.reduce((a, b) => {
+                    return { left: a.left + b.left, top: a.top + b.top };
+                });
 
                 switch (this.config.position) {
                     default:
                     case 'bottom right':
                         this.$tooltip.css({
                             top: position.top + fieldHeight + this.offsetY + 'px',
-                            right: parentWidth - position.left - fieldWidth + this.offsetX + 'px',
+                            right: parentWidth - position.left - fieldWidth + this.offsetX + 'px'
                         });
                         break;
                     case 'bottom center':
                         this.$tooltip.css({
                             top: position.top + fieldHeight + this.offsetY + 'px',
-                            left: position.left + (fieldWidth / 2) - (width / 2) + this.offsetX + 'px',
+                            left: position.left + (fieldWidth / 2) - (width / 2) + this.offsetX + 'px'
                         });
                         break;
                     case 'bottom left':
                         this.$tooltip.css({
                             top: position.top + fieldHeight + this.offsetY + 'px',
-                            left: position.left + this.offsetX + 'px',
+                            left: position.left + this.offsetX + 'px'
                         });
                         break;
                     case 'top right':
                         this.$tooltip.css({
                             right: parentWidth - position.left - fieldWidth + this.offsetX + 'px',
-                            bottom: parentHeight - position.top + this.offsetY + 'px',
+                            bottom: parentHeight - position.top + this.offsetY + 'px'
                         });
                         break;
                     case 'top center':
                         this.$tooltip
                             .css({
                                 left: position.left + (fieldWidth / 2) - (width / 2) + this.offsetX + 'px',
-                                bottom: parentHeight - position.top + this.offsetY + 'px',
+                                bottom: parentHeight - position.top + this.offsetY + 'px'
                             });
                         break;
                     case 'top left':
                         this.$tooltip.css({
                             left: position.left + this.offsetX + 'px',
-                            bottom: parentHeight - position.top + this.offsetY + 'px',
+                            bottom: parentHeight - position.top + this.offsetY + 'px'
                         });
                         break;
                     case 'left center':
                         this.$tooltip
                             .css({
                                 top: position.top + (fieldHeight / 2) - (height / 2) + this.offsetY + 'px',
-                                right: parentWidth - position.left + this.offsetX + 'px',
+                                right: parentWidth - position.left + this.offsetX + 'px'
                             });
                         break;
                     case 'right center':
                         this.$tooltip.css({
                             top: position.top + (fieldHeight / 2) - (height / 2) + this.offsetY + 'px',
-                            left: position.left + fieldWidth + this.offsetX + 'px',
+                            left: position.left + fieldWidth + this.offsetX + 'px'
                         });
                         break;
                 }

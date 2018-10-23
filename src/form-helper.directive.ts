@@ -52,37 +52,35 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
     set formHelper(config: FormHelperConfig) {
         $.extend(true, this._config, config);
         if (isString(this._config.submitHandler)) {
-            this._config.submitHandler = <any>{ name: this._config.submitHandler };
+            this._config.submitHandler = <any> { name: this._config.submitHandler };
         }
         if (isString(this._config.errorHandler)) {
-            this._config.errorHandler = <any>{ name: this._config.errorHandler };
+            this._config.errorHandler = <any> { name: this._config.errorHandler };
         }
     }
 
-    @HostListener('keydown', [ '$event' ])
-    keydown(event: KeyboardEvent) {
+    @HostListener('keydown', [ '$event' ]) keydown(event: KeyboardEvent) {
         if ((event.keyCode || event.which) == 13 && event.srcElement.nodeName.toUpperCase() != 'TEXTAREA') {
             event.preventDefault();
         }
     }
 
-    @HostListener('window:resize')
-    resize() {
+    @HostListener('window:resize') resize() {
         this.reposition();
     }
 
     submitted: boolean;
 
-    private _config: FormHelperConfig;
-    private mutationObserver: MutationObserver;
-    private $form: JQuery;
-    private destroys: (Subscription | Function)[] = [];
+    private static submitHandlerMap = new Map();
+    private static errorHandlerMap = new Map();
 
     private readonly submitHandlerKey = 'formHelper.submitHandler';
     private readonly errorHandlerKey = 'formHelper.errorHandler';
 
-    private static submitHandlerMap = new Map();
-    private static errorHandlerMap = new Map();
+    private _config: FormHelperConfig;
+    private mutationObserver: MutationObserver;
+    private $form: JQuery;
+    private destroys: (Subscription | Function)[] = [];
 
     // ------------------- 分割线 ------------------------------
 
@@ -205,7 +203,7 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
         if (isString(name)) {
             let control = this.findControlByName(name);
             if (control && (control instanceof FormGroup)) {
-                this.validateControls((<FormGroup>control).controls);
+                this.validateControls((<FormGroup> control).controls);
             } else if (control && (control instanceof FormControl)) {
                 FormHelperDirective.validateControl(control);
             }
@@ -232,6 +230,14 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
 
     // ------------------------- privates --------------------------------
 
+    private static validateControl(control: AbstractControl) {
+        // 设置control为dirty状态，使错误信息显示
+        control.markAsDirty();
+
+        // 触发control.statusChanges。默认会自动触发FormGroup的状态检测
+        control.updateValueAndValidity();
+    }
+
     private triggerReposition(control: AbstractControl) {
         let $field = $(control[ ELEMENT_BIND_TO_CONTROL_KEY ]);
         if ($field.length) {
@@ -249,7 +255,7 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
     }
 
     private bindSubmitButtons() {
-        let handlerName = this._config.submitHandler ? (<any>this._config.submitHandler).name : undefined;
+        let handlerName = this._config.submitHandler ? (<any> this._config.submitHandler).name : undefined;
 
         this.$form
             .find(':submit')
@@ -268,7 +274,7 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
                 if (handlerName) {
                     let HandlerClass = FormHelperDirective.submitHandlerMap.get(handlerName);
                     if (HandlerClass instanceof Function) {
-                        let handlerInstance = new HandlerClass($btn, (<any>this._config.submitHandler).config);
+                        let handlerInstance = new HandlerClass($btn, (<any> this._config.submitHandler).config);
                         if (handlerInstance.destroy) {
                             this.destroys.push(() => handlerInstance.destroy());
                         }
@@ -277,6 +283,7 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
                         this.destroys.push(() => $btn.off(clickEvent));
 
                         $btn.data(this.submitHandlerKey, { name: handlerName, data: handlerInstance });
+
                         return;
                     }
                 }
@@ -303,7 +310,7 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
     }
 
     private bindErrorHandler(control: AbstractControl) {
-        let handlerName = this._config.errorHandler ? (<any>this._config.errorHandler).name : undefined;
+        let handlerName = this._config.errorHandler ? (<any> this._config.errorHandler).name : undefined;
         let $field = $(control[ ELEMENT_BIND_TO_CONTROL_KEY ]);
 
         if ($field.length == 0) {
@@ -324,7 +331,7 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
             if (HandlerClass instanceof Function) {
                 let handlerInstance = new HandlerClass(
                     $field,
-                    (<any>this._config.errorHandler).config,
+                    (<any> this._config.errorHandler).config,
                     control,
                     this._config
                 );
@@ -334,6 +341,7 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
 
                 $field.data(this.errorHandlerKey, { name: handlerName, data: handlerInstance });
                 this.listenStatusChanges(control, $field);
+
                 return;
             }
         }
@@ -442,14 +450,6 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
         }
     }
 
-    private static validateControl(control: AbstractControl) {
-        // 设置control为dirty状态，使错误信息显示
-        control.markAsDirty();
-
-        // 触发control.statusChanges。默认会自动触发FormGroup的状态检测
-        control.updateValueAndValidity();
-    }
-
     private validateControls(controls: { [key: string]: AbstractControl; } = this.ngForm.controls) {
         for (let name in controls) {
             let control = controls[ name ];
@@ -476,6 +476,7 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
                 pendings.push(Observable.interval(100).skipWhile(() => control.pending).first());
             }
         }
+
         return pendings;
     }
 
@@ -521,19 +522,22 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
     private findContext() {
         let context = this._config.context,
             dotsPathReg = /^(\.\/?|\.\.(\/\.\.)*\/?)$/;
-        if (isString(context) && dotsPathReg.test(<string>context)) {
-            if (/^\.\/?$/.test(<string>context)) {
+
+        if (isString(context) && dotsPathReg.test(<string> context)) {
+            if (/^\.\/?$/.test(<string> context)) {
                 return this.$form;
             } else {
-                let num = (<string>context).split('/').filter(v => v).length,
+                let num = (<string> context).split('/').filter(v => v).length,
                     $field = this.$form,
                     n = 0;
+
                 while (n++ < num) {
                     $field = $field.parent();
                     if ($field.length == 0) {
                         return null;
                     }
                 }
+
                 return $field;
             }
         } else {
@@ -567,6 +571,7 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
                 }
             }
         }
+
         return minOffsetTop;
     }
 
@@ -624,9 +629,10 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
                 return controls[ ele ];
             }
             if (controls[ ele ] instanceof FormGroup) {
-                return this.findControlByName(name, (<FormGroup>controls[ ele ]).controls);
+                return this.findControlByName(name, (<FormGroup> controls[ ele ]).controls);
             }
         }
+
         return null;
     }
 

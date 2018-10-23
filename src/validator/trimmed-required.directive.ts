@@ -12,6 +12,7 @@ export class TrimmedRequiredDirective implements Validator {
 
     validate(c: AbstractControl): ValidationErrors | null {
         let v = isNullOrUndefined(c.value) ? '' : String(c.value);
+
         return v && v.trim().length > 0 ? null : { trimmedRequired: true };
     }
 }

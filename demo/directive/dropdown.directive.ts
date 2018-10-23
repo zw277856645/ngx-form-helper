@@ -21,12 +21,12 @@ export class DropdownDirective implements ControlValueAccessor, AfterViewInit {
 
     @Input('dropdown') options: any;
 
+    onHideEmitter = new EventEmitter();
+
     private $dropdown: any;
     private selectValue: any;
     private controlChange: Function = new Function();
     private controlTouch: Function = new Function();
-
-    public onHideEmitter = new EventEmitter();
 
     constructor(private self: ElementRef) {
         this.$dropdown = $(self.nativeElement);

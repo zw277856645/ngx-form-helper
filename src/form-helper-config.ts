@@ -59,5 +59,3 @@ export interface FormHelperConfig {
     // submitHandler处理完成后的回调。参数为onSuccess返回值
     onComplete?: (...args: any[]) => void;
 }
-
-

@@ -19,6 +19,7 @@ export function doAfter(fn: () => Promise<any> | Observable<any> | void, cb: (..
             cb(isNullOrUndefined(ret) ? emptyObject : ret);
         }
     } catch (e) {
+        // tslint:disable-next-line:no-console
         console.error(e);
         cb(emptyObject);
     }
@@ -114,6 +115,7 @@ function parseProxyExpression(expr: string) {
                     return (prevNum > nextNum ? '~' : '+') + Math.abs(prevNum - nextNum);
                 }
             }
+
             return v;
         })
         .filter(v => v);
@@ -129,6 +131,7 @@ export function getScrollProxy($ele: JQuery) {
 
 export function getContextProxy($ele: JQuery) {
     let data = $ele.data('contextProxy');
+
     return data === false ? false : (data || '').replace(/\s/g, '');
 }
 

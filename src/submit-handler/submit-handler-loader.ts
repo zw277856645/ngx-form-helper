@@ -72,5 +72,3 @@ export class SubmitHandlerLoader implements SubmitHandler {
     }
 
 }
-
-

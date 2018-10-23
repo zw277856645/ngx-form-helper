@@ -1,13 +1,14 @@
 {
   "name": "ngx-form-helper",
-  "version": "0.0.15",
+  "version": "0.0.16",
   "description": "angular form validation helper",
   "scripts": {
     "build": "ng-packagr -p package.json && npm run build-style",
     "build-style": "webpack --config config/webpack.js && rimraf dist/ngx-form-helper.js",
     "publish": "npm publish dist",
     "clean": "rimraf dist",
-    "demo": "ng serve"
+    "demo": "ng serve",
+    "lint": "tslint -c tslint.json -p tsconfig.json"
   },
   "$schema": "./node_modules/ng-packagr/package.schema.json",
   "ngPackage": {
@@ -51,6 +52,8 @@
     "core-js": "2.4.1",
     "css-loader": "0.26.1",
     "ng-packagr": "3.0.3",
+    "codelyzer": "4.5.0",
+    "tslint": "5.11.0",
     "rimraf": "2.6.1",
     "rxjs": "5.5.6",
     "semantic-ui-css": "2.3.2",

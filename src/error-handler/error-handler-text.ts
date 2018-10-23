@@ -66,7 +66,7 @@ export class ErrorHandlerText implements ErrorHandler {
                     contextProxy = this.config.contextProxy;
                 }
 
-                let $proxy = findProxyItem(this.$ele, <string>contextProxy);
+                let $proxy = findProxyItem(this.$ele, <string> contextProxy);
                 if ($proxy && $proxy.length) {
                     this.$text = $proxy.is(this.config.selector) ? $proxy : $proxy.find(this.config.selector).eq(0);
                     if (this.$text && this.$text.length) {

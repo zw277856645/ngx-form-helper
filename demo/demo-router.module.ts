@@ -20,5 +20,3 @@ const routes: Routes = [
 })
 export class DemoRouterModule {
 }
-
-
