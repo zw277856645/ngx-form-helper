@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { DemoComponent } from './demo.component';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { FormHelperModule } from '../src/form-helper.module';
 import { DemoRouterModule } from './demo-router.module';
@@ -15,6 +15,7 @@ import { DropdownDirective } from './directive/dropdown.directive';
 @NgModule({
     imports: [
         BrowserModule,
+        ReactiveFormsModule,
         CommonModule,
         FormsModule,
         FormHelperModule,

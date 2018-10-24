@@ -136,20 +136,26 @@
       </div>
     </div>
 
-    <div *ngIf="type == 1">
-      <div class="field">
-        <label>性别</label>
-        <input type="text" name="sex" #sexCtrl="ngModel" required [(ngModel)]="sex" autocomplete="off" pattern="^\d*$">
-        <div class="fh-message">
-          <div [class.error]="sexCtrl.errors?.required">不能为空</div>
-          <div [class.error]="sexCtrl.errors?.pattern">只能为数字</div>
+    <ng-container *ngTemplateOutlet="template;context:{type:type,$implicit:sex,form:form,reset:reset}"></ng-container>
+
+    <!-- ng-template 必须在form内部，否则模板内的ngModel将不会注册到ngForm中 -->
+    <ng-template #template let-type="type" let-form="form" let-reset="reset">
+      <div *ngIf="type == 1">
+        <div class="field">
+          <label>性别</label>
+          <input type="text" name="sex" #sexCtrl="ngModel" required [(ngModel)]="sex" autocomplete="off"
+                 pattern="^\d*$">
+          <div class="fh-message">
+            <div [class.error]="sexCtrl.errors?.required">不能为空</div>
+            <div [class.error]="sexCtrl.errors?.pattern">只能为数字</div>
+          </div>
+        </div>
+        <div class="field buttons">
+          <button type="submit" class="ui button small instagram">保存2</button>
+          <button type="button" class="ui button small" (click)="reset(form)">重置(form)</button>
         </div>
       </div>
-      <div class="field buttons">
-        <button type="submit" class="ui button small instagram">保存2</button>
-        <button type="button" class="ui button small" (click)="reset(form)">重置(form)</button>
-      </div>
-    </div>
+    </ng-template>
   </form>
 
   <div class="ui divider"></div>
