@@ -214,7 +214,6 @@
       "check-module",
       "check-separator",
       "check-rest-spread",
-      "check-typecast",
       "check-type",
       "check-type-operator",
       "check-preblock"
