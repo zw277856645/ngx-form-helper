@@ -168,9 +168,9 @@ export class ErrorHandlerTooltip implements ErrorHandler {
                             this.bottom = param;
                         }
 
-                        let fieldProxy = getFieldProxy(this.$tooltip);
+                        let fieldProxy = getFieldProxy(this.$ele);
                         if (fieldProxy) {
-                            this.$fieldProxy = findProxyItem(this.$tooltip, fieldProxy);
+                            this.$fieldProxy = findProxyItem(this.$ele, fieldProxy);
                         }
 
                         // 监听状态变化，绑定相应样式
