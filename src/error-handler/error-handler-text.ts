@@ -2,6 +2,7 @@ import { ErrorHandler } from './error-handler';
 import { ErrorHandlerTextConfig } from './error-handler-text-config';
 import { findProxyItem, getContextProxy, getInline, getOffsetX, getOffsetY } from '../form-helper-utils';
 import { isNullOrUndefined, isUndefined } from 'util';
+
 const $ = require('jquery');
 
 /**
@@ -66,7 +67,7 @@ export class ErrorHandlerText implements ErrorHandler {
                     contextProxy = this.config.contextProxy;
                 }
 
-                let $proxy = findProxyItem(this.$ele, <string> contextProxy);
+                let $proxy = findProxyItem(this.$ele, contextProxy);
                 if ($proxy && $proxy.length) {
                     this.$text = $proxy.is(this.config.selector) ? $proxy : $proxy.find(this.config.selector).eq(0);
                     if (this.$text && this.$text.length) {
@@ -89,12 +90,12 @@ export class ErrorHandlerText implements ErrorHandler {
                         }
 
                         param = getOffsetY(this.$text);
-                        if (param) {
+                        if (!isNullOrUndefined(param)) {
                             this.$text.css('top', param);
                         }
 
                         param = getOffsetX(this.$text);
-                        if (param) {
+                        if (!isNullOrUndefined(param)) {
                             this.$text.css('left', param);
                         }
                     }

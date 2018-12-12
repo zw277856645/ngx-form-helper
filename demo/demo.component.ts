@@ -40,6 +40,7 @@ export class DemoComponent implements AfterViewInit {
     addr2: string;
     issue2: string;
     url: string;
+    hidden: string;
 
     constructor() {
         this.cks = [

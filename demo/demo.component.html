@@ -31,6 +31,15 @@
       </div>
 
       <div class="field">
+        <label>Input Hidden</label>
+        <input type="text" placeholder="占位" disabled>
+        <input type="hidden" name="hidden" [(ngModel)]="hidden" #hiddenCtrl="ngModel" required>
+        <div class="fh-message" data-field-proxy="~2">
+          <div [class.error]="hiddenCtrl.errors?.required">不能为空</div>
+        </div>
+      </div>
+
+      <div class="field">
         <label>选择喜好</label>
         <select class="ui dropdown" name="love" #loveCtrl="ngModel" [(ngModel)]="love" required>
           <option value="">请选择</option>
@@ -61,7 +70,8 @@
 
       <div class="field">
         <label>远程</label>
-        <input type="text" name="remote" #remoteCtrl="ngModel" [(ngModel)]="remote" autocomplete="off" nameUnique>
+        <input type="text" name="remote" #remoteCtrl="ngModel" [(ngModel)]="remote" autocomplete="off"
+               nameUnique>
         <div class="fh-message">
           <div class="pending" [class.error]="remoteCtrl.errors?.nameUnique">重复</div>
         </div>
@@ -94,8 +104,8 @@
                     <div class="item">POST</div>
                   </div>
                 </div>
-                <input type="text" name="url" #urlCtrl="ngModel" [(ngModel)]="url" required autocomplete="off"
-                       maxlength="500" data-context-proxy="^+">
+                <input type="text" name="url" #urlCtrl="ngModel" [(ngModel)]="url" required
+                       autocomplete="off" maxlength="500" data-context-proxy="^+">
               </div>
               <div class="fh-message" data-top="61">
                 <div [class.error]="urlCtrl.errors?.required">不能为空</div>
@@ -103,8 +113,8 @@
             </div>
             <div class="field">
               <label>远程2</label>
-              <input type="text" name="remote2" #remote2Ctrl="ngModel" [(ngModel)]="remote2" autocomplete="off"
-                     nameUnique>
+              <input type="text" name="remote2" #remote2Ctrl="ngModel" [(ngModel)]="remote2"
+                     autocomplete="off" nameUnique>
               <div class="fh-message" data-top="61">
                 <div class="pending" [class.error]="remote2Ctrl.errors?.nameUnique">重复</div>
               </div>
@@ -115,8 +125,8 @@
             <i class="dropdown icon"></i>
             Accordion2
           </div>
-          <div class="content active" [class.active]="accordionActive2" ngModelGroup="gp2" data-scroll-proxy="~"
-               data-context-proxy="false">
+          <div class="content active" [class.active]="accordionActive2" ngModelGroup="gp2"
+               data-scroll-proxy="~" data-context-proxy="false">
             <div class="field">
               <label>生日2</label>
               <input type="text" name="birth2" #birth2Ctrl="ngModel" [(ngModel)]="birth2" required>
@@ -136,7 +146,8 @@
       </div>
     </div>
 
-    <ng-container *ngTemplateOutlet="template;context:{type:type,$implicit:sex,form:form,reset:reset}"></ng-container>
+    <ng-container
+      *ngTemplateOutlet="template;context:{type:type,$implicit:sex,form:form,reset:reset}"></ng-container>
 
     <!-- ng-template 必须在form内部，否则模板内的ngModel将不会注册到ngForm中 -->
     <ng-template #template let-type="type" let-form="form" let-reset="reset">

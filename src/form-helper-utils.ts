@@ -3,7 +3,7 @@ import { isArray, isNullOrUndefined } from 'util';
 import 'rxjs/add/operator/catch';
 
 export const ELEMENT_BIND_TO_CONTROL_KEY = '__element__';
-export const noop = () => void(0);
+export const noop = () => void (0);
 
 const emptyObject = {};
 
@@ -133,6 +133,12 @@ export function getContextProxy($ele: JQuery) {
     let data = $ele.data('contextProxy');
 
     return data === false ? false : (data || '').replace(/\s/g, '');
+}
+
+export function getFieldProxy($ele: JQuery) {
+    let data = $ele.data('fieldProxy');
+
+    return (data || '').replace(/\s/g, '');
 }
 
 export function getPosition($ele: JQuery) {

@@ -1,11 +1,12 @@
 import { ErrorHandler } from './error-handler';
 import { ErrorHandlerTooltipConfig } from './error-handler-tooltip-config';
 import {
-    findProxyItem, getBottom, getContextProxy, getLeft, getOffsetX, getOffsetY, getPosition, getRight,
+    findProxyItem, getBottom, getContextProxy, getFieldProxy, getLeft, getOffsetX, getOffsetY, getPosition, getRight,
     getTop
 } from '../form-helper-utils';
 import { isNullOrUndefined, isUndefined } from 'util';
 import { AbstractControl } from '@angular/forms';
+
 const $ = require('jquery');
 
 /**
@@ -15,6 +16,7 @@ const $ = require('jquery');
  *  3)offset-x：提示水平偏移量，负数向左，正数向右。使用方tooltip
  *  4)position：覆盖config中配置。使用方tooltip
  *  5)left/right/top/bottom：当tooltip父元素不可见时，tooltip无法计算位置，可使用这些值设定固定定位。使用方tooltip
+ *  6)field-proxy：表单域/表单组自身的代理对象。使用方表单域/表单组
  */
 export class ErrorHandlerTooltip implements ErrorHandler {
 
@@ -24,6 +26,11 @@ export class ErrorHandlerTooltip implements ErrorHandler {
     private $tooltip: JQuery;
     private offsetY = 0;
     private offsetX = 0;
+    private left: number;
+    private right: number;
+    private top: number;
+    private bottom: number;
+    private $fieldProxy: JQuery;
     private timeoutFlag: any;
 
     constructor(private $ele: JQuery,
@@ -105,7 +112,7 @@ export class ErrorHandlerTooltip implements ErrorHandler {
                     contextProxy = this.config.contextProxy;
                 }
 
-                let $proxy = findProxyItem(this.$ele, <string> contextProxy);
+                let $proxy = findProxyItem(this.$ele, contextProxy);
                 if ($proxy && $proxy.length) {
                     this.$tooltip = $proxy.is(this.config.selector) ? $proxy : $proxy.find(this.config.selector).eq(0);
                     if (this.$tooltip && this.$tooltip.length) {
@@ -132,13 +139,38 @@ export class ErrorHandlerTooltip implements ErrorHandler {
                         this.$tooltip.addClass(this.config.position);
 
                         param = getOffsetY(this.$tooltip);
-                        if (param) {
+                        if (!isNullOrUndefined(param)) {
                             this.offsetY = param;
                         }
 
                         param = getOffsetX(this.$tooltip);
-                        if (param) {
+                        if (!isNullOrUndefined(param)) {
                             this.offsetX = param;
+                        }
+
+                        param = getLeft(this.$tooltip);
+                        if (!isNullOrUndefined(param)) {
+                            this.left = param;
+                        }
+
+                        param = getRight(this.$tooltip);
+                        if (!isNullOrUndefined(param)) {
+                            this.right = param;
+                        }
+
+                        param = getTop(this.$tooltip);
+                        if (!isNullOrUndefined(param)) {
+                            this.top = param;
+                        }
+
+                        param = getBottom(this.$tooltip);
+                        if (!isNullOrUndefined(param)) {
+                            this.bottom = param;
+                        }
+
+                        let fieldProxy = getFieldProxy(this.$tooltip);
+                        if (fieldProxy) {
+                            this.$fieldProxy = findProxyItem(this.$tooltip, fieldProxy);
                         }
 
                         // 监听状态变化，绑定相应样式
@@ -165,90 +197,100 @@ export class ErrorHandlerTooltip implements ErrorHandler {
 
     private setLocation() {
         if (this.$tooltip && this.$tooltip.length) {
-            let $parent = this.$tooltip.parent();
-            if ($parent.is(':hidden')) {
-                let style = {
-                    left: getLeft(this.$tooltip),
-                    right: getRight(this.$tooltip),
-                    top: getTop(this.$tooltip),
-                    bottom: getBottom(this.$tooltip)
-                };
-                this.$tooltip.css(style);
-            } else {
-                let parentWidth = $parent.outerWidth(),
-                    parentHeight = $parent.outerHeight(),
-
-                    fieldWidth = this.$ele.outerWidth(),
-                    fieldHeight = this.$ele.outerHeight(),
-
-                    width = this.$tooltip.outerWidth(),
-                    height = this.$tooltip.outerHeight();
-
-                /* $ele到$parent之间可能有多个非position:static父元素，需要计算出$ele到$parent的position累加值 */
-
-                let $tmp = this.$ele, positions = [];
-                do {
-                    positions.push($tmp.position());
-                    $tmp = $tmp.offsetParent();
-                } while (!$tmp.is($parent) && !$tmp.is('html,body'));
-
-                let position = positions.reduce((a, b) => {
-                    return { left: a.left + b.left, top: a.top + b.top };
+            if (!isNullOrUndefined(this.left)
+                || !isNullOrUndefined(this.right)
+                || !isNullOrUndefined(this.top)
+                || !isNullOrUndefined(this.bottom)) {
+                this.$tooltip.css({
+                    left: this.left,
+                    right: this.right,
+                    top: this.top,
+                    bottom: this.bottom
                 });
 
-                switch (this.config.position) {
-                    default:
-                    case 'bottom right':
-                        this.$tooltip.css({
-                            top: position.top + fieldHeight + this.offsetY + 'px',
-                            right: parentWidth - position.left - fieldWidth + this.offsetX + 'px'
-                        });
-                        break;
-                    case 'bottom center':
-                        this.$tooltip.css({
-                            top: position.top + fieldHeight + this.offsetY + 'px',
-                            left: position.left + (fieldWidth / 2) - (width / 2) + this.offsetX + 'px'
-                        });
-                        break;
-                    case 'bottom left':
-                        this.$tooltip.css({
-                            top: position.top + fieldHeight + this.offsetY + 'px',
-                            left: position.left + this.offsetX + 'px'
-                        });
-                        break;
-                    case 'top right':
-                        this.$tooltip.css({
-                            right: parentWidth - position.left - fieldWidth + this.offsetX + 'px',
+                return;
+            }
+
+            let $parent = this.$tooltip.parent();
+
+            if ($parent.is(':hidden')) {
+                return;
+            }
+
+            let parentWidth = $parent.outerWidth(),
+                parentHeight = $parent.outerHeight(),
+
+                $self = this.$fieldProxy && this.$fieldProxy.length ? this.$fieldProxy : this.$ele,
+                fieldWidth = $self.outerWidth(),
+                fieldHeight = $self.outerHeight(),
+
+                width = this.$tooltip.outerWidth(),
+                height = this.$tooltip.outerHeight();
+
+            /* $self到$parent之间可能有多个非position:static父元素，需要计算出$self到$parent的position累加值 */
+
+            let $tmp = $self, positions = [];
+            do {
+                positions.push($tmp.position());
+                $tmp = $tmp.offsetParent();
+            } while (!$tmp.is($parent) && !$tmp.is('html,body'));
+
+            let position = positions.reduce((a, b) => {
+                return { left: a.left + b.left, top: a.top + b.top };
+            });
+
+            switch (this.config.position) {
+                default:
+                case 'bottom right':
+                    this.$tooltip.css({
+                        top: position.top + fieldHeight + this.offsetY + 'px',
+                        right: parentWidth - position.left - fieldWidth + this.offsetX + 'px'
+                    });
+                    break;
+                case 'bottom center':
+                    this.$tooltip.css({
+                        top: position.top + fieldHeight + this.offsetY + 'px',
+                        left: position.left + (fieldWidth / 2) - (width / 2) + this.offsetX + 'px'
+                    });
+                    break;
+                case 'bottom left':
+                    this.$tooltip.css({
+                        top: position.top + fieldHeight + this.offsetY + 'px',
+                        left: position.left + this.offsetX + 'px'
+                    });
+                    break;
+                case 'top right':
+                    this.$tooltip.css({
+                        right: parentWidth - position.left - fieldWidth + this.offsetX + 'px',
+                        bottom: parentHeight - position.top + this.offsetY + 'px'
+                    });
+                    break;
+                case 'top center':
+                    this.$tooltip
+                        .css({
+                            left: position.left + (fieldWidth / 2) - (width / 2) + this.offsetX + 'px',
                             bottom: parentHeight - position.top + this.offsetY + 'px'
                         });
-                        break;
-                    case 'top center':
-                        this.$tooltip
-                            .css({
-                                left: position.left + (fieldWidth / 2) - (width / 2) + this.offsetX + 'px',
-                                bottom: parentHeight - position.top + this.offsetY + 'px'
-                            });
-                        break;
-                    case 'top left':
-                        this.$tooltip.css({
-                            left: position.left + this.offsetX + 'px',
-                            bottom: parentHeight - position.top + this.offsetY + 'px'
-                        });
-                        break;
-                    case 'left center':
-                        this.$tooltip
-                            .css({
-                                top: position.top + (fieldHeight / 2) - (height / 2) + this.offsetY + 'px',
-                                right: parentWidth - position.left + this.offsetX + 'px'
-                            });
-                        break;
-                    case 'right center':
-                        this.$tooltip.css({
+                    break;
+                case 'top left':
+                    this.$tooltip.css({
+                        left: position.left + this.offsetX + 'px',
+                        bottom: parentHeight - position.top + this.offsetY + 'px'
+                    });
+                    break;
+                case 'left center':
+                    this.$tooltip
+                        .css({
                             top: position.top + (fieldHeight / 2) - (height / 2) + this.offsetY + 'px',
-                            left: position.left + fieldWidth + this.offsetX + 'px'
+                            right: parentWidth - position.left + this.offsetX + 'px'
                         });
-                        break;
-                }
+                    break;
+                case 'right center':
+                    this.$tooltip.css({
+                        top: position.top + (fieldHeight / 2) - (height / 2) + this.offsetY + 'px',
+                        left: position.left + fieldWidth + this.offsetX + 'px'
+                    });
+                    break;
             }
         }
     }
