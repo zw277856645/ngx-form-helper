@@ -97,6 +97,7 @@ tooltip示例
 | offset-x               | number        | 提示水平偏移量，负数向左，正数向右。使用方tooltip
 | position               | string        | 覆盖ErrorHandlerTooltipConfig中配置。使用方tooltip
 | left/right/top/bottom  | number        | 当tooltip父元素不可见时，tooltip无法计算位置，可使用这些值设定固定位置。使用方tooltip
+| field-proxy            | string        | 表单域/表单组自身的代理对象。使用方表单域/表单组
 
 
 ## 错误处理组件配置(ErrorHandlerTextConfig)
