@@ -1,5 +1,6 @@
 # ngx-form-helper
 angular2表单验证辅助插件
+for angular <= 5
 
 
 ## 安装
