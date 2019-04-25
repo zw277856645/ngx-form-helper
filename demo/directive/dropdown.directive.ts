@@ -1,10 +1,8 @@
 import { Directive, Input, ElementRef, EventEmitter, AfterViewInit } from '@angular/core';
-import { isFunction, isNullOrUndefined } from 'util';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/observable/timer';
-import 'rxjs/add/operator/takeWhile';
+import { timer } from 'rxjs';
+import { map, takeWhile } from 'rxjs/operators';
+import { isFunction, isNullOrUndefined } from 'cmjs-lib';
 
 @Directive({
     selector: '[dropdown]',
@@ -39,7 +37,7 @@ export class DropdownDirective implements ControlValueAccessor, AfterViewInit {
 
         this.$dropdown.dropdown($.extend({}, this.options, {
             onChange: (value: string, text: string, $choice: any) => {
-                if (value != this.selectValue) {
+                if (value !== this.selectValue) {
                     this.selectValue = value;
                     this.controlChange(value);
                     this.controlTouch(value);
@@ -66,11 +64,11 @@ export class DropdownDirective implements ControlValueAccessor, AfterViewInit {
         if (isNullOrUndefined(value) && this.selectValue) {
             this.behavior('restore defaults');
         } else if (!isNullOrUndefined(value)) {
-            Observable.timer(0, 300)
-                .map(() => this.behavior('set selected', String(value).split(',')))
-                .map(() => this.behavior('get text'))
-                .takeWhile(txt => !txt || txt == this.behavior('get default text'))
-                .subscribe();
+            timer(0, 300).pipe(
+                map(() => this.behavior('set selected', String(value).split(','))),
+                map(() => this.behavior('get text')),
+                takeWhile(txt => !txt || txt === this.behavior('get default text'))
+            ).subscribe();
         }
     }
 

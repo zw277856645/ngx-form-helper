@@ -1,12 +1,9 @@
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { FormHelperConfig } from '../src/form-helper-config';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/interval';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/first';
-import 'rxjs/add/observable/throw';
+import { interval } from 'rxjs';
 import { uuid } from 'cmjs-lib';
 import { FormHelperDirective } from '../src/form-helper.directive';
+import { first, map } from 'rxjs/operators';
 
 @Component({
     templateUrl: './demo.component.html',
@@ -57,12 +54,15 @@ export class DemoComponent implements AfterViewInit {
                 }
             },
             onSuccess: () => {
-                return Observable.interval(0).map(() => {
-                    // tslint:disable-next-line:no-console
-                    console.log('ok');
+                return interval(0).pipe(
+                    map(() => {
+                        // tslint:disable-next-line:no-console
+                        console.log('ok');
 
-                    return 'ok';
-                }).first();
+                        return 'ok';
+                    }),
+                    first()
+                );
             }
         };
 

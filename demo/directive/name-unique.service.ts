@@ -1,12 +1,11 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/of';
-import 'rxjs/add/operator/map';
+import { of } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Injectable()
 export class NameValidateService {
 
     isNameUnique(name: string) {
-        return Observable.of(name).map(name => name == 'admin');
+        return of(name).pipe(map(name => name === 'admin'));
     }
 }

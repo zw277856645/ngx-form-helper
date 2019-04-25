@@ -1,6 +1,5 @@
-var webpack = require('webpack');
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
-var helpers = require('./helpers');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const helpers = require('./helpers');
 
 module.exports = {
 
@@ -20,16 +19,16 @@ module.exports = {
     },
 
     module: {
-        rules: [
+        loaders: [
             {
                 test: /\.(png|jpe?g|gif|svg|woff|woff2|ttf|eot|ico)$/,
-                use: "file-loader?name=asset/[name].[ext]"
+                loader: "file-loader?name=asset/[name].[ext]"
             },
             {
                 test: /\.(css|less)$/,
-                use: ExtractTextPlugin.extract({
+                loader: ExtractTextPlugin.extract({
                     fallback: 'style-loader',
-                    use: 'css-loader?sourceMap!postcss-loader!less-loader'
+                    loader: 'css-loader?sourceMap!postcss-loader!less-loader'
                 })
             }
         ]

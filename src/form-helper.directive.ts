@@ -1,25 +1,18 @@
 import { Input, ElementRef, Directive, OnDestroy, HostListener, AfterViewInit, NgZone } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, NgForm } from '@angular/forms';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
-import 'rxjs/add/observable/forkJoin';
-import 'rxjs/add/observable/interval';
-import 'rxjs/add/operator/mapTo';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/first';
-import 'rxjs/add/operator/skipWhile';
-import 'rxjs/add/observable/of';
-import 'rxjs/add/observable/timer';
+import { forkJoin, interval, Observable, Subscription, timer } from 'rxjs';
+
 import { FormHelperConfig } from './form-helper-config';
 import { SubmitHandlerLoader } from './submit-handler/submit-handler-loader';
 import { SubmitHandler } from './submit-handler/submit-handler';
 import {
     doAfter, ELEMENT_BIND_TO_CONTROL_KEY, findProxyItem, getScrollProxy, getValidateImmediate, noop
 } from './form-helper-utils';
-import { isNullOrUndefined, isNumber, isString } from 'util';
 import { ErrorHandlerTooltip } from './error-handler/error-handler-tooltip';
 import { ErrorHandlerText } from './error-handler/error-handler-text';
-const $ = require('jquery');
+import { first, skipWhile } from 'rxjs/operators';
+import { isNullOrUndefined, isNumber, isString } from 'cmjs-lib';
+
 const TWEEN = require('@tweenjs/tween.js');
 
 /**
@@ -52,15 +45,15 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
     set formHelper(config: FormHelperConfig) {
         $.extend(true, this._config, config);
         if (isString(this._config.submitHandler)) {
-            this._config.submitHandler = <any> { name: this._config.submitHandler };
+            this._config.submitHandler = <any>{ name: this._config.submitHandler };
         }
         if (isString(this._config.errorHandler)) {
-            this._config.errorHandler = <any> { name: this._config.errorHandler };
+            this._config.errorHandler = <any>{ name: this._config.errorHandler };
         }
     }
 
     @HostListener('keydown', [ '$event' ]) keydown(event: KeyboardEvent) {
-        if ((event.keyCode || event.which) == 13 && event.srcElement.nodeName.toUpperCase() != 'TEXTAREA') {
+        if ((event.keyCode || event.which) === 13 && event.srcElement.nodeName.toUpperCase() !== 'TEXTAREA') {
             event.preventDefault();
         }
     }
@@ -203,7 +196,7 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
         if (isString(name)) {
             let control = this.findControlByName(name);
             if (control && (control instanceof FormGroup)) {
-                this.validateControls((<FormGroup> control).controls);
+                this.validateControls((<FormGroup>control).controls);
             } else if (control && (control instanceof FormControl)) {
                 FormHelperDirective.validateControl(control);
             }
@@ -224,7 +217,7 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
                         break;
                     }
                 }
-            }, isNumber(track) ? track : 0);
+            }, isNumber(track) ? track as number : 0);
         }
     }
 
@@ -255,7 +248,7 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
     }
 
     private bindSubmitButtons() {
-        let handlerName = this._config.submitHandler ? (<any> this._config.submitHandler).name : undefined;
+        let handlerName = this._config.submitHandler ? (<any>this._config.submitHandler).name : undefined;
 
         this.$form
             .find(':submit')
@@ -265,16 +258,16 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
                     clickEvent = 'click.formHelper',
                     bindData = $btn.data(this.submitHandlerKey);
 
-                if (bindData && bindData.name == handlerName) {
+                if (bindData && bindData.name === handlerName) {
                     return;
-                } else if (bindData && bindData.name != handlerName) {
+                } else if (bindData && bindData.name !== handlerName) {
                     $btn.off(clickEvent);
                 }
 
                 if (handlerName) {
                     let HandlerClass = FormHelperDirective.submitHandlerMap.get(handlerName);
                     if (HandlerClass instanceof Function) {
-                        let handlerInstance = new HandlerClass($btn, (<any> this._config.submitHandler).config);
+                        let handlerInstance = new HandlerClass($btn, (<any>this._config.submitHandler).config);
                         if (handlerInstance.destroy) {
                             this.destroys.push(() => handlerInstance.destroy());
                         }
@@ -295,32 +288,32 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
             });
     }
 
-    private bindErrorHandlers(controls: { [key: string]: AbstractControl; } = this.ngForm.controls) {
+    private bindErrorHandlers(controls: { [ key: string ]: AbstractControl; } = this.ngForm.controls) {
         for (let name in controls) {
             let control = controls[ name ];
             if (control instanceof FormGroup) {
                 this.bindErrorHandlers(control.controls);
             }
-            Observable
-                .timer(0, 100)
-                .skipWhile(() => !control[ ELEMENT_BIND_TO_CONTROL_KEY ])
-                .first()
-                .subscribe(() => this.bindErrorHandler(control));
+
+            timer(0, 100).pipe(
+                skipWhile(() => !control[ ELEMENT_BIND_TO_CONTROL_KEY ]),
+                first()
+            ).subscribe(() => this.bindErrorHandler(control));
         }
     }
 
     private bindErrorHandler(control: AbstractControl) {
-        let handlerName = this._config.errorHandler ? (<any> this._config.errorHandler).name : undefined;
+        let handlerName = this._config.errorHandler ? (<any>this._config.errorHandler).name : undefined;
         let $field = $(control[ ELEMENT_BIND_TO_CONTROL_KEY ]);
 
-        if ($field.length == 0) {
+        if ($field.length === 0) {
             return;
         }
 
         let bindData = $field.data(this.errorHandlerKey);
-        if (bindData && bindData.name == handlerName) {
+        if (bindData && bindData.name === handlerName) {
             return;
-        } else if (bindData && bindData.name != handlerName) {
+        } else if (bindData && bindData.name !== handlerName) {
             if (bindData.data) {
                 bindData.data.whenValid();
             }
@@ -331,7 +324,7 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
             if (HandlerClass instanceof Function) {
                 let handlerInstance = new HandlerClass(
                     $field,
-                    (<any> this._config.errorHandler).config,
+                    (<any>this._config.errorHandler).config,
                     control,
                     this._config
                 );
@@ -373,7 +366,7 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
         if (!$field) {
             $field = $(control[ ELEMENT_BIND_TO_CONTROL_KEY ]);
         }
-        if ($field.length == 0) {
+        if ($field.length === 0) {
             return;
         }
 
@@ -394,7 +387,7 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
         if (!$field) {
             $field = $(control[ ELEMENT_BIND_TO_CONTROL_KEY ]);
         }
-        if ($field.length == 0) {
+        if ($field.length === 0) {
             return;
         }
 
@@ -442,7 +435,7 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
             if (this._config.autoScroll) {
                 let pendings = this.getPendingControls();
                 if (pendings.length) {
-                    Observable.forkJoin(pendings).subscribe(() => this.scrollToTopError());
+                    forkJoin(pendings).subscribe(() => this.scrollToTopError());
                 } else {
                     this.scrollToTopError();
                 }
@@ -450,7 +443,7 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
         }
     }
 
-    private validateControls(controls: { [key: string]: AbstractControl; } = this.ngForm.controls) {
+    private validateControls(controls: { [ key: string ]: AbstractControl; } = this.ngForm.controls) {
         for (let name in controls) {
             let control = controls[ name ];
             if (control instanceof FormGroup) {
@@ -461,7 +454,7 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
         }
     }
 
-    private getPendingControls(controls: { [key: string]: AbstractControl; } = this.ngForm.controls) {
+    private getPendingControls(controls: { [ key: string ]: AbstractControl; } = this.ngForm.controls) {
         let pendings: Observable<any>[] = [];
         for (let name in controls) {
             let control = controls[ name ];
@@ -473,7 +466,7 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
                 continue;
             }
             if (control.enabled && control.pending) {
-                pendings.push(Observable.interval(100).skipWhile(() => control.pending).first());
+                pendings.push(interval(100).pipe(skipWhile(() => control.pending), first()));
             }
         }
 
@@ -482,27 +475,27 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
 
     private scrollToTopError() {
         let $context = this.findContext();
-        if (!$context || $context.length == 0) {
+        if (!$context || $context.length === 0) {
             return;
         }
 
         let minOffsetTop = this.calcMinOffsetTop();
-        if (minOffsetTop == Number.MAX_SAFE_INTEGER) {
+        if (minOffsetTop === Number.MAX_SAFE_INTEGER) {
             minOffsetTop = this.$form.offset().top;
         }
         minOffsetTop -= this._config.offsetTop;
 
         // 非context:window滚动窗体中表单域/表单组实际offset.top需要减去滚动体offset.top，加上滚动体当前scrollTop
-        if ($context[ 0 ] != window && $context[ 0 ].nodeName.toUpperCase() != 'HTML') {
+        if ($context[ 0 ] as any !== window && $context[ 0 ].nodeName.toUpperCase() !== 'HTML') {
             minOffsetTop -= $context.offset().top;
             minOffsetTop += $context.scrollTop();
         }
 
-        let animationRequest;
+        let animationRequest: number;
         let currentTween = new TWEEN.Tween({ y: $context.scrollTop() })
             .to({ y: minOffsetTop }, 500)
             .easing(TWEEN.Easing.Quadratic.Out)
-            .onUpdate(data => {
+            .onUpdate((data: any) => {
                 if (!isNaN(data.y)) {
                     $context.scrollTop(data.y);
                 }
@@ -510,9 +503,9 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
             .onComplete(() => cancelAnimationFrame(animationRequest))
             .start();
 
-        const animate = (time?) => {
+        const animate = (time?: any) => {
             currentTween.update(time);
-            if (currentTween._object.y != minOffsetTop) {
+            if (currentTween._object.y !== minOffsetTop) {
                 this.zone.runOutsideAngular(() => animationRequest = requestAnimationFrame(animate));
             }
         };
@@ -523,17 +516,17 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
         let context = this._config.context,
             dotsPathReg = /^(\.\/?|\.\.(\/\.\.)*\/?)$/;
 
-        if (isString(context) && dotsPathReg.test(<string> context)) {
-            if (/^\.\/?$/.test(<string> context)) {
+        if (isString(context) && dotsPathReg.test(<string>context)) {
+            if (/^\.\/?$/.test(<string>context)) {
                 return this.$form;
             } else {
-                let num = (<string> context).split('/').filter(v => v).length,
+                let num = (<string>context).split('/').filter(v => v).length,
                     $field = this.$form,
                     n = 0;
 
                 while (n++ < num) {
                     $field = $field.parent();
-                    if ($field.length == 0) {
+                    if ($field.length === 0) {
                         return null;
                     }
                 }
@@ -545,7 +538,7 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
         }
     }
 
-    private calcMinOffsetTop(controls: { [key: string]: AbstractControl; } = this.ngForm.controls) {
+    private calcMinOffsetTop(controls: { [ key: string ]: AbstractControl; } = this.ngForm.controls) {
         let minOffsetTop = Number.MAX_SAFE_INTEGER;
         for (let name in controls) {
             let control = controls[ name ];
@@ -553,7 +546,7 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
                 // 跳过ngModelGroup，由其子控件计算合适的元素
                 if (control instanceof FormGroup) {
                     let offsetTop = this.calcMinOffsetTop(control.controls);
-                    if (offsetTop != Number.MAX_SAFE_INTEGER) {
+                    if (offsetTop !== Number.MAX_SAFE_INTEGER) {
                         minOffsetTop = Math.min(offsetTop, minOffsetTop);
                         continue;
                     }
@@ -575,7 +568,7 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
         return minOffsetTop;
     }
 
-    private findClosestVisibleItem(control: AbstractControl) {
+    private findClosestVisibleItem(control: AbstractControl): JQuery {
         let $field = $(control[ ELEMENT_BIND_TO_CONTROL_KEY ]);
 
         // 滚动代理
@@ -590,7 +583,7 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
         }
 
         // 最近可见ngModelGroup
-        if (control.parent && control.parent != this.ngForm.control) {
+        if (control.parent && control.parent !== this.ngForm.control) {
             return this.findClosestVisibleItem(control.parent);
         }
 
@@ -598,7 +591,7 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
         return null;
     }
 
-    private resetControls(controls: { [key: string]: AbstractControl; } = this.ngForm.controls) {
+    private resetControls(controls: { [ key: string ]: AbstractControl; } = this.ngForm.controls) {
         // 提前设置pristine，防止后面的ngForm.reset子控件FormControl.reset级联影响
         // FormGroup状态检测执行(listenStatusChanges)，导致错误提示不正常显示(闪烁)
         for (let name in controls) {
@@ -606,7 +599,7 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
         }
 
         // form重置，只在最外层执行
-        if (controls == this.ngForm.controls) {
+        if (controls === this.ngForm.controls) {
             this.ngForm.reset();
         }
 
@@ -623,13 +616,14 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
         }
     }
 
-    private findControlByName(name: string, controls: { [key: string]: AbstractControl; } = this.ngForm.controls) {
+    private findControlByName(name: string,
+                              controls: { [ key: string ]: AbstractControl; } = this.ngForm.controls): AbstractControl {
         for (let ele in controls) {
-            if (name == ele) {
+            if (name === ele) {
                 return controls[ ele ];
             }
             if (controls[ ele ] instanceof FormGroup) {
-                return this.findControlByName(name, (<FormGroup> controls[ ele ]).controls);
+                return this.findControlByName(name, (<FormGroup>controls[ ele ]).controls);
             }
         }
 

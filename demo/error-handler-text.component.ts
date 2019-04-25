@@ -5,7 +5,7 @@ import { FormHelperDirective } from '../src/form-helper.directive';
 @Component({
     templateUrl: './error-handler-text.component.html',
     styleUrls: [
-        'demo.component.less',
+        './demo.component.less',
         './error-handler-text.component.less'
     ]
 })

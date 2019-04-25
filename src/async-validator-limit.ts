@@ -1,11 +1,8 @@
 import { ElementRef } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/interval';
-import 'rxjs/add/operator/first';
-import 'rxjs/add/operator/switchMap';
+import { interval, Observable } from 'rxjs';
 import { ValidationErrors } from '@angular/forms';
 import { getDebounceTime } from './form-helper-utils';
-const $ = require('jquery');
+import { first, switchMap } from 'rxjs/operators';
 
 export class AsyncValidatorLimit {
 
@@ -16,6 +13,9 @@ export class AsyncValidatorLimit {
     }
 
     protected limit(stream: Observable<ValidationErrors | null>): Observable<ValidationErrors | null> {
-        return Observable.interval(this.debounceTime).first().switchMap(() => stream);
+        return interval(this.debounceTime).pipe(
+            first(),
+            switchMap(() => stream)
+        );
     }
 }

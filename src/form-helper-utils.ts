@@ -1,9 +1,9 @@
-import { Observable } from 'rxjs/Observable';
-import { isArray, isNullOrUndefined } from 'util';
-import 'rxjs/add/operator/catch';
+import { Observable, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import { isArray, isNullOrUndefined } from 'cmjs-lib';
 
 export const ELEMENT_BIND_TO_CONTROL_KEY = '__element__';
-export const noop = () => void (0);
+export const noop = (): any => null;
 
 const emptyObject = {};
 
@@ -14,7 +14,7 @@ export function doAfter(fn: () => Promise<any> | Observable<any> | void, cb: (..
         if (ret instanceof Promise) {
             ret.catch(() => emptyObject).then(cb);
         } else if (ret instanceof Observable) {
-            ret.catch(() => Observable.of(emptyObject)).subscribe(cb);
+            ret.pipe(catchError(() => of(emptyObject))).subscribe(cb);
         } else {
             cb(isNullOrUndefined(ret) ? emptyObject : ret);
         }
@@ -33,7 +33,7 @@ export function findProxyItem($item: JQuery, expr: string) {
 
     // 表达式合并/分组，如：^2^^3++~2~~+3^ -> ^6+2~4+3^1 -> [^6,+2,~4,+3,^1] -> [^6,+1,^1]
     let groups = parseProxyExpression(expr);
-    if (!groups || groups.length == 0) {
+    if (!groups || groups.length === 0) {
         return null;
     }
 
@@ -43,15 +43,15 @@ export function findProxyItem($item: JQuery, expr: string) {
             n = 0;
 
         while (n++ < num) {
-            if (char == '^') {
+            if (char === '^') {
                 $item = $item.parent();
-            } else if (char == '~') {
+            } else if (char === '~') {
                 $item = $item.prev();
             } else {
                 $item = $item.next();
             }
 
-            if ($item.length == 0) {
+            if ($item.length === 0) {
                 break out;
             }
         }
@@ -63,17 +63,17 @@ export function findProxyItem($item: JQuery, expr: string) {
 
 function parseProxyExpression(expr: string) {
     let matches = expr.match(/[\\^~+]+?\d*/g);
-    if (!matches || matches.length == 0) {
+    if (!matches || matches.length === 0) {
         return null;
     }
 
-    matches = matches.map(m => m.length == 1 ? m + '1' : m);
+    matches = matches.map(m => m.length === 1 ? m + '1' : m);
 
     // 相同的相邻元素累加
-    let groups = [], gpLen, prevNum, curNum;
+    let groups: string[] = [], gpLen, prevNum, curNum;
     for (let i = 0, len = matches.length; i < len; i++) {
         gpLen = groups.length;
-        if (i == 0 || !groups[ gpLen - 1 ].startsWith(matches[ i ].charAt(0))) {
+        if (i === 0 || !groups[ gpLen - 1 ].startsWith(matches[ i ].charAt(0))) {
             groups.push(matches[ i ]);
         } else {
             prevNum = parseInt(groups[ gpLen - 1 ].substring(1));
@@ -83,13 +83,13 @@ function parseProxyExpression(expr: string) {
     }
 
     // ^/+~分组
-    let splits = [], canPush;
+    let splits: any[] = [], canPush;
     for (let i = 0, len = groups.length; i < len; i++) {
-        if (groups[ i ].charAt(0) == '^') {
+        if (groups[ i ].charAt(0) === '^') {
             splits.push(groups[ i ]);
         } else {
             canPush = isArray(splits[ splits.length - 1 ]);
-            if (i == 0 || !canPush) {
+            if (i === 0 || !canPush) {
                 splits.push([ groups[ i ] ]);
             } else if (canPush) {
                 splits[ splits.length - 1 ].push(groups[ i ]);
@@ -102,14 +102,14 @@ function parseProxyExpression(expr: string) {
         .map(v => {
             if (isArray(v)) {
                 let prevNum = 0, nextNum = 0;
-                v.forEach(ch => {
+                v.forEach((ch: string) => {
                     if (ch.startsWith('~')) {
                         prevNum += parseInt(ch.substring(1));
                     } else {
                         nextNum += parseInt(ch.substring(1));
                     }
                 });
-                if (prevNum == nextNum) {
+                if (prevNum === nextNum) {
                     return null;
                 } else {
                     return (prevNum > nextNum ? '~' : '+') + Math.abs(prevNum - nextNum);

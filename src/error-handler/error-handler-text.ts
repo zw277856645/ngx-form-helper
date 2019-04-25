@@ -1,9 +1,7 @@
 import { ErrorHandler } from './error-handler';
 import { ErrorHandlerTextConfig } from './error-handler-text-config';
 import { findProxyItem, getContextProxy, getInline, getOffsetX, getOffsetY } from '../form-helper-utils';
-import { isNullOrUndefined, isUndefined } from 'util';
-
-const $ = require('jquery');
+import { isNullOrUndefined, isUndefined } from 'cmjs-lib';
 
 /**
  * data-* api

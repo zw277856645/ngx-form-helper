@@ -1,6 +1,7 @@
 {
   "rulesDirectory": [
-    "node_modules/codelyzer"
+    "node_modules/codelyzer",
+    "node_modules/rxjs-tslint"
   ],
   "rules": {
     "## NG 02-03 01": "在符号名后面追加约定的类型后缀(Component)",
@@ -61,19 +62,13 @@
       true,
       {
         "order": [
-          "public-static-field",
-          "protected-static-field",
           "public-instance-field",
           "protected-instance-field",
-          "private-static-field",
           "private-instance-field",
           "public-constructor",
           "protected-constructor",
           "private-constructor",
-          "public-static-method",
-          "protected-static-method",
           "protected-instance-method",
-          "private-static-method",
           "private-instance-method"
         ]
       }
@@ -217,6 +212,17 @@
       "check-type",
       "check-type-operator",
       "check-preblock"
-    ]
+    ],
+    "## TSLint 040": "使用 === 和 !== 替代 == 和 !=",
+    "triple-equals": true,
+    "__ 2": "****************************************************************************",
+    "## Rxjs 001": "合并 import",
+    "rxjs-collapse-imports": true,
+    "## Rxjs 002": "强制使用 pipe 方式",
+    "rxjs-pipeable-operators-only": true,
+    "## Rxjs 003": "禁止静态方式调用 Observable",
+    "rxjs-no-static-observable-methods": true,
+    "## Rxjs 004": "该变 rxjs5 导入方式为 rxjs6",
+    "rxjs-proper-imports": true
   }
 }

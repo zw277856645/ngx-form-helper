@@ -4,10 +4,8 @@ import {
     findProxyItem, getBottom, getContextProxy, getFieldProxy, getLeft, getOffsetX, getOffsetY, getPosition, getRight,
     getTop
 } from '../form-helper-utils';
-import { isNullOrUndefined, isUndefined } from 'util';
 import { AbstractControl } from '@angular/forms';
-
-const $ = require('jquery');
+import { isNullOrUndefined, isUndefined } from 'cmjs-lib';
 
 /**
  * data-* api
