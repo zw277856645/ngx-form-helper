@@ -3,13 +3,10 @@ import { AbstractControl, FormControl, FormGroup, NgForm } from '@angular/forms'
 import { forkJoin, interval, Observable, Subscription, timer } from 'rxjs';
 
 import { FormHelperConfig } from './form-helper-config';
-import { SubmitHandlerLoader } from './submit-handler/submit-handler-loader';
 import { SubmitHandler } from './submit-handler/submit-handler';
 import {
     doAfter, ELEMENT_BIND_TO_CONTROL_KEY, findProxyItem, getScrollProxy, getValidateImmediate, noop
 } from './form-helper-utils';
-import { ErrorHandlerTooltip } from './error-handler/error-handler-tooltip';
-import { ErrorHandlerText } from './error-handler/error-handler-text';
 import { first, skipWhile } from 'rxjs/operators';
 import { isNullOrUndefined, isNumber, isString } from 'cmjs-lib';
 
@@ -631,7 +628,3 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
     }
 
 }
-
-FormHelperDirective.registerSubmitHandler('loader', SubmitHandlerLoader);
-FormHelperDirective.registerErrorHandler('tooltip', ErrorHandlerTooltip);
-FormHelperDirective.registerErrorHandler('text', ErrorHandlerText);
