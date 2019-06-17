@@ -11,6 +11,8 @@ import { NameUniqueDirective } from './directive/name-unique.directive';
 import { NameValidateService } from './directive/name-unique.service';
 import { ErrorHandlerTextComponent } from './error-handler-text.component';
 import { DropdownDirective } from './directive/dropdown.directive';
+import { AccordionDirective } from './directive/accordion.directive';
+import { ModalDirective } from './directive/modal.directive';
 
 @NgModule({
     imports: [
@@ -27,7 +29,9 @@ import { DropdownDirective } from './directive/dropdown.directive';
         ErrorHandlerTextComponent,
         GroupedCheckboxRequiredDirective,
         NameUniqueDirective,
-        DropdownDirective
+        DropdownDirective,
+        AccordionDirective,
+        ModalDirective
     ],
     providers: [
         NameValidateService

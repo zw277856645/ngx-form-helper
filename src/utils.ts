@@ -1,31 +1,24 @@
-import { Observable, of } from 'rxjs';
+import { defer, Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { isArray, isNullOrUndefined } from 'cmjs-lib';
+import { fromPromise } from 'rxjs/internal-compatibility';
+import { SimpleChange } from '@angular/core';
+import { ErrorMessage } from './error-handler/error-message';
 
-export const ELEMENT_BIND_TO_CONTROL_KEY = '__element__';
 export const noop = (): any => null;
 
-const emptyObject = {};
+export function isNotFirstChange(propChange: SimpleChange) {
+    return propChange && !propChange.firstChange;
+}
 
-export function doAfter(fn: () => Promise<any> | Observable<any> | void, cb: (...args: any[]) => void) {
-    let ret;
-    try {
-        ret = fn();
-        if (ret instanceof Promise) {
-            ret.catch(() => emptyObject).then(cb);
-        } else if (ret instanceof Observable) {
-            ret.pipe(catchError(() => of(emptyObject))).subscribe(cb);
-        } else {
-            cb(isNullOrUndefined(ret) ? emptyObject : ret);
-        }
-    } catch (e) {
-        // tslint:disable-next-line:no-console
-        console.error(e);
-        cb(emptyObject);
+export function splitClassNames(classNames: string | boolean) {
+    if (typeof classNames === 'string' && classNames) {
+        return classNames.split(/\s/).filter(v => v);
+    } else {
+        return [];
     }
 }
 
-export function findProxyItem($item: JQuery, expr: string) {
+export function getProxyElement(item: Element, expr: string) {
     let reg = /^([\\^~+]+\d*)+$/;
     if (!reg.test(expr)) {
         return null;
@@ -44,21 +37,21 @@ export function findProxyItem($item: JQuery, expr: string) {
 
         while (n++ < num) {
             if (char === '^') {
-                $item = $item.parent();
+                item = item.parentElement;
             } else if (char === '~') {
-                $item = $item.prev();
+                item = item.previousElementSibling;
             } else {
-                $item = $item.next();
+                item = item.nextElementSibling;
             }
 
-            if ($item.length === 0) {
+            if (!item) {
                 break out;
             }
         }
 
     }
 
-    return $item;
+    return item;
 }
 
 function parseProxyExpression(expr: string) {
@@ -88,7 +81,7 @@ function parseProxyExpression(expr: string) {
         if (groups[ i ].charAt(0) === '^') {
             splits.push(groups[ i ]);
         } else {
-            canPush = isArray(splits[ splits.length - 1 ]);
+            canPush = Array.isArray(splits[ splits.length - 1 ]);
             if (i === 0 || !canPush) {
                 splits.push([ groups[ i ] ]);
             } else if (canPush) {
@@ -100,7 +93,7 @@ function parseProxyExpression(expr: string) {
     // 相邻~+合并
     return splits
         .map(v => {
-            if (isArray(v)) {
+            if (Array.isArray(v)) {
                 let prevNum = 0, nextNum = 0;
                 v.forEach((ch: string) => {
                     if (ch.startsWith('~')) {
@@ -121,58 +114,29 @@ function parseProxyExpression(expr: string) {
         .filter(v => v);
 }
 
-export function getDebounceTime($ele: JQuery, defVal: number = 300) {
-    return parseInt($ele.data('debounceTime')) || defVal;
+export function async2Observable(fn: any) {
+    return defer(() => {
+        if (fn instanceof Observable) {
+            return fn;
+        } else if (fn instanceof Promise) {
+            return fromPromise(fn);
+        } else {
+            return of(fn);
+        }
+    }).pipe(catchError(err => of(err)));
 }
 
-export function getScrollProxy($ele: JQuery) {
-    return ($ele.data('scrollProxy') || '').replace(/\s/g, '');
-}
+export function loadMessagesFromDataset(ele: HTMLElement) {
+    let messages: ErrorMessage[] = [];
 
-export function getContextProxy($ele: JQuery) {
-    let data = $ele.data('contextProxy');
+    for (let k in ele.dataset) {
+        let [ name, type ] = k.split('.');
+        messages.push({
+            validator: name,
+            message: ele.dataset[ k ],
+            async: /^async$/i.test(type)
+        });
+    }
 
-    return data === false ? false : (data || '').replace(/\s/g, '');
-}
-
-export function getFieldProxy($ele: JQuery) {
-    let data = $ele.data('fieldProxy');
-
-    return (data || '').replace(/\s/g, '');
-}
-
-export function getPosition($ele: JQuery) {
-    return $ele.data('position');
-}
-
-export function getOffsetY($ele: JQuery) {
-    return parseInt($ele.data('offsetY')) || 0;
-}
-
-export function getOffsetX($ele: JQuery) {
-    return parseInt($ele.data('offsetX')) || 0;
-}
-
-export function getLeft($ele: JQuery) {
-    return $ele.data('left');
-}
-
-export function getRight($ele: JQuery) {
-    return $ele.data('right');
-}
-
-export function getTop($ele: JQuery) {
-    return $ele.data('top');
-}
-
-export function getBottom($ele: JQuery) {
-    return $ele.data('bottom');
-}
-
-export function getInline($ele: JQuery) {
-    return $ele.data('inline');
-}
-
-export function getValidateImmediate($ele: JQuery) {
-    return $ele.data('validate-immediate');
+    return messages;
 }

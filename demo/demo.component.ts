@@ -1,23 +1,12 @@
-import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
-import { FormHelperConfig } from '../src/form-helper-config';
-import { interval } from 'rxjs';
+import { Component, } from '@angular/core';
 import { uuid } from 'cmjs-lib';
-import { FormHelperDirective } from '../src/form-helper.directive';
-import { first, map } from 'rxjs/operators';
 
 @Component({
     templateUrl: './demo.component.html',
     styleUrls: [ './demo.component.less' ]
 })
-export class DemoComponent implements AfterViewInit {
+export class DemoComponent {
 
-    @ViewChild('modal') modal: ElementRef;
-    @ViewChild('modalInner') modalInner: ElementRef;
-    @ViewChild(FormHelperDirective) formHelper: FormHelperDirective;
-
-    config: FormHelperConfig;
-    config2: FormHelperConfig;
-    config3: FormHelperConfig;
     name: string;
     desc: string;
     type: number = 0;
@@ -28,9 +17,7 @@ export class DemoComponent implements AfterViewInit {
     remote2: string;
     birth: string;
     uuid = uuid;
-    accordionActive = false;
     pageHeight = 0;
-    accordionActive2 = false;
     birth2: string;
     addr: string;
     issue: string;
@@ -45,50 +32,6 @@ export class DemoComponent implements AfterViewInit {
             { label: 'ck2', checked: false, uuid: uuid(8) },
             { label: 'ck3', checked: false, uuid: uuid(8) }
         ];
-
-        this.config = {
-            errorHandler: {
-                name: 'tooltip',
-                config: {
-                    zIndex: 100
-                }
-            },
-            onSuccess: () => {
-                return interval(0).pipe(
-                    map(() => {
-                        // tslint:disable-next-line:no-console
-                        console.log('ok');
-
-                        return 'ok';
-                    }),
-                    first()
-                );
-            }
-        };
-
-        this.config2 = {
-            context: '.ui.page.modals',
-            extraSubmits: '.modal-scroll .actions .approve'
-        };
-
-        this.config3 = {
-            context: '..',
-            extraSubmits: '.modal-inner-scroll .actions .approve'
-        };
-    }
-
-    ngAfterViewInit() {
-        $(this.modal.nativeElement)
-            .modal({
-                onApprove: () => false
-            })
-            .modal('attach events', '.modal-button', 'show');
-
-        $(this.modalInner.nativeElement)
-            .modal({
-                onApprove: () => false
-            })
-            .modal('attach events', '.modal-inner-button', 'show');
     }
 
     addCK(name: string) {
@@ -97,12 +40,10 @@ export class DemoComponent implements AfterViewInit {
             checked: false,
             uuid: uuid(8)
         });
-        setTimeout(() => this.formHelper.reposition(name));
     }
 
     removeCk(i: number, name: string) {
         this.cks.splice(i, 1);
-        setTimeout(() => this.formHelper.reposition(name));
     }
 
     trackByCk(i: number, ck: any) {
@@ -113,7 +54,4 @@ export class DemoComponent implements AfterViewInit {
         this.pageHeight += 1000;
     }
 
-    reset(form: any) {
-        form.reset();
-    }
 }

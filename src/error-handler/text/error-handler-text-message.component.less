@@ -1,0 +1,132 @@
+:host(.eh-text-theme) {
+  display: none;
+  position: relative;
+  white-space: nowrap;
+  transform: translateZ(0);
+  color: #9f3a38;
+  margin-left: 1em;
+  text-align: left;
+  & > .container {
+    animation-fill-mode: both;
+    ::ng-deep > * + * {
+      display: none;
+    }
+  }
+  &.visible {
+    display: block;
+    &:not(.inline) {
+      margin: .23em 0 0 0;
+    }
+    &.inline {
+      display: inline-block;
+    }
+    &.float {
+      vertical-align: text-top;
+      & > .container ::ng-deep > * {
+        position: absolute;
+      }
+    }
+    &.right {
+      &:not(.float) {
+        float: right;
+      }
+      &.float > .container ::ng-deep > * {
+        right: 0;
+      }
+    }
+  }
+}
+
+.fade {
+  @keyframes fade {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  animation-name: fade;
+  animation-duration: .3s;
+  animation-timing-function: ease-out;
+}
+
+.slideUp {
+  @keyframes slideUp {
+    from {
+      opacity: .3;
+      transform: translate3d(0, .4em, 0);
+    }
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
+  animation-name: slideUp;
+  animation-duration: .3s;
+  animation-timing-function: ease-out;
+}
+
+.slideDown {
+  @keyframes slideDown {
+    from {
+      opacity: .3;
+      transform: translate3d(0, -.4em, 0);
+    }
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
+  animation-name: slideDown;
+  animation-duration: .3s;
+  animation-timing-function: ease-out;
+}
+
+.flyLeft {
+  @keyframes lightSpeedLeft {
+    from {
+      transform: translate3d(4em, 0, 0) skewX(-30deg);
+      opacity: 0;
+    }
+    60% {
+      transform: skewX(20deg);
+      opacity: 1;
+    }
+    80% {
+      transform: skewX(-5deg);
+      opacity: 1;
+    }
+    to {
+      transform: translate3d(0, 0, 0);
+      opacity: 1;
+    }
+  }
+  animation-name: lightSpeedLeft;
+  animation-duration: .5s;
+  animation-timing-function: ease-out;
+}
+
+.flyRight {
+  @keyframes lightSpeedRight {
+    from {
+      transform: translate3d(-4em, 0, 0) skewX(-30deg);
+      opacity: 0;
+    }
+    60% {
+      transform: skewX(20deg);
+      opacity: 1;
+    }
+    80% {
+      transform: skewX(-5deg);
+      opacity: 1;
+    }
+    to {
+      transform: translate3d(0, 0, 0);
+      opacity: 1;
+    }
+  }
+  animation-name: lightSpeedRight;
+  animation-duration: .5s;
+  animation-timing-function: ease-out;
+}

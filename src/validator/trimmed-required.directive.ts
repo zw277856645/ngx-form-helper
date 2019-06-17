@@ -1,6 +1,5 @@
 import { Directive } from '@angular/core';
 import { AbstractControl, NG_VALIDATORS, ValidationErrors, Validator } from '@angular/forms';
-import { isNullOrUndefined } from 'cmjs-lib';
 
 @Directive({
     selector: '[trimmedRequired][ngModel]',
@@ -11,7 +10,7 @@ import { isNullOrUndefined } from 'cmjs-lib';
 export class TrimmedRequiredDirective implements Validator {
 
     validate(c: AbstractControl): ValidationErrors | null {
-        let v = isNullOrUndefined(c.value) ? '' : String(c.value);
+        let v = (c.value === null || c.value === undefined) ? '' : String(c.value);
 
         return v && v.trim().length > 0 ? null : { trimmedRequired: true };
     }

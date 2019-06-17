@@ -1,19 +1,26 @@
+export enum IconToggleStrategy {
+    APPEND = 'APPEND', REPLACE = 'REPLACE'
+}
+
 export interface SubmitHandlerLoaderConfig {
 
     // 主题样式
-    className?: string;
+    classNames?: string;
 
     // loader主题样式
-    iconClassName?: string;
+    iconClassNames?: string;
 
-    // 寻找图标的jquery选择器，若找到，则用iconClassName替换找到的图标类名，否则在整个按钮区域使用className
+    // 寻找图标的选择器，若找到，则用iconClassName替换找到的图标类名，否则在整个按钮区域使用className
     iconSelector?: string | false;
 
     // iconClassName替换策略
     // append: 在原有类名基础上增加
     // replace: 完全使用新类名替换原类名
-    iconToggleStrategy?: 'append' | 'replace';
+    iconToggleStrategy?: IconToggleStrategy;
 
     // loader动画时长(ms)
     duration?: number;
+
+    // 禁用主题样式
+    disableTheme?: boolean;
 }

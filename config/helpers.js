@@ -2,9 +2,14 @@ const path = require('path');
 
 const _root = path.resolve(__dirname, '..');
 
-function root(args) {
-    args = Array.prototype.slice.call(arguments, 0);
-    return path.join.apply(path, [ _root ].concat(args));
+function root(value) {
+    if (!value) {
+        return _root;
+    }
+
+    let splits = value.replace(/^\/+/, '').replace(/\/+$/, '').split('/');
+
+    return path.join.apply(path, [ _root ].concat(splits));
 }
 
-exports.root = root;
+module.exports.root = root;

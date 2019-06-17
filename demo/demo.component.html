@@ -1,15 +1,12 @@
 <div class="ui container">
-  <form class="ui form" [formHelper]="config" #formHelper="formHelper" #form="ngForm">
+  <form class="ui form" formHelper offsetTop="28" #formHelperCtrl="formHelper">
     <div class="field">
       <label>名字</label>
       <div class="ui input">
-        <input type="text" name="name" #nameCtrl="ngModel" [(ngModel)]="name" autocomplete="off" trimmedRequired
-               nameUnique data-context-proxy="^+">
+        <input type="text" name="name" [(ngModel)]="name" autocomplete="off" trimmedRequired nameUnique
+               ehTooltip>
       </div>
-      <div class="fh-message">
-        <div [class.error]="nameCtrl.errors?.trimmedRequired">不能为空</div>
-        <div class="pending" [class.error]="nameCtrl.errors?.nameUnique">重复</div>
-      </div>
+      <eh-tooltip-message ref="name" data-trimmed-required="不能为空" data-name-unique.async="重复"></eh-tooltip-message>
     </div>
 
     <div class="field">
@@ -33,27 +30,23 @@
       <div class="field">
         <label>Input Hidden</label>
         <input type="text" placeholder="占位" disabled>
-        <input type="hidden" name="hidden" [(ngModel)]="hidden" #hiddenCtrl="ngModel" required>
-        <div class="fh-message" data-field-proxy="~2">
-          <div [class.error]="hiddenCtrl.errors?.required">不能为空</div>
-        </div>
+        <input type="hidden" name="hidden" [(ngModel)]="hidden" required ehTooltip positionProxy="~">
+        <eh-tooltip-message ref="hidden" data-required="不能为空"></eh-tooltip-message>
       </div>
 
       <div class="field">
-        <label>选择喜好</label>
-        <select class="ui dropdown" name="love" #loveCtrl="ngModel" [(ngModel)]="love" required>
+        <label class="inline">选择喜好</label>
+        <eh-text-message ref="love" data-required="至少选择一项" animation="flyLeft"></eh-text-message>
+        <select class="ui dropdown" name="love" [(ngModel)]="love" required ehText>
           <option value="">请选择</option>
           <option value="1">读书</option>
           <option value="2">看报</option>
         </select>
-        <div class="fh-message">
-          <div [class.error]="loveCtrl.errors?.required">至少选择一项</div>
-        </div>
       </div>
 
-      <div class="field" style="display:inline-block">
+      <div class="field">
         <label>组(动态)</label>
-        <div ngModelGroup="group" #groupCtrl="ngModelGroup" checkboxRequired>
+        <div ngModelGroup="group" name="group" checkboxRequired ehTooltip class="inline">
           <div class="ui checkbox" *ngFor="let ck of cks;trackBy:trackByCk;index as i">
             <input type="checkbox" [(ngModel)]="ck.checked" [name]="'ck-' + ck.uuid">
             <label>
@@ -63,35 +56,27 @@
           </div>
           <button type="button" class="ui button tiny teal" (click)="addCK('group')">添加</button>
         </div>
-        <div class="fh-message" data-position="right center">
-          <div [class.error]="groupCtrl.errors?.checkboxRequired">至少选择一项</div>
-        </div>
+        <eh-tooltip-message ref="group" data-checkbox-required="至少选择一项" position="right center"></eh-tooltip-message>
       </div>
 
       <div class="field">
         <label>远程</label>
-        <input type="text" name="remote" #remoteCtrl="ngModel" [(ngModel)]="remote" autocomplete="off"
-               nameUnique>
-        <div class="fh-message">
-          <div class="pending" [class.error]="remoteCtrl.errors?.nameUnique">重复</div>
-        </div>
+        <input type="text" name="remote" [(ngModel)]="remote" autocomplete="off" nameUnique ehTooltip>
+        <eh-tooltip-message ref="remote" data-name-unique.async="重复"></eh-tooltip-message>
       </div>
 
       <div class="field">
-        <label>滚动对象(scrollTarget)</label>
-        <div class="ui styled fluid accordion">
-          <div class="title" [class.active]="accordionActive" (click)="accordionActive = !accordionActive">
+        <label>滚动对象</label>
+        <div class="ui styled fluid accordion" accordion>
+          <div class="title" (click)="gp.repositionMessages()">
             <i class="dropdown icon"></i>
             Accordion
           </div>
-          <div class="content active" [class.active]="accordionActive" ngModelGroup="gp" data-scroll-proxy="~"
-               data-context-proxy="false">
+          <div class="content" ngModelGroup="gp" ehTooltip scrollProxy="~" #gp="ehTooltip">
             <div class="field">
               <label>生日</label>
-              <input type="text" name="birth" #birthCtrl="ngModel" [(ngModel)]="birth" required>
-              <div class="fh-message" data-top="61">
-                <div [class.error]="birthCtrl.errors?.required">不能为空</div>
-              </div>
+              <input type="text" name="birth" [(ngModel)]="birth" required ehTooltip>
+              <eh-tooltip-message ref="birth" data-required="不能为空"></eh-tooltip-message>
             </div>
             <div class="field required">
               <label>请求url</label>
@@ -104,137 +89,125 @@
                     <div class="item">POST</div>
                   </div>
                 </div>
-                <input type="text" name="url" #urlCtrl="ngModel" [(ngModel)]="url" required
-                       autocomplete="off" maxlength="500" data-context-proxy="^+">
+                <input type="text" name="url" [(ngModel)]="url" required autocomplete="off" maxlength="500"
+                       ehTooltip>
               </div>
-              <div class="fh-message" data-top="61">
-                <div [class.error]="urlCtrl.errors?.required">不能为空</div>
-              </div>
+              <eh-tooltip-message ref="url" data-required="不能为空"></eh-tooltip-message>
             </div>
             <div class="field">
               <label>远程2</label>
-              <input type="text" name="remote2" #remote2Ctrl="ngModel" [(ngModel)]="remote2"
-                     autocomplete="off" nameUnique>
-              <div class="fh-message" data-top="61">
-                <div class="pending" [class.error]="remote2Ctrl.errors?.nameUnique">重复</div>
-              </div>
+              <input type="text" name="remote2" [(ngModel)]="remote2" autocomplete="off" nameUnique ehTooltip>
+              <eh-tooltip-message ref="remote2" data-name-unique.async="重复"></eh-tooltip-message>
             </div>
           </div>
 
-          <div class="title" [class.active]="accordionActive2" (click)="accordionActive2 = !accordionActive2">
+          <div class="title" (click)="gp2.repositionMessages()">
             <i class="dropdown icon"></i>
             Accordion2
           </div>
-          <div class="content active" [class.active]="accordionActive2" ngModelGroup="gp2"
-               data-scroll-proxy="~" data-context-proxy="false">
+          <div class="content" ngModelGroup="gp2" ehTooltip scrollProxy="~" #gp2="ehTooltip">
             <div class="field">
               <label>生日2</label>
-              <input type="text" name="birth2" #birth2Ctrl="ngModel" [(ngModel)]="birth2" required>
-              <div class="fh-message" data-top="61">
-                <div [class.error]="birth2Ctrl.errors?.required">不能为空</div>
-              </div>
+              <input type="text" name="birth2" [(ngModel)]="birth2" required ehTooltip>
+              <eh-tooltip-message ref="birth2" data-required="不能为空"></eh-tooltip-message>
             </div>
           </div>
         </div>
       </div>
+
+      <div class="blank" [style.height.px]="pageHeight"></div>
+
       <div class="field buttons">
-        <button type="submit" class="ui button small instagram right labeled icon">
+        <button shLoader type="submit" class="ui button small instagram right labeled icon">
           <i class="icon save"></i>
           保存1
         </button>
-        <button type="button" class="ui button small" (click)="reset(formHelper)">重置(formHelper)</button>
+        <button type="button" class="ui button small" #reset>重置</button>
       </div>
     </div>
 
-    <ng-container
-      *ngTemplateOutlet="template;context:{type:type,$implicit:sex,form:form,reset:reset}"></ng-container>
+    <ng-container *ngTemplateOutlet="template;context:{type:type,$implicit:sex}"></ng-container>
 
     <!-- ng-template 必须在form内部，否则模板内的ngModel将不会注册到ngForm中 -->
-    <ng-template #template let-type="type" let-form="form" let-reset="reset">
+    <ng-template #template let-type="type">
       <div *ngIf="type == 1">
         <div class="field">
           <label>性别</label>
-          <input type="text" name="sex" #sexCtrl="ngModel" required [(ngModel)]="sex" autocomplete="off"
-                 pattern="^\d*$">
-          <div class="fh-message">
-            <div [class.error]="sexCtrl.errors?.required">不能为空</div>
-            <div [class.error]="sexCtrl.errors?.pattern">只能为数字</div>
-          </div>
+          <input type="text" name="sex" required [(ngModel)]="sex" autocomplete="off" pattern="^\d*$" ehTooltip>
+          <eh-tooltip-message ref="sex" data-required="不能为空" data-pattern="只能为数字"></eh-tooltip-message>
         </div>
         <div class="field buttons">
-          <button type="submit" class="ui button small instagram">保存2</button>
-          <button type="button" class="ui button small" (click)="reset(form)">重置(form)</button>
+          <button shLoader type="submit" class="ui button small instagram">保存2</button>
+          <button type="button" class="ui button small" #reset>重置</button>
         </div>
       </div>
     </ng-template>
   </form>
 
+  <div class="out-button">
+    <button shLoader [refForm]="formHelperCtrl" type="button" class="ui button small instagram right labeled icon">
+      <i class="icon save"></i>
+      保存 - 表单外部
+    </button>
+  </div>
+
   <div class="ui divider"></div>
   <button type="button" class="ui button tiny" (click)="addHeight()">增加页面高度(+1000px)</button>
-  <button type="button" class="ui tiny button modal-button">Modal Scroll</button>
-  <button type="button" class="ui tiny button modal-inner-button">Modal Inner Scroll</button>
+  <button type="button" class="ui tiny button modal-button" (click)="modalCtrl.behavior('show')">Modal Scroll</button>
+  <button type="button" class="ui tiny button modal-inner-button" (click)="innerModalCtrl.behavior('show')">
+    Modal Inner Scroll
+  </button>
   <a class="ui tiny button" routerLink="/error-handler-text">error handler text</a>
-  <div class="blank" [style.height.px]="pageHeight"></div>
 </div>
 
-<div class="ui small modal modal-scroll" #modal>
+<div class="ui small modal modal-scroll" modal #modalCtrl="modal">
   <div class="header">
     弹层表单
   </div>
   <div class="content">
-    <form class="ui form" [formHelper]="config2">
+    <form class="ui form" formHelper #modalForm="formHelper" context=".ui.page.modals">
       <div class="field">
         <label>地址</label>
-        <input type="text" name="addr" #addrCtrl="ngModel" [(ngModel)]="addr" autocomplete="off" required>
-        <div class="fh-message">
-          <div [class.error]="addrCtrl.errors?.required">不能为空</div>
-        </div>
+        <input type="text" name="addr" [(ngModel)]="addr" autocomplete="off" required ehTooltip>
+        <eh-tooltip-message ref="addr" data-required="不能为空"></eh-tooltip-message>
       </div>
       <div class="field">
         <label>评论</label>
-        <textarea name="issue" required [(ngModel)]="issue" autocomplete="off" rows="60"></textarea>
+        <textarea name="issue" required [(ngModel)]="issue" autocomplete="off" rows="60" ehTooltip></textarea>
+        <eh-tooltip-message ref="issue" data-required="不能为空"></eh-tooltip-message>
       </div>
     </form>
   </div>
   <div class="actions">
-    <div class="ui deny button">
-      关闭
-    </div>
-    <button class="ui instagram approve right labeled icon button">
+    <div class="ui deny button">关闭</div>
+    <button class="ui instagram right labeled icon button" shLoader [refForm]="modalForm">
       提交
       <i class="checkmark icon"></i>
     </button>
   </div>
 </div>
 
-<div class="ui small modal modal-inner-scroll" #modalInner>
+<div class="ui small modal modal-inner-scroll" modal #innerModalCtrl="modal">
   <div class="header">
     弹层表单
   </div>
   <div class="content">
-    <form class="ui form" [formHelper]="config3">
+    <form class="ui form" formHelper #innerModalForm="formHelper" context="..">
       <div class="field">
         <label>地址</label>
-        <input type="text" name="addr2" #addr2Ctrl="ngModel" [(ngModel)]="addr2" autocomplete="off" required>
-        <div class="fh-message">
-          <div [class.error]="addr2Ctrl.errors?.required">不能为空</div>
-        </div>
+        <input type="text" name="addr2" [(ngModel)]="addr2" autocomplete="off" required ehTooltip>
+        <eh-tooltip-message ref="addr2" data-required="不能为空"></eh-tooltip-message>
       </div>
       <div class="field">
         <label>评论</label>
-        <textarea name="issue2" #issue2Ctrl="ngModel" required [(ngModel)]="issue2" autocomplete="off"
-                  rows="20"></textarea>
-        <div class="fh-message">
-          <div [class.error]="issue2Ctrl.errors?.required">不能为空</div>
-        </div>
+        <textarea name="issue2" required [(ngModel)]="issue2" autocomplete="off" rows="20" ehTooltip></textarea>
+        <eh-tooltip-message ref="issue2" data-required="不能为空"></eh-tooltip-message>
       </div>
     </form>
   </div>
   <div class="actions">
-    <div class="ui deny button">
-      关闭
-    </div>
-    <div class="ui instagram approve right labeled icon button">
+    <div class="ui deny button">关闭</div>
+    <div class="ui instagram right labeled icon button" shLoader [refForm]="innerModalForm">
       提交
       <i class="checkmark icon"></i>
     </div>

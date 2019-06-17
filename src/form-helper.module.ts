@@ -2,12 +2,12 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { FormHelperDirective } from './form-helper.directive';
-import { ElementBindToNgModelGroupDirective } from './elem-bind-to-group.directive';
-import { ElementBindToNgModelDirective } from './elem-bind-to-model.directive';
 import { TrimmedRequiredDirective } from './validator/trimmed-required.directive';
-import { SubmitHandlerLoader } from './submit-handler/submit-handler-loader';
-import { ErrorHandlerTooltip } from './error-handler/error-handler-tooltip';
-import { ErrorHandlerText } from './error-handler/error-handler-text';
+import { SubmitHandlerLoaderDirective } from './submit-handler/submit-handler-loader.directive';
+import { ErrorHandlerTextDirective } from './error-handler/text/error-handler-text.directive';
+import { ErrorHandlerTooltipDirective } from './error-handler/tooltip/error-handler-tooltip.directive';
+import { ErrorHandlerTextMessageComponent } from './error-handler/text/error-handler-text-message.component';
+import { ErrorHandlerTooltipMessageComponent } from './error-handler/tooltip/error-handler-tooltip-message.component';
 
 @NgModule({
     imports: [
@@ -16,22 +16,26 @@ import { ErrorHandlerText } from './error-handler/error-handler-text';
     ],
     declarations: [
         FormHelperDirective,
-        ElementBindToNgModelDirective,
-        ElementBindToNgModelGroupDirective,
-        TrimmedRequiredDirective
+
+        TrimmedRequiredDirective,
+
+        SubmitHandlerLoaderDirective,
+
+        ErrorHandlerTextDirective,
+        ErrorHandlerTextMessageComponent,
+
+        ErrorHandlerTooltipDirective,
+        ErrorHandlerTooltipMessageComponent
     ],
     exports: [
         FormHelperDirective,
-        ElementBindToNgModelDirective,
-        ElementBindToNgModelGroupDirective,
-        TrimmedRequiredDirective
+        TrimmedRequiredDirective,
+        SubmitHandlerLoaderDirective,
+        ErrorHandlerTextDirective,
+        ErrorHandlerTooltipDirective,
+        ErrorHandlerTextMessageComponent,
+        ErrorHandlerTooltipMessageComponent
     ]
 })
 export class FormHelperModule {
-
-    constructor() {
-        FormHelperDirective.registerSubmitHandler('loader', SubmitHandlerLoader);
-        FormHelperDirective.registerErrorHandler('tooltip', ErrorHandlerTooltip);
-        FormHelperDirective.registerErrorHandler('text', ErrorHandlerText);
-    }
 }

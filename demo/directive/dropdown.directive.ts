@@ -2,7 +2,7 @@ import { Directive, Input, ElementRef, EventEmitter, AfterViewInit } from '@angu
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { timer } from 'rxjs';
 import { map, takeWhile } from 'rxjs/operators';
-import { isFunction, isNullOrUndefined } from 'cmjs-lib';
+import { isNullOrUndefined } from 'util';
 
 @Directive({
     selector: '[dropdown]',
@@ -41,7 +41,7 @@ export class DropdownDirective implements ControlValueAccessor, AfterViewInit {
                     this.selectValue = value;
                     this.controlChange(value);
                     this.controlTouch(value);
-                    isFunction(this.options.onChange) && this.options.onChange(value, text, $choice);
+                    typeof this.options.onChange === 'function' && this.options.onChange(value, text, $choice);
 
                     // 选择菜单中值为空的选项还原
                     if (!value) {
@@ -50,7 +50,7 @@ export class DropdownDirective implements ControlValueAccessor, AfterViewInit {
                 }
             },
             onHide: () => {
-                isFunction(this.options.onHide) && this.options.onHide();
+                typeof this.options.onHide === 'function' && this.options.onHide();
                 this.onHideEmitter.emit();
             }
         }));
@@ -61,9 +61,9 @@ export class DropdownDirective implements ControlValueAccessor, AfterViewInit {
     }
 
     writeValue(value: any) {
-        if (isNullOrUndefined(value) && this.selectValue) {
+        if ((value === null || value === undefined) && this.selectValue) {
             this.behavior('restore defaults');
-        } else if (!isNullOrUndefined(value)) {
+        } else if (value !== null && value !== undefined) {
             timer(0, 300).pipe(
                 map(() => this.behavior('set selected', String(value).split(','))),
                 map(() => this.behavior('get text')),

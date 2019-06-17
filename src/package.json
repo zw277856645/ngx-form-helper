@@ -1,0 +1,27 @@
+{
+  "name": "ngx-form-helper",
+  "version": "2.0.0",
+  "description": "angular form validation helper",
+  "$schema": "../node_modules/ng-packagr/package.schema.json",
+  "ngPackage": {
+    "dest": "../dist",
+    "lib": {
+      "entryFile": "public_api.ts"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://gitlab.com/zw277856645/ngx-form-helper"
+  },
+  "keywords": [],
+  "author": "wei.zhang",
+  "license": "MIT",
+  "peerDependencies": {
+    "@angular/common": "^7.2.14",
+    "@angular/core": "^7.2.14",
+    "@angular/forms": "^7.2.14",
+    "@tweenjs/tween.js": "~17.2.0",
+    "@types/tween.js": "~16.9.0",
+    "cmjs-lib": "~0.2.10"
+  }
+}

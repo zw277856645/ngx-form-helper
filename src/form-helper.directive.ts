@@ -1,407 +1,110 @@
-import { Input, ElementRef, Directive, OnDestroy, HostListener, AfterViewInit, NgZone } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup, NgForm } from '@angular/forms';
-import { forkJoin, interval, Observable, Subscription, timer } from 'rxjs';
-
-import { FormHelperConfig } from './form-helper-config';
-import { SubmitHandler } from './submit-handler/submit-handler';
 import {
-    doAfter, ELEMENT_BIND_TO_CONTROL_KEY, findProxyItem, getScrollProxy, getValidateImmediate, noop
-} from './form-helper-utils';
-import { first, skipWhile } from 'rxjs/operators';
-import { isNullOrUndefined, isNumber, isString } from 'cmjs-lib';
+    Input, ElementRef, Directive, OnDestroy, HostListener, AfterViewInit, NgZone, Inject, Renderer2, Output, Optional,
+    QueryList, InjectionToken, EventEmitter, ContentChildren
+} from '@angular/core';
+import { AbstractControl, FormGroup, NgForm } from '@angular/forms';
+import { forkJoin, interval, Observable, Subscription } from 'rxjs';
+import { FormHelperConfig } from './form-helper-config';
+import { async2Observable, getProxyElement, noop, splitClassNames } from './utils';
+import { first, map, skipWhile, switchMap } from 'rxjs/operators';
+import { ErrorHandler } from './error-handler/error-handler';
+import { SubmitHandler } from './submit-handler/submit-handler';
+import { getOffset, getScrollTop, isVisible, setScrollTop } from 'cmjs-lib';
 
 const TWEEN = require('@tweenjs/tween.js');
 
+export const FORM_HELPER_CONFIG = new InjectionToken<FormHelperConfig>('form_helper_config');
+
 /**
- * --------------------------------------------------------------------------------------------------------
- * data-* api
- *  1)validate-immediate：覆盖config中配置。使用方表单域/表单组
- *  2)debounce-time：远程验证时使用，指定请求抖动时间。单位ms，使用方表单域/表单组
- *  3)scroll-proxy：设置表单域/表单组滚动代理
- *                  语法：^ -> 父节点，~ -> 前一个兄弟节点，+ -> 后一个兄弟节点。可以任意组合
- *                  示例：^^^，^2，~3^4+2
- *
- * --------------------------------------------------------------------------------------------------------
  * validators
  *  1)trimmedRequired
  *
- * --------------------------------------------------------------------------------------------------------
  * angular表单存在的bug
- *  1)bug：表单域name使用模板表达式生成(如：name="name-{{attr}}")，则最终的html标签中name属性会丢失
- *    fix：同时使用name和[attr.name]。使用本插件不需要[attr.name]
- *  2)bug：当使用ngFor迭代表单域，且name使用数组下标(如：name-{{i}})，此时若动态新增/删除表单域，会造成表单域数量混乱
+ *  1)bug：当使用ngFor迭代表单域，且name使用数组下标(如：name-{{i}})，此时若动态新增/删除表单域，会造成表单域数量混乱
  *    fix：这种情况下请保证name唯一，且必须使用trackBy返回唯一标识，推荐使用uuid等工具(如：name-{{uuid}})
  */
 @Directive({
     selector: '[formHelper]',
     exportAs: 'formHelper'
 })
-export class FormHelperDirective implements AfterViewInit, OnDestroy {
+export class FormHelperDirective implements OnDestroy, AfterViewInit {
 
-    @Input()
-    set formHelper(config: FormHelperConfig) {
-        $.extend(true, this._config, config);
-        if (isString(this._config.submitHandler)) {
-            this._config.submitHandler = <any>{ name: this._config.submitHandler };
-        }
-        if (isString(this._config.errorHandler)) {
-            this._config.errorHandler = <any>{ name: this._config.errorHandler };
-        }
+    @ContentChildren(ErrorHandler, { descendants: true }) errorHandlers: QueryList<ErrorHandler>;
+
+    @ContentChildren('reset') set resets(resets: QueryList<ElementRef>) {
+        resets.filter(reset => this.resetEles.indexOf(reset.nativeElement) < 0)
+              .forEach(reset => {
+                  this.resetEles.push(reset.nativeElement);
+                  this.subscription.add(this.renderer.listen(reset.nativeElement, 'click', () => this.reset()));
+              });
     }
 
-    @HostListener('keydown', [ '$event' ]) keydown(event: KeyboardEvent) {
+    @Input() autoReset: boolean = true;
+
+    @Input() context: Window | HTMLElement | string = window;
+
+    @Input() scrollProxy: string;
+
+    @Input() autoScroll: boolean = true;
+
+    @Input() offsetTop: number = 0;
+
+    @Input() validateImmediate: boolean;
+
+    @Input() classNames: string | false = 'fh-theme';
+
+    @Input() errorClassNames: string | false = 'fh-error';
+
+    @Input() errorGroupClassNames: string | false = 'fh-group-error';
+
+    // 验证通过时的请求
+    @Input() request: Observable<any> | Promise<any> | any;
+
+    // 验证不通过
+    @Output() fail = new EventEmitter();
+
+    // request请求完成后的响应，参数为request的返回值
+    @Output() response = new EventEmitter();
+
+    @HostListener('keydown', [ '$event' ]) onKeydown(event: KeyboardEvent) {
         if ((event.keyCode || event.which) === 13 && event.srcElement.nodeName.toUpperCase() !== 'TEXTAREA') {
             event.preventDefault();
         }
     }
 
-    @HostListener('window:resize') resize() {
-        this.reposition();
+    @HostListener('window:resize') onResize() {
+        this.errorHandlers.forEach(eh => {
+            if (eh.messageHandler && eh.messageHandler.reposition) {
+                eh.messageHandler.reposition();
+            }
+        });
     }
 
+    form: HTMLFormElement;
     submitted: boolean;
 
-    private static submitHandlerMap = new Map();
-    private static errorHandlerMap = new Map();
+    private subscription = new Subscription();
+    private resetEles: Element[] = [];
 
-    private readonly submitHandlerKey = 'formHelper.submitHandler';
-    private readonly errorHandlerKey = 'formHelper.errorHandler';
-
-    private _config: FormHelperConfig;
-    private mutationObserver: MutationObserver;
-    private $form: JQuery;
-    private destroys: (Subscription | Function)[] = [];
-
-    // ------------------- 分割线 ------------------------------
-
-    constructor(private _ngForm: NgForm,
-                private form: ElementRef,
-                private zone: NgZone) {
-        this._config = {
-            autoReset: true,
-            validateImmediate: false,
-            context: window,
-            offsetTop: 0,
-            autoScroll: true,
-            className: 'fh-theme-default',
-            errorClassName: 'fh-error',
-            errorGroupClassName: 'fh-group-error',
-            errorHandler: { name: 'tooltip' },
-            submitHandler: { name: 'loader' },
-            onSuccess: noop,
-            onDeny: noop,
-            onComplete: noop
-        };
-
-        this.$form = $(form.nativeElement);
-
-        this.mutationObserver = new MutationObserver(() => {
-            this.bindSubmitButtons();
-            this.bindErrorHandlers();
-        });
-        this.mutationObserver.observe(this.form.nativeElement, {
-            childList: true,
-            subtree: true
-        });
+    constructor(public ngForm: NgForm,
+                private eleRef: ElementRef,
+                private zone: NgZone,
+                private renderer: Renderer2,
+                @Optional() @Inject(FORM_HELPER_CONFIG) private overrideConfig: FormHelperConfig) {
+        Object.assign(this, overrideConfig);
+        this.form = eleRef.nativeElement;
     }
 
     ngAfterViewInit() {
-        if (this._config.className) {
-            this.$form.addClass(this._config.className);
-        }
+        this.renderer.setAttribute(this.form, 'novalidate', 'novalidate');
+        splitClassNames(this.classNames).forEach(cls => this.renderer.addClass(this.form, cls));
     }
 
     ngOnDestroy() {
-        this.mutationObserver.disconnect();
-        this.destroys.forEach(destroy => {
-            if (destroy instanceof Subscription) {
-                destroy.unsubscribe();
-            } else {
-                destroy();
-            }
-        });
+        this.subscription.unsubscribe();
     }
 
-    // --------------------------- ngForm status shortcut ------------------
-
-    get ngForm() {
-        return this._ngForm;
-    }
-
-    get valid() {
-        return this.ngForm.valid;
-    }
-
-    get invalid() {
-        return this.ngForm.invalid;
-    }
-
-    get pending() {
-        return this.ngForm.pending;
-    }
-
-    get dirty() {
-        return this.ngForm.dirty;
-    }
-
-    get pristine() {
-        return this.ngForm.pristine;
-    }
-
-    get disabled() {
-        return this.ngForm.disabled;
-    }
-
-    get enabled() {
-        return this.ngForm.enabled;
-    }
-
-    get touched() {
-        return this.ngForm.touched;
-    }
-
-    get untouched() {
-        return this.ngForm.untouched;
-    }
-
-    // ------------------------- registers -------------------------------
-
-    static registerSubmitHandler(name: string, handler: Function) {
-        this.submitHandlerMap.set(name, handler);
-    }
-
-    static registerErrorHandler(name: string, handler: Function) {
-        this.errorHandlerMap.set(name, handler);
-    }
-
-    // ------------------------- publics -------------------------------
-
-    reposition(name?: string) {
-        if (isString(name)) {
-            let control = this.findControlByName(name);
-            if (control) {
-                this.triggerReposition(control);
-            }
-        } else {
-            for (let name in this.ngForm.controls) {
-                this.triggerReposition(this.ngForm.controls[ name ]);
-            }
-        }
-    }
-
-    validate(name?: string) {
-        if (isString(name)) {
-            let control = this.findControlByName(name);
-            if (control && (control instanceof FormGroup)) {
-                this.validateControls((<FormGroup>control).controls);
-            } else if (control && (control instanceof FormControl)) {
-                FormHelperDirective.validateControl(control);
-            }
-        } else {
-            this.validateControls();
-        }
-    }
-
-    // track=true，跟踪所有control状态直到全部为pristine
-    // 原因：重置后触发一些不可控操作导致表单再次赋值，触发状态监听(listenStatusChanges)
-    reset(track?: boolean | number) {
-        this.resetControls();
-        if (track) {
-            setTimeout(() => {
-                for (let name in this.ngForm.controls) {
-                    if (this.ngForm.controls[ name ].dirty) {
-                        this.reset(track);
-                        break;
-                    }
-                }
-            }, isNumber(track) ? track as number : 0);
-        }
-    }
-
-    // ------------------------- privates --------------------------------
-
-    private static validateControl(control: AbstractControl) {
-        // 设置control为dirty状态，使错误信息显示
-        control.markAsDirty();
-
-        // 触发control.statusChanges。默认会自动触发FormGroup的状态检测
-        control.updateValueAndValidity();
-    }
-
-    private triggerReposition(control: AbstractControl) {
-        let $field = $(control[ ELEMENT_BIND_TO_CONTROL_KEY ]);
-        if ($field.length) {
-            let bindData = $field.data(this.errorHandlerKey),
-                errorHandler = bindData && bindData.data;
-            if (errorHandler && errorHandler.reposition) {
-                errorHandler.reposition();
-            }
-        }
-        if (control instanceof FormGroup) {
-            for (let name in control.controls) {
-                this.triggerReposition(control.controls[ name ]);
-            }
-        }
-    }
-
-    private bindSubmitButtons() {
-        let handlerName = this._config.submitHandler ? (<any>this._config.submitHandler).name : undefined;
-
-        this.$form
-            .find(':submit')
-            .add($(this._config.extraSubmits))
-            .each((i, btn) => {
-                let $btn = $(btn),
-                    clickEvent = 'click.formHelper',
-                    bindData = $btn.data(this.submitHandlerKey);
-
-                if (bindData && bindData.name === handlerName) {
-                    return;
-                } else if (bindData && bindData.name !== handlerName) {
-                    $btn.off(clickEvent);
-                }
-
-                if (handlerName) {
-                    let HandlerClass = FormHelperDirective.submitHandlerMap.get(handlerName);
-                    if (HandlerClass instanceof Function) {
-                        let handlerInstance = new HandlerClass($btn, (<any>this._config.submitHandler).config);
-                        if (handlerInstance.destroy) {
-                            this.destroys.push(() => handlerInstance.destroy());
-                        }
-
-                        $btn.on(clickEvent, () => this.submit(handlerInstance));
-                        this.destroys.push(() => $btn.off(clickEvent));
-
-                        $btn.data(this.submitHandlerKey, { name: handlerName, data: handlerInstance });
-
-                        return;
-                    }
-                }
-
-                // submitHandler=false或指定的submitHandler找不到
-                $btn.on(clickEvent, () => this.submit());
-                this.destroys.push(() => $btn.off(clickEvent));
-                $btn.data(this.submitHandlerKey, {});
-            });
-    }
-
-    private bindErrorHandlers(controls: { [ key: string ]: AbstractControl; } = this.ngForm.controls) {
-        for (let name in controls) {
-            let control = controls[ name ];
-            if (control instanceof FormGroup) {
-                this.bindErrorHandlers(control.controls);
-            }
-
-            timer(0, 100).pipe(
-                skipWhile(() => !control[ ELEMENT_BIND_TO_CONTROL_KEY ]),
-                first()
-            ).subscribe(() => this.bindErrorHandler(control));
-        }
-    }
-
-    private bindErrorHandler(control: AbstractControl) {
-        let handlerName = this._config.errorHandler ? (<any>this._config.errorHandler).name : undefined;
-        let $field = $(control[ ELEMENT_BIND_TO_CONTROL_KEY ]);
-
-        if ($field.length === 0) {
-            return;
-        }
-
-        let bindData = $field.data(this.errorHandlerKey);
-        if (bindData && bindData.name === handlerName) {
-            return;
-        } else if (bindData && bindData.name !== handlerName) {
-            if (bindData.data) {
-                bindData.data.whenValid();
-            }
-        }
-
-        if (handlerName) {
-            let HandlerClass = FormHelperDirective.errorHandlerMap.get(handlerName);
-            if (HandlerClass instanceof Function) {
-                let handlerInstance = new HandlerClass(
-                    $field,
-                    (<any>this._config.errorHandler).config,
-                    control,
-                    this._config
-                );
-                if (handlerInstance.destroy) {
-                    this.destroys.push(() => handlerInstance.destroy());
-                }
-
-                $field.data(this.errorHandlerKey, { name: handlerName, data: handlerInstance });
-                this.listenStatusChanges(control, $field);
-
-                return;
-            }
-        }
-
-        // errorHandler=false或指定的errorHandler找不到
-        $field.data(this.errorHandlerKey, {});
-        this.listenStatusChanges(control, $field);
-    }
-
-    private listenStatusChanges(control: AbstractControl, $field: JQuery) {
-        control.statusChanges.subscribe(() => {
-            if (control.enabled && !control.pending && control.dirty) {
-                if (control.valid) {
-                    this.whenValid(control, $field);
-                } else if (control.invalid) {
-                    this.whenInvalid(control, $field);
-                }
-            }
-        });
-
-        let data = getValidateImmediate($field),
-            immediate = isNullOrUndefined(data) ? this._config.validateImmediate : data;
-        if (immediate) {
-            FormHelperDirective.validateControl(control);
-        }
-    }
-
-    private whenValid(control: AbstractControl, $field?: JQuery) {
-        if (!$field) {
-            $field = $(control[ ELEMENT_BIND_TO_CONTROL_KEY ]);
-        }
-        if ($field.length === 0) {
-            return;
-        }
-
-        if (control instanceof FormControl && this._config.errorClassName) {
-            $field.removeClass(this._config.errorClassName);
-        } else if (control instanceof FormGroup && this._config.errorGroupClassName) {
-            $field.removeClass(this._config.errorGroupClassName);
-        }
-
-        let bindData = $field.data(this.errorHandlerKey),
-            errorHandler = bindData && bindData.data;
-        if (errorHandler) {
-            errorHandler.whenValid();
-        }
-    }
-
-    private whenInvalid(control: AbstractControl, $field?: JQuery) {
-        if (!$field) {
-            $field = $(control[ ELEMENT_BIND_TO_CONTROL_KEY ]);
-        }
-        if ($field.length === 0) {
-            return;
-        }
-
-        if (control instanceof FormControl && this._config.errorClassName) {
-            $field.addClass(this._config.errorClassName);
-        } else if (control instanceof FormGroup && this._config.errorGroupClassName) {
-            $field.addClass(this._config.errorGroupClassName);
-        }
-
-        let bindData = $field.data(this.errorHandlerKey),
-            errorHandler = bindData && bindData.data;
-        if (errorHandler) {
-            errorHandler.whenInvalid();
-        }
-    }
-
-    private submit(submitHandler?: SubmitHandler) {
+    submit(submitHandler?: SubmitHandler) {
         this.submitted = true;
 
         if (this.ngForm.valid) {
@@ -409,28 +112,27 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
                 submitHandler.start();
             }
 
-            let endFn = submitHandler ? submitHandler.end.bind(submitHandler) : noop;
-            if (this._config.onSuccess instanceof Function) {
-                doAfter(this._config.onSuccess, (res) => {
-                    doAfter(endFn, () => {
-                        if (this._config.onComplete instanceof Function) {
-                            this._config.onComplete(res);
-                        }
-                        if (this._config.autoReset) {
-                            this.reset();
-                        }
-                    });
-                });
-            }
+            async2Observable(this.request).pipe(
+                switchMap(res => {
+                    return async2Observable(submitHandler ? submitHandler.end() : noop()).pipe(
+                        map(() => {
+                            this.response.emit(res);
+
+                            if (this.autoReset) {
+                                this.reset();
+                            }
+                        })
+                    );
+                })
+            ).subscribe();
         } else {
             this.validateControls();
 
-            if (this._config.onDeny instanceof Function) {
-                this._config.onDeny();
-            }
+            this.fail.emit();
 
-            if (this._config.autoScroll) {
+            if (this.autoScroll) {
                 let pendings = this.getPendingControls();
+
                 if (pendings.length) {
                     forkJoin(pendings).subscribe(() => this.scrollToTopError());
                 } else {
@@ -440,28 +142,64 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
         }
     }
 
+    // trackUntilStable=true，跟踪所有control状态直到全部为pristine
+    // 原因：重置后触发一些不可控操作导致表单再次赋值
+    reset(trackUntilStable: boolean | number = true) {
+        this.submitted = false;
+        this.resetControls();
+
+        if (trackUntilStable) {
+            setTimeout(() => {
+                for (let name in this.ngForm.controls) {
+                    if (this.ngForm.controls[ name ].dirty) {
+                        this.reset(trackUntilStable);
+                        break;
+                    }
+                }
+            }, typeof trackUntilStable === 'number' ? trackUntilStable : 20);
+        }
+    }
+
+    private static validateControl(control: AbstractControl) {
+        // 设置control为dirty状态，使错误信息显示
+        control.markAsDirty();
+
+        // 触发control.statusChanges。默认会自动触发FormGroup的状态检测
+        control.updateValueAndValidity();
+    }
+
     private validateControls(controls: { [ key: string ]: AbstractControl; } = this.ngForm.controls) {
+        let control: AbstractControl;
+
         for (let name in controls) {
-            let control = controls[ name ];
+            control = controls[ name ];
+
             if (control instanceof FormGroup) {
                 this.validateControls(control.controls);
-                continue;
+            } else {
+                FormHelperDirective.validateControl(control);
             }
-            FormHelperDirective.validateControl(control);
         }
     }
 
     private getPendingControls(controls: { [ key: string ]: AbstractControl; } = this.ngForm.controls) {
         let pendings: Observable<any>[] = [];
+        let control: AbstractControl;
+        let pds: Observable<any>[];
+
         for (let name in controls) {
-            let control = controls[ name ];
+            control = controls[ name ];
+
             if (control instanceof FormGroup) {
-                let pds: Observable<any>[] = this.getPendingControls(control.controls);
+                pds = this.getPendingControls(control.controls);
+
                 if (pds.length) {
                     pendings.push(...pds);
                 }
+
                 continue;
             }
+
             if (control.enabled && control.pending) {
                 pendings.push(interval(100).pipe(skipWhile(() => control.pending), first()));
             }
@@ -471,30 +209,33 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
     }
 
     private scrollToTopError() {
-        let $context = this.findContext();
-        if (!$context || $context.length === 0) {
+        let context = this.findContext();
+
+        if (!context) {
             return;
         }
 
         let minOffsetTop = this.calcMinOffsetTop();
-        if (minOffsetTop === Number.MAX_SAFE_INTEGER) {
-            minOffsetTop = this.$form.offset().top;
-        }
-        minOffsetTop -= this._config.offsetTop;
 
-        // 非context:window滚动窗体中表单域/表单组实际offset.top需要减去滚动体offset.top，加上滚动体当前scrollTop
-        if ($context[ 0 ] as any !== window && $context[ 0 ].nodeName.toUpperCase() !== 'HTML') {
-            minOffsetTop -= $context.offset().top;
-            minOffsetTop += $context.scrollTop();
+        if (minOffsetTop === Number.MAX_SAFE_INTEGER) {
+            minOffsetTop = getOffset(this.form).top;
+        }
+
+        minOffsetTop -= +this.offsetTop;
+
+        // 非window滚动窗体中表单域/表单组实际offsetTop需要减去滚动体offsetTop，加上滚动体当前scrollTop
+        if (context !== window && context instanceof HTMLElement && context.nodeName.toUpperCase() !== 'HTML') {
+            minOffsetTop -= getOffset(context).top;
+            minOffsetTop += context.scrollTop;
         }
 
         let animationRequest: number;
-        let currentTween = new TWEEN.Tween({ y: $context.scrollTop() })
+        let currentTween = new TWEEN.Tween({ y: getScrollTop(context) })
             .to({ y: minOffsetTop }, 500)
             .easing(TWEEN.Easing.Quadratic.Out)
             .onUpdate((data: any) => {
                 if (!isNaN(data.y)) {
-                    $context.scrollTop(data.y);
+                    setScrollTop(context, data.y);
                 }
             })
             .onComplete(() => cancelAnimationFrame(animationRequest))
@@ -506,43 +247,53 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
                 this.zone.runOutsideAngular(() => animationRequest = requestAnimationFrame(animate));
             }
         };
+
         animate();
     }
 
     private findContext() {
-        let context = this._config.context,
-            dotsPathReg = /^(\.\/?|\.\.(\/\.\.)*\/?)$/;
+        if (typeof this.context === 'string') {
+            // 处理点号表达式
+            if (/^(\.\/?|\.\.(\/\.\.)*\/?)$/.test(this.context)) {
+                if (/^\.\/?$/.test(this.context)) {
+                    return this.form;
+                } else {
+                    let num = this.context.split('/').filter(v => v).length,
+                        field: Element = this.form,
+                        n = 0;
 
-        if (isString(context) && dotsPathReg.test(<string>context)) {
-            if (/^\.\/?$/.test(<string>context)) {
-                return this.$form;
-            } else {
-                let num = (<string>context).split('/').filter(v => v).length,
-                    $field = this.$form,
-                    n = 0;
+                    while (n++ < num) {
+                        field = field.parentElement;
 
-                while (n++ < num) {
-                    $field = $field.parent();
-                    if ($field.length === 0) {
-                        return null;
+                        if (!field) {
+                            return window;
+                        }
                     }
-                }
 
-                return $field;
+                    return field;
+                }
+            } else {
+                return document.querySelector(this.context) || window;
             }
         } else {
-            return $(context);
+            return this.context || window;
         }
     }
 
     private calcMinOffsetTop(controls: { [ key: string ]: AbstractControl; } = this.ngForm.controls) {
         let minOffsetTop = Number.MAX_SAFE_INTEGER;
+        let control: AbstractControl;
+        let offsetTop: number;
+        let closestVisibleElement: HTMLElement;
+
         for (let name in controls) {
-            let control = controls[ name ];
+            control = controls[ name ];
+
             if (control.enabled && control.invalid) {
                 // 跳过ngModelGroup，由其子控件计算合适的元素
                 if (control instanceof FormGroup) {
-                    let offsetTop = this.calcMinOffsetTop(control.controls);
+                    offsetTop = this.calcMinOffsetTop(control.controls);
+
                     if (offsetTop !== Number.MAX_SAFE_INTEGER) {
                         minOffsetTop = Math.min(offsetTop, minOffsetTop);
                         continue;
@@ -555,9 +306,9 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
                     // fix：这种场景下ngModelGroup不跳过，加入下面的计算
                 }
 
-                let $item = this.findClosestVisibleItem(control);
-                if ($item) {
-                    minOffsetTop = Math.min($item.offset().top, minOffsetTop);
+                closestVisibleElement = this.findClosestVisibleItem(control) as HTMLElement;
+                if (closestVisibleElement) {
+                    minOffsetTop = Math.min(getOffset(closestVisibleElement).top, minOffsetTop);
                 }
             }
         }
@@ -565,18 +316,23 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
         return minOffsetTop;
     }
 
-    private findClosestVisibleItem(control: AbstractControl): JQuery {
-        let $field = $(control[ ELEMENT_BIND_TO_CONTROL_KEY ]);
+    private findClosestVisibleItem(control: AbstractControl): Element | null {
+        let errorHandler = this.errorHandlers.find(eh => eh.control === control);
 
-        // 滚动代理
-        let $proxy = findProxyItem($field, getScrollProxy($field));
-        if ($proxy && $proxy.is(':visible')) {
-            return $proxy;
+        // 没有使用ErrorHandler指令标记的控件，将失去插件相关功能
+        if (!errorHandler) {
+            return null;
+        }
+
+        // 优先使用滚动代理
+        let proxyEle = getProxyElement(errorHandler.element, errorHandler.scrollProxy);
+        if (proxyEle && isVisible(proxyEle)) {
+            return proxyEle;
         }
 
         // 表单域/表单组本身
-        if ($field.is(':visible')) {
-            return $field;
+        if (isVisible(errorHandler.element)) {
+            return errorHandler.element;
         }
 
         // 最近可见ngModelGroup
@@ -589,42 +345,25 @@ export class FormHelperDirective implements AfterViewInit, OnDestroy {
     }
 
     private resetControls(controls: { [ key: string ]: AbstractControl; } = this.ngForm.controls) {
-        // 提前设置pristine，防止后面的ngForm.reset子控件FormControl.reset级联影响
-        // FormGroup状态检测执行(listenStatusChanges)，导致错误提示不正常显示(闪烁)
-        for (let name in controls) {
-            controls[ name ].markAsPristine();
-        }
+        // 表单状态还原
+        this.markAllControlsPristine();
 
-        // form重置，只在最外层执行
-        if (controls === this.ngForm.controls) {
-            this.ngForm.reset();
-        }
+        // 表单值重置
+        this.ngForm.reset();
 
-        // 递归关闭错误提示
-        if (this._config.errorHandler) {
-            let control;
-            for (let name in controls) {
-                control = controls[ name ];
-                this.whenValid(control);
-                if (control instanceof FormGroup) {
-                    this.resetControls(control.controls);
-                }
-            }
+        // 关闭错误提示
+        if (this.errorHandlers) {
+            this.errorHandlers.forEach(eh => eh.whenValid());
         }
     }
 
-    private findControlByName(name: string,
-                              controls: { [ key: string ]: AbstractControl; } = this.ngForm.controls): AbstractControl {
-        for (let ele in controls) {
-            if (name === ele) {
-                return controls[ ele ];
-            }
-            if (controls[ ele ] instanceof FormGroup) {
-                return this.findControlByName(name, (<FormGroup>controls[ ele ]).controls);
+    private markAllControlsPristine(controls: { [ key: string ]: AbstractControl; } = this.ngForm.controls) {
+        for (let name in controls) {
+            controls[ name ].markAsPristine();
+            if (controls[ name ] instanceof FormGroup) {
+                this.markAllControlsPristine((controls[ name ] as FormGroup).controls);
             }
         }
-
-        return null;
     }
 
 }

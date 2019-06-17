@@ -1,0 +1,7 @@
+<div class="container" #container>
+  <ng-content></ng-content>
+
+  <ng-container *ngFor="let msg of messages;trackBy:trackByMessages">
+    <div *ngIf="hasError(msg.validator)">{{msg.message}}</div>
+  </ng-container>
+</div>
