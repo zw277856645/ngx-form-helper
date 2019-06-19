@@ -46,7 +46,7 @@
 
       <div class="field">
         <label>组(动态)</label>
-        <div ngModelGroup="group" name="group" checkboxRequired ehTooltip class="inline">
+        <div ngModelGroup="group" checkboxRequired ehTooltip class="inline">
           <div class="ui checkbox" *ngFor="let ck of cks;trackBy:trackByCk;index as i">
             <input type="checkbox" [(ngModel)]="ck.checked" [name]="'ck-' + ck.uuid">
             <label>

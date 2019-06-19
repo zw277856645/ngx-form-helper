@@ -7,7 +7,7 @@ import { ErrorHandler } from './error-handler';
 export abstract class ErrorMessageHandler implements AfterViewInit {
 
     // 错误信息关联的表单域/表单组
-    // 可用格式: 1.string        -> 表单域/表单组name
+    // 可用格式: 1.string        -> 表单域name/表单组ngModelGroup值
     //          2.model/group   -> 表单域/表单组控件
     //          3.errorHandler  -> 错误处理指令
     // 未指定此配置将由用户自己定义消息内容
