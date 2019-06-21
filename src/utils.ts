@@ -113,12 +113,14 @@ function parseProxyExpression(expr: string) {
         .filter(v => v);
 }
 
-export function async2Observable(fn: any) {
+export function async2Observable(fn: any): Observable<any> {
     return defer(() => {
         if (fn instanceof Observable) {
             return fn;
         } else if (fn instanceof Promise) {
             return fromPromise(fn);
+        } else if (typeof fn === 'function') {
+            return async2Observable(fn());
         } else {
             return of(fn);
         }

@@ -58,7 +58,7 @@ export class FormHelperDirective implements OnDestroy, AfterViewInit {
     @Input() errorGroupClassNames: string | false = 'fh-group-error';
 
     // 验证通过时的请求
-    @Input() request: Observable<any> | Promise<any> | any;
+    @Input() request: Observable<any> | Promise<any> | Function | any;
 
     @Input() requestOkAssertion: (res: any) => boolean;
 
