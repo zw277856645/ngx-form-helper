@@ -1,5 +1,4 @@
 import { defer, Observable, of } from 'rxjs';
-import { catchError } from 'rxjs/operators';
 import { fromPromise } from 'rxjs/internal-compatibility';
 import { SimpleChange } from '@angular/core';
 import { ErrorMessage } from './error-handler/error-message';
@@ -123,7 +122,7 @@ export function async2Observable(fn: any) {
         } else {
             return of(fn);
         }
-    }).pipe(catchError(err => of(err)));
+    });
 }
 
 export function loadMessagesFromDataset(ele: HTMLElement) {

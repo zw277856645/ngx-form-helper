@@ -3,10 +3,10 @@ import {
     QueryList, InjectionToken, EventEmitter, ContentChildren
 } from '@angular/core';
 import { AbstractControl, FormGroup, NgForm } from '@angular/forms';
-import { forkJoin, interval, Observable, Subscription } from 'rxjs';
+import { forkJoin, interval, Observable, of, Subscription } from 'rxjs';
 import { FormHelperConfig } from './form-helper-config';
 import { async2Observable, getProxyElement, noop, splitClassNames } from './utils';
-import { first, map, skipWhile, switchMap } from 'rxjs/operators';
+import { catchError, first, map, skipWhile, switchMap } from 'rxjs/operators';
 import { ErrorHandler } from './error-handler/error-handler';
 import { SubmitHandler } from './submit-handler/submit-handler';
 import { getOffset, getScrollTop, isVisible, setScrollTop } from 'cmjs-lib';
@@ -60,6 +60,8 @@ export class FormHelperDirective implements OnDestroy, AfterViewInit {
     // 验证通过时的请求
     @Input() request: Observable<any> | Promise<any> | any;
 
+    @Input() requestOkAssertion: (res: any) => boolean;
+
     // 验证不通过
     @Output() fail = new EventEmitter();
 
@@ -112,18 +114,26 @@ export class FormHelperDirective implements OnDestroy, AfterViewInit {
                 submitHandler.start();
             }
 
-            async2Observable(this.request).pipe(
-                switchMap(res => {
-                    return async2Observable(submitHandler ? submitHandler.end() : noop()).pipe(
-                        map(() => {
-                            this.response.emit(res);
+            let requestError = false;
 
-                            if (this.autoReset) {
-                                this.reset();
+            async2Observable(this.request).pipe(catchError(() => of(requestError = true))).pipe(
+                switchMap(res => async2Observable(submitHandler ? submitHandler.end() : noop()).pipe(
+                    map(() => {
+                        if (!requestError) {
+                            let assertSuc = typeof this.requestOkAssertion === 'function'
+                                ? this.requestOkAssertion(res) : true;
+
+                            if (assertSuc) {
+                                this.response.emit(res);
+
+                                if (this.autoReset) {
+                                    this.reset();
+                                }
                             }
-                        })
-                    );
-                })
+                        }
+                    }),
+                    catchError(() => of())
+                ))
             ).subscribe();
         } else {
             this.validateControls();
