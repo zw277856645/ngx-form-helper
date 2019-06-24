@@ -166,22 +166,9 @@ export class FormHelperDirective implements OnDestroy, AfterViewInit {
         }
     }
 
-    // trackUntilStable=true，跟踪所有control状态直到全部为pristine
-    // 原因：重置后触发一些不可控操作导致表单再次赋值
-    reset(trackUntilStable: boolean | number = true) {
+    reset() {
         this.submitted = false;
         this.resetControls();
-
-        if (trackUntilStable) {
-            setTimeout(() => {
-                for (let name in this.ngForm.controls) {
-                    if (this.ngForm.controls[ name ].dirty) {
-                        this.reset(trackUntilStable);
-                        break;
-                    }
-                }
-            }, typeof trackUntilStable === 'number' ? trackUntilStable : 20);
-        }
     }
 
     private static validateControl(control: AbstractControl) {
