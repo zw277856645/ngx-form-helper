@@ -29,7 +29,8 @@ export abstract class ErrorMessageHandler implements AfterViewInit {
     }
 
     ngAfterViewInit() {
-        this.bindErrorHandler();
+        // setTimeout保证动态表单正确绑定
+        setTimeout(() => this.bindErrorHandler());
     }
 
     protected addClasses(ele: Element, classNames: string | boolean) {
