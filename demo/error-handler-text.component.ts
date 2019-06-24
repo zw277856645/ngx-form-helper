@@ -17,9 +17,9 @@ export class ErrorHandlerTextComponent {
     actionInput: string;
     pageHeight = 0;
 
-    save = () => {
+    save() {
         return of(this.host);
-    };
+    }
 
     afterSave(res: any) {
         console.log(res);

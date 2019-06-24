@@ -47,7 +47,8 @@ export class ErrorHandlerTextMessageComponent extends ErrorMessageHandler implem
     constructor(private eleRef: ElementRef,
                 private renderer: Renderer2,
                 @Optional() @SkipSelf() private fhCtrl: FormHelperDirective,
-                @Optional() @Inject(ERROR_HANDLER_TEXT_MSG_CONFIG) private overrideConfig: ErrorHandlerTextMessageConfig) {
+                @Optional() @Inject(ERROR_HANDLER_TEXT_MSG_CONFIG)
+                private overrideConfig: ErrorHandlerTextMessageConfig) {
         super(eleRef, renderer);
         Object.assign(this, overrideConfig);
     }

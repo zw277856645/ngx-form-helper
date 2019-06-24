@@ -1,6 +1,6 @@
 <div class="ui container">
   <h3 class="ui dividing header">表单外消息</h3>
-  <form class="ui form" formHelper #fh1="formHelper" [request]="save" (response)="afterSave($event)"
+  <form class="ui form" formHelper #fh1="formHelper" [request]="save.bind(this)" (response)="afterSave($event)"
         [requestOkAssertion]="requestOkAssertion">
     <div class="field">
       <div class="ui action input small spe">

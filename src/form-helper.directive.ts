@@ -126,8 +126,16 @@ export class FormHelperDirective implements OnDestroy, AfterViewInit {
                 switchMap(res => async2Observable(submitHandler ? submitHandler.end() : noop()).pipe(
                     map(() => {
                         if (!requestError) {
-                            let assertSuc = typeof this.requestOkAssertion === 'function'
-                                ? this.requestOkAssertion(res) : true;
+                            let assertSuc = true;
+
+                            try {
+                                if (typeof this.requestOkAssertion === 'function') {
+                                    assertSuc = this.requestOkAssertion(res);
+                                }
+                            } catch (e) {
+                                // tslint:disable-next-line:no-console
+                                console.error(e);
+                            }
 
                             if (assertSuc) {
                                 this.response.emit(res);

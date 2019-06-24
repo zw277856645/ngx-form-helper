@@ -10,7 +10,8 @@ import { first, map } from 'rxjs/operators';
 import { FormHelperDirective } from '../form-helper.directive';
 import { isNotFirstChange, splitClassNames } from '../utils';
 
-export const SUBMIT_HANDLER_LOADER_CONFIG = new InjectionToken<SubmitHandlerLoaderConfig>('submit_handler_loader_config');
+export const SUBMIT_HANDLER_LOADER_CONFIG =
+    new InjectionToken<SubmitHandlerLoaderConfig>('submit_handler_loader_config');
 
 @Directive({
     selector: '[shLoader]',

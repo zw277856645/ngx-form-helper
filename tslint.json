@@ -35,19 +35,15 @@
     "no-attribute-parameter-decorator": true,
     "## Codelyzer 002": "输出属性禁止命名为标准DOM事件名",
     "no-output-named-after-standard-event": true,
-    "## Codelyzer 003": "禁止使用 forwardRef",
-    "no-forward-ref": true,
-    "## Codelyzer 004": "管道必须实现 PipeTransform 接口",
+    "## Codelyzer 003": "管道必须实现 PipeTransform 接口",
     "use-pipe-transform-interface": true,
-    "## Codelyzer 005": "禁止调用生命周期钩子函数",
-    "no-life-cycle-call": true,
-    "## Codelyzer 006": "使用 @ContentChild、@ViewChild 等，而不是 @Directive 和 @Component 装饰器的 queries 属性",
+    "## Codelyzer 004": "使用 @ContentChild、@ViewChild 等，而不是 @Directive 和 @Component 装饰器的 queries 属性",
     "no-queries-parameter": true,
-    "## Codelyzer 007": "验证双向绑定语法错误，如 ([ngModel]) 应写成 [(ngModel)] ",
+    "## Codelyzer 005": "验证双向绑定语法错误，如 ([ngModel]) 应写成 [(ngModel)] ",
     "banana-in-box": true,
-    "## Codelyzer 008": "生命周期钩子使用在合法的位置(Directive，Component)",
+    "## Codelyzer 006": "生命周期钩子使用在合法的位置(Directive，Component)",
     "contextual-life-cycle": true,
-    "## Codelyzer 009": "import {a, b} 语句 {} 左右必须各有一个空格，如 { a, b }",
+    "## Codelyzer 007": "import {a, b} 语句 {} 左右必须各有一个空格，如 { a, b }",
     "import-destructuring-spacing": true,
     "__ 1": "****************************************************************************",
     "## TSLint 001": "成员访问性关键字控制，禁止使用 public，因为默认就是 public",
@@ -144,20 +140,15 @@
       true,
       "check-space"
     ],
-    "## TSLint 026": "文件名使用烤串命名法",
-    "file-name-casing": [
-      true,
-      "kebab-case"
-    ],
-    "## TSLint 027": "import {} from 语句确保相互间隔有且仅有一个空格",
+    "## TSLint 026": "import {} from 语句确保相互间隔有且仅有一个空格",
     "import-spacing": true,
-    "## TSLint 028": "块中除非只有一行代码，否则 return 语句前必须空一行",
+    "## TSLint 027": "块中除非只有一行代码，否则 return 语句前必须空一行",
     "newline-before-return": true,
-    "## TSLint 029": "禁止调用构造函数时省略括号，如使用 new User() 替代 new User",
+    "## TSLint 028": "禁止调用构造函数时省略括号，如使用 new User() 替代 new User",
     "new-parens": true,
-    "## TSLint 030": "强制代码中空行最多只有一行",
+    "## TSLint 029": "强制代码中空行最多只有一行",
     "no-consecutive-blank-lines": true,
-    "## TSLint 031": "禁止行末空格",
+    "## TSLint 030": "禁止行末空格",
     "no-trailing-whitespace": [
       true,
       "ignore-template-strings",
@@ -165,21 +156,21 @@
       "ignore-comments",
       "ignore-jsdoc"
     ],
-    "## TSLint 032": "禁止无意义的初始化，如 let x = undefined",
+    "## TSLint 031": "禁止无意义的初始化，如 let x = undefined",
     "no-unnecessary-initializer": true,
-    "## TSLint 033": "禁止浮点数省略前导0(.1)或添加多余的后导0(0.10)",
+    "## TSLint 032": "禁止浮点数省略前导0(.1)或添加多余的后导0(0.10)",
     "number-literal-format": true,
-    "## TSLint 034": "强制使用对象字面量简写语法，如 { x: x } 应写成 { x }",
+    "## TSLint 033": "强制使用对象字面量简写语法，如 { x: x } 应写成 { x }",
     "object-literal-shorthand": true,
-    "## TSLint 035": "强制字符串使用单引号",
+    "## TSLint 034": "强制字符串使用单引号",
     "quotemark": [
       true,
       "single",
       "avoid-escape"
     ],
-    "## TSLint 036": "强制代码末尾有分号",
+    "## TSLint 035": "强制代码末尾有分号",
     "semicolon": true,
-    "## TSLint 037": "函数和括号之间是否有空格",
+    "## TSLint 036": "函数和括号之间是否有空格",
     "space-before-function-paren": [
       true,
       {
@@ -190,7 +181,7 @@
         "constructor": "never"
       }
     ],
-    "## TSLint 038": "变量命名规则检测，如合法的变量名如下：myName、MY_NAME、_myName、MyName",
+    "## TSLint 037": "变量命名规则检测，如合法的变量名如下：myName、MY_NAME、_myName、MyName",
     "variable-name": [
       true,
       "ban-keywords",
@@ -198,7 +189,7 @@
       "allow-leading-underscore",
       "allow-pascal-case"
     ],
-    "## TSLint 039": "空格检查",
+    "## TSLint 038": "空格检查",
     "whitespace": [
       true,
       "check-branch",
@@ -211,7 +202,7 @@
       "check-type-operator",
       "check-preblock"
     ],
-    "## TSLint 040": "使用 === 和 !== 替代 == 和 !=",
+    "## TSLint 039": "使用 === 和 !== 替代 == 和 !=",
     "triple-equals": true,
     "__ 2": "****************************************************************************",
     "## Rxjs 001": "合并 import",
