@@ -8,4 +8,7 @@ export class ErrorMessage {
 
     // 验证规则是否是异步
     async: boolean;
+
+    // 顺序
+    order: number;
 }

@@ -22,6 +22,12 @@ export const FORM_HELPER_CONFIG = new InjectionToken<FormHelperConfig>('form_hel
  * angular表单存在的bug
  *  1)bug：当使用ngFor迭代表单域，且name使用数组下标(如：name-{{i}})，此时若动态新增/删除表单域，会造成表单域数量混乱
  *    fix：这种情况下请保证name唯一，且必须使用trackBy返回唯一标识，推荐使用uuid等工具(如：name-{{uuid}})
+ *
+ * 设计不好的地方
+ *  1)request采用输入属性，用户需要使用[request]="callback.bind(this)"的形式保证this的正确指向
+ *  2)加载message不友好，格式为validator[.async][.order]
+ *    原因：指定async是因为AbstractControl无法获取已设定的验证器，因此无法自动识别验证器同步异步
+ *         指定order是因为页面被浏览器解析后属性顺序是不确定的，跟源代码书写顺序无关
  */
 @Directive({
     selector: '[formHelper]',

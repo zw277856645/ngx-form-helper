@@ -6,7 +6,9 @@
         <input type="text" name="name" [(ngModel)]="name" autocomplete="off" trimmedRequired nameUnique
                ehTooltip>
       </div>
-      <eh-tooltip-message ref="name" data-trimmed-required="不能为空" data-name-unique.async="重复"></eh-tooltip-message>
+      <eh-tooltip-message ref="name"
+                          data-trimmed-required.first="不能为空"
+                          data-name-unique.async="重复"></eh-tooltip-message>
     </div>
 
     <div class="field">
