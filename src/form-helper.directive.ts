@@ -184,11 +184,10 @@ export class FormHelperDirective implements OnDestroy, AfterViewInit {
 
         for (let name in controls) {
             control = controls[ name ];
+            FormHelperDirective.validateControl(control);
 
             if (control instanceof FormGroup) {
                 this.validateControls(control.controls);
-            } else {
-                FormHelperDirective.validateControl(control);
             }
         }
     }
