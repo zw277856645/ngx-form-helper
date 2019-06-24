@@ -13,15 +13,25 @@ import { map } from 'rxjs/operators';
 })
 export class NameUniqueDirective extends AsyncValidatorLimit implements AsyncValidator {
 
+    private ctrl: AbstractControl;
+
     constructor(private nameValidateService: NameValidateService) {
         super();
     }
 
     validate(c: AbstractControl): Observable<ValidationErrors | null> {
+        if (!this.ctrl) {
+            this.ctrl = c;
+        }
+
         return super.limit(
             this.nameValidateService.isNameUnique(c.value).pipe(
-                map(exist => {
-                    return exist ? { nameUnique: true } : null;
+                map((res: any) => {
+                    if (res.status === 'SUCCESS') {
+                        return !res.data ? null : { nameUnique: true };
+                    } else {
+                        return { nameUnique: true };
+                    }
                 })
             )
         );

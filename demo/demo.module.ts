@@ -13,6 +13,7 @@ import { ErrorHandlerTextComponent } from './error-handler-text.component';
 import { DropdownDirective } from './directive/dropdown.directive';
 import { AccordionDirective } from './directive/accordion.directive';
 import { ModalDirective } from './directive/modal.directive';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
     imports: [
@@ -20,6 +21,7 @@ import { ModalDirective } from './directive/modal.directive';
         ReactiveFormsModule,
         CommonModule,
         FormsModule,
+        HttpClientModule,
         FormHelperModule,
         DemoRouterModule
     ],

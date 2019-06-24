@@ -194,24 +194,15 @@ export class FormHelperDirective implements OnDestroy, AfterViewInit {
 
     private getPendingControls(controls: { [ key: string ]: AbstractControl; } = this.ngForm.controls) {
         let pendings: Observable<any>[] = [];
-        let control: AbstractControl;
-        let pds: Observable<any>[];
 
         for (let name in controls) {
-            control = controls[ name ];
-
-            if (control instanceof FormGroup) {
-                pds = this.getPendingControls(control.controls);
-
-                if (pds.length) {
-                    pendings.push(...pds);
-                }
-
-                continue;
-            }
+            let control = controls[ name ];
 
             if (control.enabled && control.pending) {
                 pendings.push(interval(100).pipe(skipWhile(() => control.pending), first()));
+            }
+            if (control instanceof FormGroup) {
+                pendings.push(...this.getPendingControls(control.controls));
             }
         }
 
