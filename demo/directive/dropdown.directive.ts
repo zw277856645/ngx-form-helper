@@ -1,7 +1,7 @@
-import { Directive, Input, ElementRef, EventEmitter, AfterViewInit } from '@angular/core';
+import {
+    Directive, Input, ElementRef, EventEmitter, AfterViewInit, OnChanges, SimpleChanges
+} from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { timer } from 'rxjs';
-import { map, takeWhile } from 'rxjs/operators';
 import { isNullOrUndefined } from 'util';
 
 @Directive({
@@ -15,9 +15,12 @@ import { isNullOrUndefined } from 'util';
         }
     ]
 })
-export class DropdownDirective implements ControlValueAccessor, AfterViewInit {
+export class DropdownDirective implements ControlValueAccessor, AfterViewInit, OnChanges {
 
     @Input('dropdown') options: any;
+    @Input() dynamic: boolean | number;
+    @Input() dynamicItems: any[];
+    @Input() defaultText: string;
 
     onHideEmitter = new EventEmitter();
 
@@ -25,6 +28,9 @@ export class DropdownDirective implements ControlValueAccessor, AfterViewInit {
     private selectValue: any;
     private controlChange: Function = new Function();
     private controlTouch: Function = new Function();
+    private initialValue: any;
+    private flag: any;
+    private flag2: any;
 
     constructor(private self: ElementRef) {
         this.$dropdown = $(self.nativeElement);
@@ -41,7 +47,10 @@ export class DropdownDirective implements ControlValueAccessor, AfterViewInit {
                     this.selectValue = value;
                     this.controlChange(value);
                     this.controlTouch(value);
-                    typeof this.options.onChange === 'function' && this.options.onChange(value, text, $choice);
+
+                    if (typeof this.options.onChange === 'function') {
+                        this.options.onChange(value, text, $choice);
+                    }
 
                     // 选择菜单中值为空的选项还原
                     if (!value) {
@@ -50,10 +59,31 @@ export class DropdownDirective implements ControlValueAccessor, AfterViewInit {
                 }
             },
             onHide: () => {
-                typeof this.options.onHide === 'function' && this.options.onHide();
+                if (typeof this.options.onHide === 'function') {
+                    this.options.onHide();
+                }
+
                 this.onHideEmitter.emit();
             }
         }));
+    }
+
+    ngOnChanges(changes: SimpleChanges) {
+        if (changes.dynamicItems
+            && changes.dynamicItems.currentValue
+            && changes.dynamicItems.currentValue.length) {
+            clearTimeout(this.flag2);
+            this.flag2 = setTimeout(() => {
+                if (this.initialValue) {
+                    this.initValue(this.initialValue);
+                    this.initialValue = null;
+                }
+            });
+        }
+
+        if (changes.defaultText && changes.defaultText.currentValue) {
+            this.$dropdown.find('.default.text').text(this.defaultText);
+        }
     }
 
     behavior(behaviorName: string, ...args: any[]) {
@@ -61,14 +91,12 @@ export class DropdownDirective implements ControlValueAccessor, AfterViewInit {
     }
 
     writeValue(value: any) {
-        if ((value === null || value === undefined) && this.selectValue) {
-            this.behavior('restore defaults');
-        } else if (value !== null && value !== undefined) {
-            timer(0, 300).pipe(
-                map(() => this.behavior('set selected', String(value).split(','))),
-                map(() => this.behavior('get text')),
-                takeWhile(txt => !txt || txt === this.behavior('get default text'))
-            ).subscribe();
+        this.initialValue = value;
+        if (this.dynamic) {
+            clearTimeout(this.flag);
+            this.flag = setTimeout(() => this.initValue(value), this.dynamic === true ? 0 : +this.dynamic);
+        } else {
+            this.initValue(value);
         }
     }
 
@@ -79,4 +107,13 @@ export class DropdownDirective implements ControlValueAccessor, AfterViewInit {
     registerOnTouched(fn: Function) {
         this.controlTouch = fn;
     }
+
+    private initValue(value: any) {
+        if (isNullOrUndefined(value) && this.selectValue) {
+            this.behavior('restore defaults');
+        } else if (!isNullOrUndefined(value)) {
+            this.behavior('set selected', String(value).split(','));
+        }
+    }
+
 }

@@ -346,12 +346,12 @@ export class FormHelperDirective implements OnDestroy, AfterViewInit {
     }
 
     private resetControls(controls: { [ key: string ]: AbstractControl; } = this.ngForm.controls) {
-        // 表单状态还原
-        this.markAllControlsPristine();
-
         // 表单值重置
         // PS: 设置了standalone的表单域/表单组无法重置。使用form.reset()只能重置view，不能重置对应model
         this.ngForm.reset();
+
+        // 表单状态还原
+        this.markAllControlsPristine();
 
         // 关闭错误提示
         if (this.errorHandlers) {

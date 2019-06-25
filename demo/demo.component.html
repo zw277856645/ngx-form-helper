@@ -39,11 +39,15 @@
       <div class="field">
         <label class="inline">选择喜好</label>
         <eh-text-message ref="love" data-required="至少选择一项" animation="flyLeft"></eh-text-message>
-        <select class="ui dropdown" name="love" [(ngModel)]="love" required ehText>
-          <option value="">请选择</option>
-          <option value="1">读书</option>
-          <option value="2">看报</option>
-        </select>
+        <div class="ui fluid selection dropdown" dropdown name="love" [(ngModel)]="love" required ehText>
+          <i class="icon dropdown"></i>
+          <div class="default text">请选择</div>
+          <div class="menu">
+            <div class="item" data-value="">请选择</div>
+            <div class="item" data-value="1">读书</div>
+            <div class="item" data-value="2">看报</div>
+          </div>
+        </div>
       </div>
 
       <div class="field">
