@@ -71,7 +71,8 @@ export abstract class ErrorHandler implements OnInit, AfterViewInit {
         this._messageHandler = messageHandler;
 
         if (this.validateImmediate) {
-            this.control.updateValueAndValidity();
+            // 避免ExpressionChangedAfterItHasBeenCheckedError
+            setTimeout(() => this.control.updateValueAndValidity());
         }
     }
 

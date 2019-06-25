@@ -1,6 +1,6 @@
 {
   "name": "ngx-form-helper",
-  "version": "2.0.12",
+  "version": "2.1.0",
   "description": "angular form validation helper",
   "$schema": "../node_modules/ng-packagr/package.schema.json",
   "ngPackage": {
