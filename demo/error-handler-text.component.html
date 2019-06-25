@@ -5,7 +5,7 @@
     <div class="field">
       <div class="ui action input small spe">
         <input type="text" name="host" [(ngModel)]="host" #hostCtrl="ngModel" autocomplete="off"
-               trimmedRequired pattern="^\d*$" ehText>
+               trimmedRequired pattern="^\d*$" ehText [validateImmediate]="true">
         <button type="submit" class="ui teal right labeled icon button" shLoader>
           <i class="add icon"></i>
           添加

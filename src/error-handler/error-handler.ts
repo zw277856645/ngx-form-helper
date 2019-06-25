@@ -60,13 +60,17 @@ export abstract class ErrorHandler implements OnInit, AfterViewInit {
             // 等待NgModelGroup初始化完毕
             setTimeout(() => this.listenStatusChanges());
         }
+
+        if (this.validateImmediate) {
+            this.control.markAsDirty();
+            this.control.updateValueAndValidity();
+        }
     }
 
     set messageHandler(messageHandler: ErrorMessageHandler) {
         this._messageHandler = messageHandler;
 
         if (this.validateImmediate) {
-            this.control.markAsDirty();
             this.control.updateValueAndValidity();
         }
     }
