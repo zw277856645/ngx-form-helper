@@ -66,6 +66,16 @@ module.exports = {
                 ]
             },
             {
+                test: /\.(css|less)$/,
+                include: [ helpers.root('demo/asset') ],
+                use: [
+                    MiniCssExtractPlugin.loader,
+                    'css-loader',
+                    'postcss-loader',
+                    'less-loader'
+                ]
+            },
+            {
                 test: /(?<!component)\.less$/,
                 exclude: [ helpers.root('demo') ],
                 use: [

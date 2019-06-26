@@ -57,6 +57,28 @@
       </div>
     </div>
 
+    <div class="field required">
+      <label>List Required</label>
+      <tag-input name="assertMatch"
+                 [(ngModel)]="assertMatch"
+                 theme="bootstrap3-info"
+                 [addOnBlur]="true"
+                 [addOnPaste]="true"
+                 [modelAsStrings]="true"
+                 [ripple]="false"
+                 [animationDuration]="{enter:'0ms',leave:'0ms'}"
+                 placeholder="请输入"
+                 secondaryPlaceholder="请输入"
+                 listRequired
+                 minListNum="2"
+                 maxListNum="4"
+                 ehTooltip></tag-input>
+      <eh-tooltip-message ref="assertMatch"
+                          data-list-required.first="不能为空"
+                          data-list-required-min="至少设置两个值"
+                          data-list-required-max.last="至多设置四个值"></eh-tooltip-message>
+    </div>
+
     <div class="blank" [style.height.px]="pageHeight"></div>
 
     <div class="field buttons">

@@ -7,6 +7,8 @@ export * from './form-helper.directive';
 export * from './async-validator-limit';
 
 export * from './validator/trimmed-required.directive';
+export * from './validator/list-required.directive';
+export * from './validator/checkbox-required.directive';
 
 export * from './submit-handler/submit-handler';
 export * from './submit-handler/submit-handler-loader-config';

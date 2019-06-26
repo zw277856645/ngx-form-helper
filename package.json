@@ -32,7 +32,8 @@
     "rxjs": "6.5.1",
     "semantic-ui-css": "2.4.1",
     "swiper": "4.2.6",
-    "zone.js": "0.8.29"
+    "zone.js": "0.8.29",
+    "ngx-chips": "2.0.0-beta.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "0.13.8",

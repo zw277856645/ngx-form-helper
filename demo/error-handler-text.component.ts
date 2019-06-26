@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { of } from 'rxjs';
 
 @Component({
     templateUrl: './error-handler-text.component.html',
@@ -16,9 +15,10 @@ export class ErrorHandlerTextComponent {
     actionInputType: number = 0;
     actionInput: string;
     pageHeight = 0;
+    assertMatch: string[] = [];
 
     save() {
-        return of(this.host);
+        return Promise.resolve(this.host);
     }
 
     afterSave(res: any) {

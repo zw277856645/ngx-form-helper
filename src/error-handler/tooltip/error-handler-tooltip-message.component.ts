@@ -1,6 +1,6 @@
 import {
-    AfterViewInit, Component, ElementRef, HostBinding, Inject, InjectionToken, Input, OnInit, Optional, Renderer2,
-    SkipSelf
+    AfterViewInit, Component, ElementRef, HostBinding, Inject, InjectionToken, Input, NgZone, OnInit, Optional,
+    Renderer2, SkipSelf
 } from '@angular/core';
 import { ErrorMessageHandler } from '../error-message-handler';
 import { ErrorHandlerTooltipMessageConfig, TooltipPosition } from './error-handler-tooltip-message-config';
@@ -48,6 +48,7 @@ export class ErrorHandlerTooltipMessageComponent extends ErrorMessageHandler imp
 
     constructor(private eleRef: ElementRef,
                 private renderer: Renderer2,
+                private zone: NgZone,
                 @SkipSelf() private fhCtrl: FormHelperDirective,
                 @Optional() @Inject(ERROR_HANDLER_TOOLTIP_MSG_CONFIG)
                 private overrideConfig: ErrorHandlerTooltipMessageConfig) {
@@ -86,80 +87,82 @@ export class ErrorHandlerTooltipMessageComponent extends ErrorMessageHandler imp
     }
 
     reposition() {
-        let parent = this.element.parentElement;
+        this.zone.runOutsideAngular(() => {
+            let parent = this.element.parentElement;
 
-        if (isHidden(parent) || !this.errorHandler) {
-            return;
-        }
+            if (isHidden(parent) || !this.errorHandler) {
+                return;
+            }
 
-        if (!this.proxyEle) {
-            let positionProxy = (this.errorHandler instanceof ErrorHandlerTooltipDirective)
-                ? this.errorHandler.positionProxy : null;
-            let proxy = positionProxy ? getProxyElement(this.errorHandler.element, positionProxy) : null;
-            this.proxyEle = (proxy || this.errorHandler.element) as HTMLElement;
-        }
+            if (!this.proxyEle) {
+                let positionProxy = (this.errorHandler instanceof ErrorHandlerTooltipDirective)
+                    ? this.errorHandler.positionProxy : null;
+                let proxy = positionProxy ? getProxyElement(this.errorHandler.element, positionProxy) : null;
+                this.proxyEle = (proxy || this.errorHandler.element) as HTMLElement;
+            }
 
-        // proxyEle必须包含在消息的parent之中
-        if (!parent.contains(this.proxyEle) || parent === this.proxyEle) {
-            throw new Error(this.controlName + '：表单域(ngModel)或表单组(ngModelGroup)或定位代理(positionProxy)必须在'
-                + '与之关联的 eh-tooltip-message 的直接父元素下');
-        }
+            // proxyEle必须包含在消息的parent之中
+            if (!parent.contains(this.proxyEle) || parent === this.proxyEle) {
+                throw new Error(this.controlName + '：表单域(ngModel)或表单组(ngModelGroup)或定位代理(positionProxy)必须在'
+                    + '与之关联的 eh-tooltip-message 的直接父元素下');
+            }
 
-        let parentWidth = getOuterWidth(parent),
-            parentHeight = getOuterHeight(parent),
+            let parentWidth = getOuterWidth(parent),
+                parentHeight = getOuterHeight(parent),
 
-            proxyWidth = getOuterWidth(this.proxyEle),
-            proxyHeight = getOuterHeight(this.proxyEle),
+                proxyWidth = getOuterWidth(this.proxyEle),
+                proxyHeight = getOuterHeight(this.proxyEle),
 
-            selfWidth = getOuterWidth(this.element),
-            selfHeight = getOuterHeight(this.element);
+                selfWidth = getOuterWidth(this.element),
+                selfHeight = getOuterHeight(this.element);
 
-        // proxy到parent之间可能有多个定位父元素，需要计算出proxy到parent的offset累加值
-        let tmp = this.proxyEle,
-            offsetTop = 0,
-            offsetLeft = 0;
+            // proxy到parent之间可能有多个定位父元素，需要计算出proxy到parent的offset累加值
+            let tmp = this.proxyEle,
+                offsetTop = 0,
+                offsetLeft = 0;
 
-        do {
-            offsetTop += tmp.offsetTop;
-            offsetLeft += tmp.offsetLeft;
-            tmp = tmp.offsetParent as HTMLElement;
-        } while (tmp !== parent && parent.contains(tmp));
+            do {
+                offsetTop += tmp.offsetTop;
+                offsetLeft += tmp.offsetLeft;
+                tmp = tmp.offsetParent as HTMLElement;
+            } while (tmp !== parent && parent.contains(tmp));
 
-        switch (this.position) {
-            default:
-            case TooltipPosition.BOTTOM_RIGHT:
-                this.setStyle('top', offsetTop + proxyHeight + this.offsetY + 'px');
-                this.setStyle('right', parentWidth - offsetLeft - proxyWidth + this.offsetX + 'px');
-                break;
-            case TooltipPosition.BOTTOM_CENTER:
-                this.setStyle('top', offsetTop + proxyHeight + this.offsetY + 'px');
-                this.setStyle('left', offsetLeft + (proxyWidth / 2) - (selfWidth / 2) + this.offsetX + 'px');
-                break;
-            case TooltipPosition.BOTTOM_LEFT:
-                this.setStyle('top', offsetTop + proxyHeight + this.offsetY + 'px');
-                this.setStyle('left', offsetLeft + this.offsetX + 'px');
-                break;
-            case TooltipPosition.TOP_RIGHT:
-                this.setStyle('right', parentWidth - offsetLeft - proxyWidth + this.offsetX + 'px');
-                this.setStyle('bottom', parentHeight - offsetTop + this.offsetY + 'px');
-                break;
-            case TooltipPosition.TOP_CENTER:
-                this.setStyle('left', offsetLeft + (proxyWidth / 2) - (selfWidth / 2) + this.offsetX + 'px');
-                this.setStyle('bottom', parentHeight - offsetTop + this.offsetY + 'px');
-                break;
-            case TooltipPosition.TOP_LEFT:
-                this.setStyle('left', offsetLeft + this.offsetX + 'px');
-                this.setStyle('bottom', parentHeight - offsetTop + this.offsetY + 'px');
-                break;
-            case TooltipPosition.LEFT_CENTER:
-                this.setStyle('top', offsetTop + (proxyHeight / 2) - (selfHeight / 2) + this.offsetY + 'px');
-                this.setStyle('right', parentWidth - offsetLeft + this.offsetX + 'px');
-                break;
-            case TooltipPosition.RIGHT_CENTER:
-                this.setStyle('top', offsetTop + (proxyHeight / 2) - (selfHeight / 2) + this.offsetY + 'px');
-                this.setStyle('left', offsetLeft + proxyWidth + this.offsetX + 'px');
-                break;
-        }
+            switch (this.position) {
+                default:
+                case TooltipPosition.BOTTOM_RIGHT:
+                    this.setStyle('top', offsetTop + proxyHeight + this.offsetY + 'px');
+                    this.setStyle('right', parentWidth - offsetLeft - proxyWidth + this.offsetX + 'px');
+                    break;
+                case TooltipPosition.BOTTOM_CENTER:
+                    this.setStyle('top', offsetTop + proxyHeight + this.offsetY + 'px');
+                    this.setStyle('left', offsetLeft + (proxyWidth / 2) - (selfWidth / 2) + this.offsetX + 'px');
+                    break;
+                case TooltipPosition.BOTTOM_LEFT:
+                    this.setStyle('top', offsetTop + proxyHeight + this.offsetY + 'px');
+                    this.setStyle('left', offsetLeft + this.offsetX + 'px');
+                    break;
+                case TooltipPosition.TOP_RIGHT:
+                    this.setStyle('right', parentWidth - offsetLeft - proxyWidth + this.offsetX + 'px');
+                    this.setStyle('bottom', parentHeight - offsetTop + this.offsetY + 'px');
+                    break;
+                case TooltipPosition.TOP_CENTER:
+                    this.setStyle('left', offsetLeft + (proxyWidth / 2) - (selfWidth / 2) + this.offsetX + 'px');
+                    this.setStyle('bottom', parentHeight - offsetTop + this.offsetY + 'px');
+                    break;
+                case TooltipPosition.TOP_LEFT:
+                    this.setStyle('left', offsetLeft + this.offsetX + 'px');
+                    this.setStyle('bottom', parentHeight - offsetTop + this.offsetY + 'px');
+                    break;
+                case TooltipPosition.LEFT_CENTER:
+                    this.setStyle('top', offsetTop + (proxyHeight / 2) - (selfHeight / 2) + this.offsetY + 'px');
+                    this.setStyle('right', parentWidth - offsetLeft + this.offsetX + 'px');
+                    break;
+                case TooltipPosition.RIGHT_CENTER:
+                    this.setStyle('top', offsetTop + (proxyHeight / 2) - (selfHeight / 2) + this.offsetY + 'px');
+                    this.setStyle('left', offsetLeft + proxyWidth + this.offsetX + 'px');
+                    break;
+            }
+        });
     }
 
     trackByMessages(i: number, msg: ErrorMessage) {

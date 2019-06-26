@@ -1,5 +1,4 @@
-import { defer, Observable, of } from 'rxjs';
-import { fromPromise } from 'rxjs/internal-compatibility';
+import { defer, from, Observable, of } from 'rxjs';
 import { SimpleChange } from '@angular/core';
 import { ErrorMessage } from './error-handler/error-message';
 
@@ -118,7 +117,7 @@ export function async2Observable(fn: any): Observable<any> {
         if (fn instanceof Observable) {
             return fn;
         } else if (fn instanceof Promise) {
-            return fromPromise(fn);
+            return from(fn);
         } else if (typeof fn === 'function') {
             return async2Observable(fn());
         } else {

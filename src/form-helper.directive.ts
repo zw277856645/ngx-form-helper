@@ -18,6 +18,8 @@ export const FORM_HELPER_CONFIG = new InjectionToken<FormHelperConfig>('form_hel
 /**
  * validators
  *  1)trimmedRequired
+ *  2)listRequired
+ *  3)checkboxRequired
  *
  * angular表单存在的bug
  *  1)bug：当使用ngFor迭代表单域，且name使用数组下标(如：name-{{i}})，此时若动态新增/删除表单域，会造成表单域数量混乱
@@ -28,6 +30,8 @@ export const FORM_HELPER_CONFIG = new InjectionToken<FormHelperConfig>('form_hel
  *  2)加载message不友好，格式为validator[.async][.order]
  *    原因：指定async是因为AbstractControl无法获取已设定的验证器，因此无法自动识别验证器同步异步
  *         指定order是因为页面被浏览器解析后属性顺序是不确定的，跟源代码书写顺序无关
+ *  3)angular无法获取所有注入器上的provide，因此配置多个provider时只有最上层的provider有效，无法实现
+ *    深度继承所有provider配置生成最终配置
  */
 @Directive({
     selector: '[formHelper]',

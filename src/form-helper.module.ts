@@ -8,6 +8,8 @@ import { ErrorHandlerTextDirective } from './error-handler/text/error-handler-te
 import { ErrorHandlerTooltipDirective } from './error-handler/tooltip/error-handler-tooltip.directive';
 import { ErrorHandlerTextMessageComponent } from './error-handler/text/error-handler-text-message.component';
 import { ErrorHandlerTooltipMessageComponent } from './error-handler/tooltip/error-handler-tooltip-message.component';
+import { ListRequiredDirective } from './validator/list-required.directive';
+import { CheckboxRequiredDirective } from './validator/checkbox-required.directive';
 
 @NgModule({
     imports: [
@@ -18,6 +20,8 @@ import { ErrorHandlerTooltipMessageComponent } from './error-handler/tooltip/err
         FormHelperDirective,
 
         TrimmedRequiredDirective,
+        ListRequiredDirective,
+        CheckboxRequiredDirective,
 
         SubmitHandlerLoaderDirective,
 
@@ -30,6 +34,8 @@ import { ErrorHandlerTooltipMessageComponent } from './error-handler/tooltip/err
     exports: [
         FormHelperDirective,
         TrimmedRequiredDirective,
+        ListRequiredDirective,
+        CheckboxRequiredDirective,
         SubmitHandlerLoaderDirective,
         ErrorHandlerTextDirective,
         ErrorHandlerTooltipDirective,

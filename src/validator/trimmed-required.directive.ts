@@ -2,7 +2,7 @@ import { Directive } from '@angular/core';
 import { AbstractControl, NG_VALIDATORS, ValidationErrors, Validator } from '@angular/forms';
 
 @Directive({
-    selector: '[trimmedRequired][ngModel]',
+    selector: '[trimmedRequired][ngModel],[trimmedRequired][formControl],[trimmedRequired][formControlName]',
     providers: [
         { provide: NG_VALIDATORS, useExisting: TrimmedRequiredDirective, multi: true }
     ]

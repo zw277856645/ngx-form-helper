@@ -26,7 +26,9 @@
     <div *ngIf="type == 0">
       <div class="field">
         <label>说明</label>
-        <textarea name="desc" required [(ngModel)]="desc" autocomplete="off" rows="3" disabled></textarea>
+        <textarea name="desc" trimmedRequired [(ngModel)]="desc" autocomplete="off" rows="3" autoSize
+                  ehTooltip #descCtrl="ehTooltip" (sizeChange)="descCtrl.repositionMessages()"></textarea>
+        <eh-tooltip-message ref="desc" data-trimmed-required="不能为空"></eh-tooltip-message>
       </div>
 
       <div class="field">
@@ -52,7 +54,7 @@
 
       <div class="field">
         <label>组(动态)</label>
-        <div ngModelGroup="group" checkboxRequired ehTooltip class="inline">
+        <div ngModelGroup="group" checkboxRequired minCheckedNum="2" maxCheckedNum="4" ehTooltip class="inline">
           <div class="ui checkbox" *ngFor="let ck of cks;trackBy:trackByCk;index as i">
             <input type="checkbox" [(ngModel)]="ck.checked" [name]="'ck-' + ck.uuid">
             <label>
@@ -62,7 +64,11 @@
           </div>
           <button type="button" class="ui button tiny teal" (click)="addCK('group')">添加</button>
         </div>
-        <eh-tooltip-message ref="group" data-checkbox-required="至少选择一项" position="right center"></eh-tooltip-message>
+        <eh-tooltip-message ref="group"
+                            position="right center"
+                            data-checkbox-required.first="请选择"
+                            data-checkbox-required-min="至少选择两项"
+                            data-checkbox-required-max.last="至多选择四项"></eh-tooltip-message>
       </div>
 
       <div class="field">
@@ -206,8 +212,10 @@
       </div>
       <div class="field">
         <label>评论</label>
-        <textarea name="issue2" required [(ngModel)]="issue2" autocomplete="off" rows="20" ehTooltip></textarea>
-        <eh-tooltip-message ref="issue2" data-required="不能为空"></eh-tooltip-message>
+        <textarea name="issue2" trimmedRequired [(ngModel)]="issue2" autocomplete="off" autoSize rows="3"
+                  minHeight="100" ehTooltip #issue2Ctrl="ehTooltip"
+                  (sizeChange)="issue2Ctrl.repositionMessages()"></textarea>
+        <eh-tooltip-message ref="issue2" data-trimmed-required="不能为空"></eh-tooltip-message>
       </div>
     </form>
   </div>

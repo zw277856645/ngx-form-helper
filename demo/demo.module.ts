@@ -14,16 +14,21 @@ import { DropdownDirective } from './directive/dropdown.directive';
 import { AccordionDirective } from './directive/accordion.directive';
 import { ModalDirective } from './directive/modal.directive';
 import { HttpClientModule } from '@angular/common/http';
+import { TextareaAutoSizeDirective } from './directive/textarea-auto-size.directive';
+import { TagInputModule } from 'ngx-chips';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
     imports: [
         BrowserModule,
         ReactiveFormsModule,
+        BrowserAnimationsModule,
         CommonModule,
         FormsModule,
         HttpClientModule,
         FormHelperModule,
-        DemoRouterModule
+        DemoRouterModule,
+        TagInputModule
     ],
     declarations: [
         AppComponent,
@@ -33,7 +38,8 @@ import { HttpClientModule } from '@angular/common/http';
         NameUniqueDirective,
         DropdownDirective,
         AccordionDirective,
-        ModalDirective
+        ModalDirective,
+        TextareaAutoSizeDirective
     ],
     providers: [
         NameValidateService
