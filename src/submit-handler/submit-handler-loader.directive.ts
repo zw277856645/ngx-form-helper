@@ -5,7 +5,7 @@ import {
 } from '@angular/core';
 import { IconToggleStrategy, SubmitHandlerLoaderConfig } from './submit-handler-loader-config';
 import { SubmitHandler } from './submit-handler';
-import { interval } from 'rxjs';
+import { interval, Observable } from 'rxjs';
 import { first, map } from 'rxjs/operators';
 import { FormHelperDirective } from '../form-helper.directive';
 import { isNotFirstChange, splitClassNames } from '../utils';
@@ -96,7 +96,7 @@ export class SubmitHandlerLoaderDirective implements SubmitHandler, OnChanges, A
         }
     }
 
-    end() {
+    end(): Observable<any> {
         let diff = new Date().getTime() - this.startTime;
         let duration = diff < +this.duration ? +this.duration - diff : 0;
 
