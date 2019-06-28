@@ -1,11 +1,11 @@
 import {
     Input, ElementRef, Directive, OnDestroy, HostListener, AfterViewInit, NgZone, Inject, Renderer2, Output, Optional,
-    QueryList, InjectionToken, EventEmitter, ContentChildren
+    QueryList, InjectionToken, EventEmitter, ContentChildren, SkipSelf, Provider
 } from '@angular/core';
 import { AbstractControl, FormGroup, NgForm } from '@angular/forms';
 import { forkJoin, interval, Observable, of, Subscription } from 'rxjs';
 import { FormHelperConfig } from './form-helper-config';
-import { async2Observable, getProxyElement, noop, splitClassNames } from './utils';
+import { arrayProviderFactory, async2Observable, getProxyElement, noop, splitClassNames } from './utils';
 import { catchError, first, map, skipWhile, switchMap } from 'rxjs/operators';
 import { ErrorHandler } from './error-handler/error-handler';
 import { SubmitHandler } from './submit-handler/submit-handler';
@@ -14,6 +14,22 @@ import { getOffset, getScrollTop, isVisible, setScrollTop } from 'cmjs-lib';
 const TWEEN = require('@tweenjs/tween.js');
 
 export const FORM_HELPER_CONFIG = new InjectionToken<FormHelperConfig>('form_helper_config');
+
+export const FORM_HELPER_CONFIG_ARRAY = new InjectionToken<FormHelperConfig[]>('form_helper_config_array');
+
+export function formHelperConfigProvider(config: FormHelperConfig): Provider[] {
+    return [
+        {
+            provide: FORM_HELPER_CONFIG,
+            useValue: config
+        },
+        {
+            provide: FORM_HELPER_CONFIG_ARRAY,
+            useFactory: arrayProviderFactory,
+            deps: [ FORM_HELPER_CONFIG, [ new SkipSelf(), new Optional(), FORM_HELPER_CONFIG_ARRAY ] ]
+        }
+    ];
+}
 
 /**
  * validators
@@ -30,8 +46,6 @@ export const FORM_HELPER_CONFIG = new InjectionToken<FormHelperConfig>('form_hel
  *  2)加载message不友好，格式为validator[.async][.order]
  *    原因：指定async是因为AbstractControl无法获取已设定的验证器，因此无法自动识别验证器同步异步
  *         指定order是因为页面被浏览器解析后属性顺序是不确定的，跟源代码书写顺序无关
- *  3)angular无法获取所有注入器上的provide，因此配置多个provider时只有最上层的provider有效，无法实现
- *    深度继承所有provider配置生成最终配置
  */
 @Directive({
     selector: '[formHelper]',
@@ -102,8 +116,8 @@ export class FormHelperDirective implements OnDestroy, AfterViewInit {
                 private eleRef: ElementRef,
                 private zone: NgZone,
                 private renderer: Renderer2,
-                @Optional() @Inject(FORM_HELPER_CONFIG) private overrideConfig: FormHelperConfig) {
-        Object.assign(this, overrideConfig);
+                @Optional() @Inject(FORM_HELPER_CONFIG_ARRAY) private overrideConfigs: FormHelperConfig[]) {
+        Object.assign(this, ...(overrideConfigs || []));
         this.form = eleRef.nativeElement;
     }
 

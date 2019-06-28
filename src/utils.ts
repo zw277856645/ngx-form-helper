@@ -148,3 +148,7 @@ export function loadMessagesFromDataset(ele: HTMLElement) {
 
     return messages.sort((a, b) => a.order - b.order);
 }
+
+export function arrayProviderFactory(config: any, array: any[]) {
+    return Array.isArray(array) ? [ ...array, config ] : [ config ];
+}

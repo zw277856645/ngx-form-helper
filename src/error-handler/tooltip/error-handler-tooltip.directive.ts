@@ -1,14 +1,35 @@
 import {
-    Directive, ElementRef, forwardRef, Inject, InjectionToken, Input, Optional, Renderer2, SkipSelf
+    Directive, ElementRef, forwardRef, Inject, InjectionToken, Input, Optional, Provider, Renderer2, SkipSelf
 } from '@angular/core';
 import { ErrorHandler } from '../error-handler';
 import { FormGroup, NgModel, NgModelGroup } from '@angular/forms';
 import { FormHelperDirective } from '../../form-helper.directive';
 import { ErrorHandlerTooltipConfig } from './error-handler-tooltip-config';
 import { isVisible } from 'cmjs-lib';
+import { arrayProviderFactory } from '../../utils';
 
 export const ERROR_HANDLER_TOOLTIP_CONFIG
     = new InjectionToken<ErrorHandlerTooltipConfig>('error_handler_tooltip_config');
+
+export const ERROR_HANDLER_TOOLTIP_CONFIG_ARRAY
+    = new InjectionToken<ErrorHandlerTooltipConfig[]>('error_handler_tooltip_config_array');
+
+export function errorHandlerTooltipConfigProvider(config: ErrorHandlerTooltipConfig): Provider[] {
+    return [
+        {
+            provide: ERROR_HANDLER_TOOLTIP_CONFIG,
+            useValue: config
+        },
+        {
+            provide: ERROR_HANDLER_TOOLTIP_CONFIG_ARRAY,
+            useFactory: arrayProviderFactory,
+            deps: [
+                ERROR_HANDLER_TOOLTIP_CONFIG,
+                [ new SkipSelf(), new Optional(), ERROR_HANDLER_TOOLTIP_CONFIG_ARRAY ]
+            ]
+        }
+    ];
+}
 
 @Directive({
     selector: '[ehTooltip][ngModel], [ehTooltip][ngModelGroup]',
@@ -29,9 +50,10 @@ export class ErrorHandlerTooltipDirective extends ErrorHandler {
                 @Optional() private ngModel: NgModel,
                 @Optional() private ngModelGroup: NgModelGroup,
                 @SkipSelf() private formHelper: FormHelperDirective,
-                @Optional() @Inject(ERROR_HANDLER_TOOLTIP_CONFIG) private overrideConfig: ErrorHandlerTooltipConfig) {
+                @Optional() @Inject(ERROR_HANDLER_TOOLTIP_CONFIG_ARRAY)
+                private overrideConfigs: ErrorHandlerTooltipConfig[]) {
         super(eleRef, ngModel || ngModelGroup, formHelper, renderer);
-        Object.assign(this, overrideConfig);
+        Object.assign(this, ...(overrideConfigs || []));
     }
 
     whenValid() {

@@ -1,17 +1,37 @@
 import {
-    AfterViewInit, Component, ElementRef, HostBinding, Inject, InjectionToken, Input, NgZone, OnInit, Optional,
-    Renderer2, SkipSelf
+    AfterViewInit, Component, ElementRef, HostBinding, Inject, InjectionToken, Input, NgZone, OnInit,
+    Optional, Provider, Renderer2, SkipSelf
 } from '@angular/core';
 import { ErrorMessageHandler } from '../error-message-handler';
 import { ErrorHandlerTooltipMessageConfig, TooltipPosition } from './error-handler-tooltip-message-config';
 import { FormHelperDirective } from '../../form-helper.directive';
 import { ErrorMessage } from '../error-message';
-import { getProxyElement, loadMessagesFromDataset } from '../../utils';
+import { arrayProviderFactory, getProxyElement, loadMessagesFromDataset } from '../../utils';
 import { ErrorHandlerTooltipDirective } from './error-handler-tooltip.directive';
 import { getOuterHeight, getOuterWidth, getStyle, isHidden } from 'cmjs-lib';
 
 export const ERROR_HANDLER_TOOLTIP_MSG_CONFIG
     = new InjectionToken<ErrorHandlerTooltipMessageConfig>('error_handler_tooltip_msg_config');
+
+export const ERROR_HANDLER_TOOLTIP_MSG_CONFIG_ARRAY
+    = new InjectionToken<ErrorHandlerTooltipMessageConfig[]>('error_handler_tooltip_msg_config_array');
+
+export function errorHandlerTooltipMsgConfigProvider(config: ErrorHandlerTooltipMessageConfig): Provider[] {
+    return [
+        {
+            provide: ERROR_HANDLER_TOOLTIP_MSG_CONFIG,
+            useValue: config
+        },
+        {
+            provide: ERROR_HANDLER_TOOLTIP_MSG_CONFIG_ARRAY,
+            useFactory: arrayProviderFactory,
+            deps: [
+                ERROR_HANDLER_TOOLTIP_MSG_CONFIG,
+                [ new SkipSelf(), new Optional(), ERROR_HANDLER_TOOLTIP_MSG_CONFIG_ARRAY ]
+            ]
+        }
+    ];
+}
 
 @Component({
     selector: 'eh-tooltip-message',
@@ -50,10 +70,10 @@ export class ErrorHandlerTooltipMessageComponent extends ErrorMessageHandler imp
                 private renderer: Renderer2,
                 private zone: NgZone,
                 @SkipSelf() private fhCtrl: FormHelperDirective,
-                @Optional() @Inject(ERROR_HANDLER_TOOLTIP_MSG_CONFIG)
-                private overrideConfig: ErrorHandlerTooltipMessageConfig) {
+                @Optional() @Inject(ERROR_HANDLER_TOOLTIP_MSG_CONFIG_ARRAY)
+                private overrideConfigs: ErrorHandlerTooltipMessageConfig[]) {
         super(eleRef, renderer);
-        Object.assign(this, overrideConfig);
+        Object.assign(this, ...(overrideConfigs || []));
     }
 
     ngOnInit() {
@@ -130,36 +150,36 @@ export class ErrorHandlerTooltipMessageComponent extends ErrorMessageHandler imp
             switch (this.position) {
                 default:
                 case TooltipPosition.BOTTOM_RIGHT:
-                    this.setStyle('top', offsetTop + proxyHeight + this.offsetY + 'px');
-                    this.setStyle('right', parentWidth - offsetLeft - proxyWidth + this.offsetX + 'px');
+                    this.setStyle('top', offsetTop + proxyHeight + +this.offsetY + 'px');
+                    this.setStyle('right', parentWidth - offsetLeft - proxyWidth + +this.offsetX + 'px');
                     break;
                 case TooltipPosition.BOTTOM_CENTER:
-                    this.setStyle('top', offsetTop + proxyHeight + this.offsetY + 'px');
-                    this.setStyle('left', offsetLeft + (proxyWidth / 2) - (selfWidth / 2) + this.offsetX + 'px');
+                    this.setStyle('top', offsetTop + proxyHeight + +this.offsetY + 'px');
+                    this.setStyle('left', offsetLeft + (proxyWidth / 2) - (selfWidth / 2) + +this.offsetX + 'px');
                     break;
                 case TooltipPosition.BOTTOM_LEFT:
-                    this.setStyle('top', offsetTop + proxyHeight + this.offsetY + 'px');
-                    this.setStyle('left', offsetLeft + this.offsetX + 'px');
+                    this.setStyle('top', offsetTop + proxyHeight + +this.offsetY + 'px');
+                    this.setStyle('left', offsetLeft + +this.offsetX + 'px');
                     break;
                 case TooltipPosition.TOP_RIGHT:
-                    this.setStyle('right', parentWidth - offsetLeft - proxyWidth + this.offsetX + 'px');
-                    this.setStyle('bottom', parentHeight - offsetTop + this.offsetY + 'px');
+                    this.setStyle('right', parentWidth - offsetLeft - proxyWidth + +this.offsetX + 'px');
+                    this.setStyle('bottom', parentHeight - offsetTop + +this.offsetY + 'px');
                     break;
                 case TooltipPosition.TOP_CENTER:
-                    this.setStyle('left', offsetLeft + (proxyWidth / 2) - (selfWidth / 2) + this.offsetX + 'px');
-                    this.setStyle('bottom', parentHeight - offsetTop + this.offsetY + 'px');
+                    this.setStyle('left', offsetLeft + (proxyWidth / 2) - (selfWidth / 2) + +this.offsetX + 'px');
+                    this.setStyle('bottom', parentHeight - offsetTop + +this.offsetY + 'px');
                     break;
                 case TooltipPosition.TOP_LEFT:
-                    this.setStyle('left', offsetLeft + this.offsetX + 'px');
-                    this.setStyle('bottom', parentHeight - offsetTop + this.offsetY + 'px');
+                    this.setStyle('left', offsetLeft + +this.offsetX + 'px');
+                    this.setStyle('bottom', parentHeight - offsetTop + +this.offsetY + 'px');
                     break;
                 case TooltipPosition.LEFT_CENTER:
-                    this.setStyle('top', offsetTop + (proxyHeight / 2) - (selfHeight / 2) + this.offsetY + 'px');
-                    this.setStyle('right', parentWidth - offsetLeft + this.offsetX + 'px');
+                    this.setStyle('top', offsetTop + (proxyHeight / 2) - (selfHeight / 2) + +this.offsetY + 'px');
+                    this.setStyle('right', parentWidth - offsetLeft + +this.offsetX + 'px');
                     break;
                 case TooltipPosition.RIGHT_CENTER:
-                    this.setStyle('top', offsetTop + (proxyHeight / 2) - (selfHeight / 2) + this.offsetY + 'px');
-                    this.setStyle('left', offsetLeft + proxyWidth + this.offsetX + 'px');
+                    this.setStyle('top', offsetTop + (proxyHeight / 2) - (selfHeight / 2) + +this.offsetY + 'px');
+                    this.setStyle('left', offsetLeft + proxyWidth + +this.offsetX + 'px');
                     break;
             }
         });

@@ -1,17 +1,37 @@
 import {
     AfterViewInit,
-    Directive, ElementRef, HostListener, Inject, InjectionToken, Input, OnChanges, Optional, Renderer2, SimpleChanges,
-    SkipSelf
+    Directive, ElementRef, HostListener, Inject, InjectionToken, Input, OnChanges, Optional, Provider,
+    Renderer2, SimpleChanges, SkipSelf
 } from '@angular/core';
 import { IconToggleStrategy, SubmitHandlerLoaderConfig } from './submit-handler-loader-config';
 import { SubmitHandler } from './submit-handler';
 import { interval, Observable } from 'rxjs';
 import { first, map } from 'rxjs/operators';
 import { FormHelperDirective } from '../form-helper.directive';
-import { isNotFirstChange, splitClassNames } from '../utils';
+import { arrayProviderFactory, isNotFirstChange, splitClassNames } from '../utils';
 
 export const SUBMIT_HANDLER_LOADER_CONFIG =
     new InjectionToken<SubmitHandlerLoaderConfig>('submit_handler_loader_config');
+
+export const SUBMIT_HANDLER_LOADER_CONFIG_ARRAY =
+    new InjectionToken<SubmitHandlerLoaderConfig[]>('submit_handler_loader_config_array');
+
+export function submitHandlerLoaderConfigProvider(config: SubmitHandlerLoaderConfig): Provider[] {
+    return [
+        {
+            provide: SUBMIT_HANDLER_LOADER_CONFIG,
+            useValue: config
+        },
+        {
+            provide: SUBMIT_HANDLER_LOADER_CONFIG_ARRAY,
+            useFactory: arrayProviderFactory,
+            deps: [
+                SUBMIT_HANDLER_LOADER_CONFIG,
+                [ new SkipSelf(), new Optional(), SUBMIT_HANDLER_LOADER_CONFIG_ARRAY ]
+            ]
+        }
+    ];
+}
 
 @Directive({
     selector: '[shLoader]',
@@ -49,8 +69,9 @@ export class SubmitHandlerLoaderDirective implements SubmitHandler, OnChanges, A
     constructor(private eleRef: ElementRef,
                 private renderer: Renderer2,
                 @Optional() @SkipSelf() private formHelper: FormHelperDirective,
-                @Optional() @Inject(SUBMIT_HANDLER_LOADER_CONFIG) private overrideConfig: SubmitHandlerLoaderConfig) {
-        Object.assign(this, overrideConfig);
+                @Optional() @Inject(SUBMIT_HANDLER_LOADER_CONFIG_ARRAY)
+                private overrideConfigs: SubmitHandlerLoaderConfig[]) {
+        Object.assign(this, ...(overrideConfigs || []));
         this.ele = eleRef.nativeElement;
     }
 

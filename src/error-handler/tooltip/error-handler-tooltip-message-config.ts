@@ -25,7 +25,7 @@ export class ErrorHandlerTooltipMessageConfig {
     position?: TooltipPosition;
 
     // 显示/隐藏动画时长(ms)
-    duration?: string;
+    duration?: number;
 
     // tooltip z-index
     zIndex?: number;

@@ -1,15 +1,35 @@
 import {
-    Component, ElementRef, HostBinding, Inject, InjectionToken, Input, OnInit, Optional, Renderer2,
-    SkipSelf, ViewChild
+    Component, ElementRef, HostBinding, Inject, InjectionToken, Input, OnInit, Optional, Provider,
+    Renderer2, SkipSelf, ViewChild
 } from '@angular/core';
 import { ErrorHandlerTextMessageConfig } from './error-handler-text-message-config';
-import { loadMessagesFromDataset } from '../../utils';
+import { arrayProviderFactory, loadMessagesFromDataset } from '../../utils';
 import { FormHelperDirective } from '../../form-helper.directive';
 import { ErrorMessage } from '../error-message';
 import { ErrorMessageHandler } from '../error-message-handler';
 
 export const ERROR_HANDLER_TEXT_MSG_CONFIG
     = new InjectionToken<ErrorHandlerTextMessageConfig>('error_handler_text_msg_config');
+
+export const ERROR_HANDLER_TEXT_MSG_CONFIG_ARRAY
+    = new InjectionToken<ErrorHandlerTextMessageConfig[]>('error_handler_text_msg_config_array');
+
+export function errorHandlerTextMsgConfigProvider(config: ErrorHandlerTextMessageConfig): Provider[] {
+    return [
+        {
+            provide: ERROR_HANDLER_TEXT_MSG_CONFIG,
+            useValue: config
+        },
+        {
+            provide: ERROR_HANDLER_TEXT_MSG_CONFIG_ARRAY,
+            useFactory: arrayProviderFactory,
+            deps: [
+                ERROR_HANDLER_TEXT_MSG_CONFIG,
+                [ new SkipSelf(), new Optional(), ERROR_HANDLER_TEXT_MSG_CONFIG_ARRAY ]
+            ]
+        }
+    ];
+}
 
 @Component({
     selector: 'eh-text-message',
@@ -47,10 +67,10 @@ export class ErrorHandlerTextMessageComponent extends ErrorMessageHandler implem
     constructor(private eleRef: ElementRef,
                 private renderer: Renderer2,
                 @Optional() @SkipSelf() private fhCtrl: FormHelperDirective,
-                @Optional() @Inject(ERROR_HANDLER_TEXT_MSG_CONFIG)
-                private overrideConfig: ErrorHandlerTextMessageConfig) {
+                @Optional() @Inject(ERROR_HANDLER_TEXT_MSG_CONFIG_ARRAY)
+                private overrideConfigs: ErrorHandlerTextMessageConfig[]) {
         super(eleRef, renderer);
-        Object.assign(this, overrideConfig);
+        Object.assign(this, ...(overrideConfigs || []));
     }
 
     ngOnInit() {
