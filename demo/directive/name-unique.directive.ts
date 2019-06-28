@@ -25,15 +25,9 @@ export class NameUniqueDirective extends AsyncValidatorLimit implements AsyncVal
         }
 
         return super.limit(
-            this.nameValidateService.isNameUnique(c.value).pipe(
-                map((res: any) => {
-                    if (res.status === 'SUCCESS') {
-                        return !res.data ? null : { nameUnique: true };
-                    } else {
-                        return { nameUnique: true };
-                    }
-                })
-            )
+            this.nameValidateService.isNameUnique(c.value).pipe(map((res: any) => {
+                return !res ? null : { nameUnique: true };
+            }))
         );
     }
 

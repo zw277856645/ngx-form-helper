@@ -1,7 +1,6 @@
 <div class="ui container">
   <h3 class="ui dividing header">表单外消息</h3>
-  <form class="ui form" formHelper #fh1="formHelper" [request]="save.bind(this)" (response)="afterSave($event)"
-        [requestOkAssertion]="requestOkAssertion">
+  <form class="ui form" formHelper #fh1="formHelper" (pass)="save($event)" [resultOkAssertion]="resultOkAssertion">
     <div class="field">
       <div class="ui action input small spe">
         <input type="text" name="host" [(ngModel)]="host" #hostCtrl="ngModel" autocomplete="off"
@@ -21,7 +20,7 @@
   </eh-text-message>
 
   <h3 class="ui dividing header">表单2</h3>
-  <form class="ui form" formHelper offsetTop="28">
+  <form class="ui form" formHelper offsetTop="28" (pass)="save2($event)">
     <div class="field required">
       <label class="inline">名字</label>
       <eh-text-message ref="name" data-trimmed-required="不能为空" data-name-unique="重复"
@@ -82,7 +81,7 @@
     <div class="blank" [style.height.px]="pageHeight"></div>
 
     <div class="field buttons">
-      <button shLoader type="submit" class="ui button small instagram right labeled icon">
+      <button #submit type="button" class="ui button small instagram right labeled icon">
         <i class="icon save"></i>
         保存
       </button>

@@ -130,18 +130,15 @@ export function loadMessagesFromDataset(ele: HTMLElement) {
     let messages: ErrorMessage[] = [];
 
     for (let k in ele.dataset) {
-        let [ name, type, order ] = k.split('.');
-        let finalOrder = (order || type) as any;
-
-        finalOrder = /^first$/i.test(finalOrder) ? Number.MIN_SAFE_INTEGER
-            : /^last$/i.test(finalOrder) ? Number.MAX_SAFE_INTEGER
-                : /^-?\d+$/.test(finalOrder) ? parseInt(finalOrder)
+        let [ name, order ] = k.split('.');
+        let finalOrder = /^first$/i.test(order) ? Number.MIN_SAFE_INTEGER
+            : /^last$/i.test(order) ? Number.MAX_SAFE_INTEGER
+                : /^-?\d+$/.test(order) ? parseInt(order)
                     : 0;
 
         messages.push({
             validator: name,
             message: ele.dataset[ k ],
-            async: /^async$/i.test(type),
             order: finalOrder
         });
     }

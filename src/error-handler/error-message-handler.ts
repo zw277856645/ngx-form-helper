@@ -75,6 +75,8 @@ export abstract class ErrorMessageHandler implements AfterViewInit {
 
     reposition?(): void;
 
+    onBindErrorHandler?(): void;
+
     private findControlByRef(
         controls: { [ key: string ]: AbstractControl } = this.formHelper.ngForm.controls
     ): AbstractControl {
@@ -118,6 +120,10 @@ export abstract class ErrorMessageHandler implements AfterViewInit {
             this.errorHandler = this.formHelper.errorHandlers.find(eh => eh.control === this.control);
             if (this.errorHandler) {
                 this.errorHandler.messageHandler = this;
+
+                if (this.onBindErrorHandler) {
+                    this.onBindErrorHandler();
+                }
             }
         }
     }

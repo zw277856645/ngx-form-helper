@@ -1,8 +1,8 @@
 import {
-    Directive, ElementRef, forwardRef, Inject, InjectionToken, Input, Optional, Provider, Renderer2, SkipSelf
+    Directive, ElementRef, forwardRef, Host, Inject, InjectionToken, Input, Optional, Provider, Renderer2, SkipSelf
 } from '@angular/core';
 import { ErrorHandler } from '../error-handler';
-import { FormGroup, NgModel, NgModelGroup } from '@angular/forms';
+import { FormGroup, NG_ASYNC_VALIDATORS, NgModel, NgModelGroup, Validator } from '@angular/forms';
 import { FormHelperDirective } from '../../form-helper.directive';
 import { ErrorHandlerTooltipConfig } from './error-handler-tooltip-config';
 import { isVisible } from 'cmjs-lib';
@@ -51,7 +51,8 @@ export class ErrorHandlerTooltipDirective extends ErrorHandler {
                 @Optional() private ngModelGroup: NgModelGroup,
                 @SkipSelf() private formHelper: FormHelperDirective,
                 @Optional() @Inject(ERROR_HANDLER_TOOLTIP_CONFIG_ARRAY)
-                private overrideConfigs: ErrorHandlerTooltipConfig[]) {
+                private overrideConfigs: ErrorHandlerTooltipConfig[],
+                @Host() @Optional() @Inject(NG_ASYNC_VALIDATORS) public asyncValidators: (Function | Validator)[]) {
         super(eleRef, ngModel || ngModelGroup, formHelper, renderer);
         Object.assign(this, ...(overrideConfigs || []));
     }

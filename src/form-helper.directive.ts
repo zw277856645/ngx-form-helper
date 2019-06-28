@@ -3,15 +3,17 @@ import {
     QueryList, InjectionToken, EventEmitter, ContentChildren, SkipSelf, Provider
 } from '@angular/core';
 import { AbstractControl, FormGroup, NgForm } from '@angular/forms';
-import { forkJoin, interval, Observable, of, Subscription } from 'rxjs';
+import { EMPTY, forkJoin, interval, Observable, of, Subscription } from 'rxjs';
 import { FormHelperConfig } from './form-helper-config';
 import { arrayProviderFactory, async2Observable, getProxyElement, noop, splitClassNames } from './utils';
-import { catchError, first, map, skipWhile, switchMap } from 'rxjs/operators';
+import { catchError, finalize, first, map, skipWhile, switchMap } from 'rxjs/operators';
 import { ErrorHandler } from './error-handler/error-handler';
 import { SubmitHandler } from './submit-handler/submit-handler';
 import { getOffset, getScrollTop, isVisible, setScrollTop } from 'cmjs-lib';
 
 const TWEEN = require('@tweenjs/tween.js');
+
+export type SubmitWrapper = (request?: any) => Observable<any>;
 
 export const FORM_HELPER_CONFIG = new InjectionToken<FormHelperConfig>('form_helper_config');
 
@@ -42,10 +44,12 @@ export function formHelperConfigProvider(config: FormHelperConfig): Provider[] {
  *    fix：这种情况下请保证name唯一，且必须使用trackBy返回唯一标识，推荐使用uuid等工具(如：name-{{uuid}})
  *
  * 设计不好的地方
- *  1)request采用输入属性，用户需要使用[request]="callback.bind(this)"的形式保证this的正确指向
- *  2)加载message不友好，格式为validator[.async][.order]
- *    原因：指定async是因为AbstractControl无法获取已设定的验证器，因此无法自动识别验证器同步异步
- *         指定order是因为页面被浏览器解析后属性顺序是不确定的，跟源代码书写顺序无关
+ *  1)pass事件中需要向用户传递 SubmitWrapper
+ *    原因：已rxjs为例，请求通常写法为 request.subscribe(() => response())，需要在request与response之间插入一些操作，
+ *         借助 submitWrapper(request).subscribe(() => response()) 实现功能，但需要用户调用，对用户不透明
+ *
+ *  2)加载message不友好，格式为validator[.order][.async]
+ *    原因：指定order是因为页面被浏览器解析后属性顺序是不确定的，跟源代码书写顺序无关
  */
 @Directive({
     selector: '[formHelper]',
@@ -61,6 +65,14 @@ export class FormHelperDirective implements OnDestroy, AfterViewInit {
                   this.resetEles.push(reset.nativeElement);
                   this.subscription.add(this.renderer.listen(reset.nativeElement, 'click', () => this.reset()));
               });
+    }
+
+    @ContentChildren('submit') set submits(submits: QueryList<ElementRef>) {
+        submits.filter(submit => this.submitEles.indexOf(submit.nativeElement) < 0)
+               .forEach(submit => {
+                   this.submitEles.push(submit.nativeElement);
+                   this.subscription.add(this.renderer.listen(submit.nativeElement, 'click', () => this.submit()));
+               });
     }
 
     @Input() autoReset: boolean = true;
@@ -81,16 +93,13 @@ export class FormHelperDirective implements OnDestroy, AfterViewInit {
 
     @Input() errorGroupClassNames: string | false = 'fh-group-error';
 
-    // 验证通过时的请求
-    @Input() request: Observable<any> | Promise<any> | Function | any;
+    @Input() resultOkAssertion: (res: any) => boolean;
 
-    @Input() requestOkAssertion: (res: any) => boolean;
+    // 验证通过
+    @Output() pass = new EventEmitter();
 
     // 验证不通过
     @Output() fail = new EventEmitter();
-
-    // request请求完成后的响应，参数为request的返回值
-    @Output() response = new EventEmitter();
 
     @HostListener('keydown', [ '$event' ]) onKeydown(event: KeyboardEvent) {
         if ((event.keyCode || event.which) === 13 && event.srcElement.nodeName.toUpperCase() !== 'TEXTAREA') {
@@ -111,6 +120,7 @@ export class FormHelperDirective implements OnDestroy, AfterViewInit {
 
     private subscription = new Subscription();
     private resetEles: Element[] = [];
+    private submitEles: Element[] = [];
 
     constructor(public ngForm: NgForm,
                 private eleRef: ElementRef,
@@ -138,35 +148,42 @@ export class FormHelperDirective implements OnDestroy, AfterViewInit {
                 submitHandler.start();
             }
 
-            let requestError = false;
+            this.pass.emit(((request?: any) => {
+                let requestError = false;
+                let assertSuc = true;
 
-            async2Observable(this.request).pipe(catchError(() => of(requestError = true))).pipe(
-                switchMap(res => async2Observable(submitHandler ? submitHandler.end() : noop()).pipe(
-                    map(() => {
-                        if (!requestError) {
-                            let assertSuc = true;
+                return async2Observable(request).pipe(
+                    catchError(() => of(requestError = true)),
+                    switchMap(res => async2Observable(submitHandler ? submitHandler.end() : noop()).pipe(
+                        map(() => {
+                            if (requestError) {
+                                throw new Error('request fail');
+                            }
+                            if (typeof this.resultOkAssertion === 'function') {
+                                assertSuc = this.resultOkAssertion(res);
 
-                            try {
-                                if (typeof this.requestOkAssertion === 'function') {
-                                    assertSuc = this.requestOkAssertion(res);
+                                if (!assertSuc) {
+                                    throw new Error('request assertion fail');
                                 }
-                            } catch (e) {
-                                // tslint:disable-next-line:no-console
-                                console.error(e);
                             }
 
-                            if (assertSuc) {
-                                this.response.emit(res);
+                            return res;
+                        })
+                    )),
+                    catchError(() => {
+                        assertSuc = false;
 
-                                if (this.autoReset) {
-                                    this.reset();
-                                }
+                        return EMPTY;
+                    }),
+                    finalize(() => {
+                        if (assertSuc) {
+                            if (this.autoReset) {
+                                this.reset();
                             }
                         }
-                    }),
-                    catchError(() => of())
-                ))
-            ).subscribe();
+                    })
+                );
+            }) as SubmitWrapper);
         } else {
             this.validateControls();
 

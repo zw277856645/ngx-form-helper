@@ -79,6 +79,18 @@ export class ErrorHandlerTooltipMessageComponent extends ErrorMessageHandler imp
     ngOnInit() {
         super.addClasses(this.element, this.classNames);
         this.messages = loadMessagesFromDataset(this.element as HTMLElement);
+
+        // 从HTML加载是否是异步验证
+        for (let k in (this.element as HTMLElement).dataset) {
+            let [ name, order, type ] = k.split('.');
+            let message = this.messages.find(m => m.validator === name);
+
+            if (/^async$/i.test(type || order)) {
+                message.async = true;
+            } else if (/^sync$/i.test(type || order)) {
+                message.async = false;
+            }
+        }
     }
 
     ngAfterViewInit() {
@@ -89,6 +101,26 @@ export class ErrorHandlerTooltipMessageComponent extends ErrorMessageHandler imp
         }
 
         super.addClasses(this.element, this.position);
+    }
+
+    onBindErrorHandler() {
+        if (this.errorHandler instanceof ErrorHandlerTooltipDirective && this.errorHandler.asyncValidators) {
+            for (let msg of this.messages) {
+                // 若HTML已指定了async，忽略系统自动分析
+                if (msg.async === null || msg.async === undefined) {
+                    // 从 asyncValidators 中匹配名称开头与消息名称相同则为异步验证器
+                    // 此方式需要验证器指令返回的错误名称与指令名称开头一致，如：NameUniqueValidator -> {nameUnique:true}
+                    if (
+                        this.errorHandler.asyncValidators.find((valid: any) => {
+                            return !!((valid.constructor && (valid.constructor.name as string)) || '')
+                                .match(new RegExp(`^${msg.validator}`, 'i'));
+                        })
+                    ) {
+                        msg.async = true;
+                    }
+                }
+            }
+        }
     }
 
     whenValid() {

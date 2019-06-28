@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { SubmitWrapper } from '../src/form-helper.directive';
+import { of } from 'rxjs';
 
 @Component({
     templateUrl: './error-handler-text.component.html',
@@ -17,16 +19,18 @@ export class ErrorHandlerTextComponent {
     pageHeight = 0;
     assertMatch: string[] = [];
 
-    save() {
-        return Promise.resolve(this.host);
+    save(submitWrapper: SubmitWrapper) {
+        submitWrapper(of(this.host)).subscribe(res => {
+            console.log(res);
+        });
     }
 
-    afterSave(res: any) {
-        console.log(res);
-    }
-
-    requestOkAssertion(res: any) {
+    resultOkAssertion(res: any) {
         return res !== '1';
+    }
+
+    save2(submitWrapper: SubmitWrapper) {
+        setTimeout(() => submitWrapper().subscribe(() => console.log('save2')));
     }
 
 }

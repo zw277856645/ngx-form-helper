@@ -45,9 +45,9 @@ export interface FormHelperConfig {
     // 同表单组自身配置累加
     errorGroupClassNames?: string | false;
 
-    // 判断request请求是否成功的断言函数，res为request返回值
+    // 判断响应是否成功的断言函数，res为返回值
     // 请求状态码不为200时，已被自动处理。若用户自定义了错误码，需要使用此配置指定判断逻辑
-    // 如果断言函数返回false，则后续不会执行response、reset等操作
-    requestOkAssertion?: (res: any) => boolean;
+    // 如果断言函数返回false，则后续不会执行reset操作
+    resultOkAssertion?: (res: any) => boolean;
 
 }

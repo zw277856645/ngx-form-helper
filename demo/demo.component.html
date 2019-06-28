@@ -8,7 +8,7 @@
       </div>
       <eh-tooltip-message ref="name"
                           data-trimmed-required.first="不能为空"
-                          data-name-unique.async="重复"></eh-tooltip-message>
+                          data-name-unique="重复"></eh-tooltip-message>
     </div>
 
     <div class="field">
@@ -74,7 +74,7 @@
       <div class="field">
         <label>远程</label>
         <input type="text" name="remote" [(ngModel)]="remote" autocomplete="off" nameUnique ehTooltip>
-        <eh-tooltip-message ref="remote" data-name-unique.async="重复"></eh-tooltip-message>
+        <eh-tooltip-message ref="remote" data-name-unique="重复"></eh-tooltip-message>
       </div>
 
       <div class="field">
@@ -109,7 +109,7 @@
             <div class="field">
               <label>远程2</label>
               <input type="text" name="remote2" [(ngModel)]="remote2" autocomplete="off" nameUnique ehTooltip>
-              <eh-tooltip-message ref="remote2" data-name-unique.async="重复"></eh-tooltip-message>
+              <eh-tooltip-message ref="remote2" data-name-unique="重复"></eh-tooltip-message>
             </div>
           </div>
 

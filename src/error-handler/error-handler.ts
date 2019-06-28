@@ -65,8 +65,13 @@ export abstract class ErrorHandler implements OnInit, AfterViewInit {
     set messageHandler(messageHandler: ErrorMessageHandler) {
         this._messageHandler = messageHandler;
 
-        if (this.validateImmediate) {
-            this.control.updateValueAndValidity();
+        if (messageHandler) {
+            if (this.onBindMessageHandler) {
+                this.onBindMessageHandler();
+            }
+            if (this.validateImmediate) {
+                this.control.updateValueAndValidity();
+            }
         }
     }
 
@@ -126,6 +131,8 @@ export abstract class ErrorHandler implements OnInit, AfterViewInit {
     abstract whenInvalid(): void;
 
     whenPending?(): void;
+
+    onBindMessageHandler?(): void;
 
     private addAllClasses() {
         if (this.control instanceof FormControl) {
