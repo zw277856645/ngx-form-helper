@@ -34,7 +34,7 @@ export class DemoComponent {
         ];
     }
 
-    addCK(name: string) {
+    addCK() {
         this.cks.push({
             label: 'ck' + (this.cks.length + 1),
             checked: false,
@@ -42,7 +42,7 @@ export class DemoComponent {
         });
     }
 
-    removeCk(i: number, name: string) {
+    removeCk(i: number) {
         this.cks.splice(i, 1);
     }
 

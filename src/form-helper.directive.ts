@@ -44,7 +44,7 @@ export function formHelperConfigProvider(config: FormHelperConfig): Provider[] {
  *    fix：这种情况下请保证name唯一，且必须使用trackBy返回唯一标识，推荐使用uuid等工具(如：name-{{uuid}})
  *
  * 设计不好的地方
- *  1)pass事件中需要向用户传递 SubmitWrapper
+ *  1)validPass事件中需要向用户传递 SubmitWrapper
  *    原因：已rxjs为例，请求通常写法为 request.subscribe(() => response())，需要在request与response之间插入一些操作，
  *         借助 submitWrapper(request).subscribe(() => response()) 实现功能，但需要用户调用，对用户不透明
  *
@@ -96,10 +96,10 @@ export class FormHelperDirective implements OnDestroy, AfterViewInit {
     @Input() resultOkAssertion: (res: any) => boolean;
 
     // 验证通过
-    @Output() pass = new EventEmitter();
+    @Output() validPass = new EventEmitter();
 
     // 验证不通过
-    @Output() fail = new EventEmitter();
+    @Output() validFail = new EventEmitter();
 
     @HostListener('keydown', [ '$event' ]) onKeydown(event: KeyboardEvent) {
         if ((event.keyCode || event.which) === 13 && event.srcElement.nodeName.toUpperCase() !== 'TEXTAREA') {
@@ -148,7 +148,7 @@ export class FormHelperDirective implements OnDestroy, AfterViewInit {
                 submitHandler.start();
             }
 
-            this.pass.emit(((request?: any) => {
+            this.validPass.emit(((request?: any) => {
                 let requestError = false;
                 let assertSuc = true;
 
@@ -187,7 +187,7 @@ export class FormHelperDirective implements OnDestroy, AfterViewInit {
         } else {
             this.validateControls();
 
-            this.fail.emit();
+            this.validFail.emit();
 
             if (this.autoScroll) {
                 let pendings = this.getPendingControls();

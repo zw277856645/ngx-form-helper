@@ -59,10 +59,10 @@
             <input type="checkbox" [(ngModel)]="ck.checked" [name]="'ck-' + ck.uuid">
             <label>
               {{ck.label}}
-              <i class="icon red remove" (click)="removeCk(i,'group')"></i>
+              <i class="icon red remove" (click)="removeCk(i)"></i>
             </label>
           </div>
-          <button type="button" class="ui button tiny teal" (click)="addCK('group')">添加</button>
+          <button type="button" class="ui button tiny teal" (click)="addCK()">添加</button>
         </div>
         <eh-tooltip-message ref="group"
                             position="right center"
