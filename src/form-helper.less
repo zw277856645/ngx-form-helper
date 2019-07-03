@@ -4,7 +4,7 @@
   textarea {
     &:not(.ignore):not(.thin) {
       transition: background .1s linear, border-left-color .1s linear, border-left-width .1s linear;
-      &.ng-pending {
+      &.ng-pending:not(.ng-pristine) {
         border-left-color: #efc120 !important;
       }
       &.ng-dirty:enabled {

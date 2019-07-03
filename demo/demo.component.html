@@ -3,12 +3,12 @@
     <div class="field">
       <label>名字</label>
       <div class="ui input">
-        <input type="text" name="name" [(ngModel)]="name" autocomplete="off" trimmedRequired nameUnique
-               ehTooltip>
+        <input type="text" name="name" [(ngModel)]="name" autocomplete="off" trimmedRequired nameUnique>
       </div>
-      <eh-tooltip-message ref="name"
-                          data-trimmed-required.first="不能为空"
-                          data-name-unique="重复"></eh-tooltip-message>
+      <eh-tooltip ref="name">
+        <eh-tooltip-message error="trimmedRequired" message="不能为空"></eh-tooltip-message>
+        <eh-tooltip-message error="nameUnique" message="重复" [async]="true"></eh-tooltip-message>
+      </eh-tooltip>
     </div>
 
     <div class="field">
@@ -27,21 +27,21 @@
       <div class="field">
         <label>说明</label>
         <textarea name="desc" trimmedRequired [(ngModel)]="desc" autocomplete="off" rows="3" autoSize
-                  ehTooltip #descCtrl="ehTooltip" (sizeChange)="descCtrl.repositionMessages()"></textarea>
-        <eh-tooltip-message ref="desc" data-trimmed-required="不能为空"></eh-tooltip-message>
+                  (sizeChange)="descCtrl.reposition()"></textarea>
+        <eh-tooltip ref="desc" data-trimmed-required="不能为空" #descCtrl="ehTooltip"></eh-tooltip>
       </div>
 
       <div class="field">
         <label>Input Hidden</label>
         <input type="text" placeholder="占位" disabled>
-        <input type="hidden" name="hidden" [(ngModel)]="hidden" required ehTooltip positionProxy="~">
-        <eh-tooltip-message ref="hidden" data-required="不能为空"></eh-tooltip-message>
+        <input type="hidden" name="hidden" [(ngModel)]="hidden" required>
+        <eh-tooltip ref="hidden" data-required="不能为空" positionProxy="~" scrollProxy="~"></eh-tooltip>
       </div>
 
       <div class="field">
         <label class="inline">选择喜好</label>
-        <eh-text-message ref="love" data-required="至少选择一项" animation="flyLeft"></eh-text-message>
-        <div class="ui fluid selection dropdown" dropdown name="love" [(ngModel)]="love" required ehText>
+        <eh-text ref="love" data-required="至少选择一项" animation="flyLeft"></eh-text>
+        <div class="ui fluid selection dropdown" dropdown name="love" [(ngModel)]="love" required>
           <i class="icon dropdown"></i>
           <div class="default text">请选择</div>
           <div class="menu">
@@ -54,7 +54,7 @@
 
       <div class="field">
         <label>组(动态)</label>
-        <div ngModelGroup="group" checkboxRequired minCheckedNum="2" maxCheckedNum="4" ehTooltip class="inline">
+        <div ngModelGroup="group" checkboxRequired minCheckedNum="2" maxCheckedNum="4" class="inline">
           <div class="ui checkbox" *ngFor="let ck of cks;trackBy:trackByCk;index as i">
             <input type="checkbox" [(ngModel)]="ck.checked" [name]="'ck-' + ck.uuid">
             <label>
@@ -64,31 +64,26 @@
           </div>
           <button type="button" class="ui button tiny teal" (click)="addCK()">添加</button>
         </div>
-        <eh-tooltip-message ref="group"
-                            position="right center"
-                            data-checkbox-required.first="请选择"
-                            data-checkbox-required-min="至少选择两项"
-                            data-checkbox-required-max.last="至多选择四项"></eh-tooltip-message>
-      </div>
-
-      <div class="field">
-        <label>远程</label>
-        <input type="text" name="remote" [(ngModel)]="remote" autocomplete="off" nameUnique ehTooltip>
-        <eh-tooltip-message ref="remote" data-name-unique="重复"></eh-tooltip-message>
+        <eh-tooltip ref="group" position="right center">
+          <eh-tooltip-message error="checkboxRequired">请选择</eh-tooltip-message>
+          <eh-tooltip-message error="checkboxRequiredMin">至少选择两项</eh-tooltip-message>
+          <eh-tooltip-message error="checkboxRequiredMax">至多选择四项</eh-tooltip-message>
+        </eh-tooltip>
       </div>
 
       <div class="field">
         <label>滚动对象</label>
         <div class="ui styled fluid accordion" accordion>
-          <div class="title" (click)="gp.repositionMessages()">
+          <div class="title" ehSimple ref="gp" [validateImmediate]="true" scrollProxy="~"
+               (click)="formHelperCtrl.repositionMessages('gp')">
             <i class="dropdown icon"></i>
             Accordion
           </div>
-          <div class="content" ngModelGroup="gp" ehTooltip scrollProxy="~" #gp="ehTooltip">
+          <div class="content" ngModelGroup="gp">
             <div class="field">
               <label>生日</label>
-              <input type="text" name="birth" [(ngModel)]="birth" required ehTooltip>
-              <eh-tooltip-message ref="birth" data-required="不能为空"></eh-tooltip-message>
+              <input type="text" name="birth" [(ngModel)]="birth" required>
+              <eh-tooltip ref="birth" data-required="不能为空"></eh-tooltip>
             </div>
             <div class="field required">
               <label>请求url</label>
@@ -101,27 +96,26 @@
                     <div class="item">POST</div>
                   </div>
                 </div>
-                <input type="text" name="url" [(ngModel)]="url" required autocomplete="off" maxlength="500"
-                       ehTooltip>
+                <input type="text" name="url" [(ngModel)]="url" required autocomplete="off" maxlength="500">
               </div>
-              <eh-tooltip-message ref="url" data-required="不能为空"></eh-tooltip-message>
+              <eh-tooltip ref="url" data-required="不能为空"></eh-tooltip>
             </div>
             <div class="field">
               <label>远程2</label>
-              <input type="text" name="remote2" [(ngModel)]="remote2" autocomplete="off" nameUnique ehTooltip>
-              <eh-tooltip-message ref="remote2" data-name-unique="重复"></eh-tooltip-message>
+              <input type="text" name="remote2" [(ngModel)]="remote2" autocomplete="off" nameUnique>
+              <eh-tooltip ref="remote2" data-name-unique.async="重复"></eh-tooltip>
             </div>
           </div>
 
-          <div class="title" (click)="gp2.repositionMessages()">
+          <div class="title" (click)="simpleCtrl.repositionMessages()">
             <i class="dropdown icon"></i>
             Accordion2
           </div>
-          <div class="content" ngModelGroup="gp2" ehTooltip scrollProxy="~" #gp2="ehTooltip">
+          <div class="content" ngModelGroup="gp2" ehSimple scrollProxy="~" #simpleCtrl="ehSimple">
             <div class="field">
               <label>生日2</label>
-              <input type="text" name="birth2" [(ngModel)]="birth2" required ehTooltip>
-              <eh-tooltip-message ref="birth2" data-required="不能为空"></eh-tooltip-message>
+              <input type="text" name="birth2" [(ngModel)]="birth2" required>
+              <eh-tooltip ref="birth2" data-required="不能为空"></eh-tooltip>
             </div>
           </div>
         </div>
@@ -145,8 +139,8 @@
       <div *ngIf="type == 1">
         <div class="field">
           <label>性别</label>
-          <input type="text" name="sex" required [(ngModel)]="sex" autocomplete="off" pattern="^\d*$" ehTooltip>
-          <eh-tooltip-message ref="sex" data-required="不能为空" data-pattern="只能为数字"></eh-tooltip-message>
+          <input type="text" name="sex" required [(ngModel)]="sex" autocomplete="off" pattern="^\d*$">
+          <eh-tooltip ref="sex" data-required="不能为空" data-pattern="只能为数字"></eh-tooltip>
         </div>
         <div class="field buttons">
           <button shLoader type="submit" class="ui button small instagram">保存2</button>
@@ -180,13 +174,13 @@
     <form class="ui form" formHelper #modalForm="formHelper" context=".ui.page.modals">
       <div class="field">
         <label>地址</label>
-        <input type="text" name="addr" [(ngModel)]="addr" autocomplete="off" required ehTooltip>
-        <eh-tooltip-message ref="addr" data-required="不能为空"></eh-tooltip-message>
+        <input type="text" name="addr" [(ngModel)]="addr" autocomplete="off" required>
+        <eh-tooltip ref="addr" data-required="不能为空"></eh-tooltip>
       </div>
       <div class="field">
         <label>评论</label>
-        <textarea name="issue" required [(ngModel)]="issue" autocomplete="off" rows="60" ehTooltip></textarea>
-        <eh-tooltip-message ref="issue" data-required="不能为空"></eh-tooltip-message>
+        <textarea name="issue" required [(ngModel)]="issue" autocomplete="off" rows="60"></textarea>
+        <eh-tooltip ref="issue" data-required="不能为空"></eh-tooltip>
       </div>
     </form>
   </div>
@@ -207,15 +201,14 @@
     <form class="ui form" formHelper #innerModalForm="formHelper" context="..">
       <div class="field">
         <label>地址</label>
-        <input type="text" name="addr2" [(ngModel)]="addr2" autocomplete="off" required ehTooltip>
-        <eh-tooltip-message ref="addr2" data-required="不能为空"></eh-tooltip-message>
+        <input type="text" name="addr2" [(ngModel)]="addr2" autocomplete="off" required>
+        <eh-tooltip ref="addr2" data-required="不能为空"></eh-tooltip>
       </div>
       <div class="field">
         <label>评论</label>
         <textarea name="issue2" trimmedRequired [(ngModel)]="issue2" autocomplete="off" autoSize rows="3"
-                  minHeight="100" ehTooltip #issue2Ctrl="ehTooltip"
-                  (sizeChange)="issue2Ctrl.repositionMessages()"></textarea>
-        <eh-tooltip-message ref="issue2" data-trimmed-required="不能为空"></eh-tooltip-message>
+                  minHeight="100" (sizeChange)="issue2Ctrl.reposition()"></textarea>
+        <eh-tooltip ref="issue2" data-trimmed-required="不能为空" #issue2Ctrl="ehTooltip"></eh-tooltip>
       </div>
     </form>
   </div>

@@ -1,7 +1,6 @@
 import {
-    AfterViewInit,
     Directive, ElementRef, HostListener, Inject, InjectionToken, Input, OnChanges, Optional, Provider,
-    Renderer2, SimpleChanges, SkipSelf
+    Renderer2, SimpleChanges, SkipSelf, AfterViewInit
 } from '@angular/core';
 import { IconToggleStrategy, SubmitHandlerLoaderConfig } from './submit-handler-loader-config';
 import { SubmitHandler } from './submit-handler';

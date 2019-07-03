@@ -1,83 +1,96 @@
+import { AbstractControl, AbstractControlDirective, FormArray, FormControl, FormGroup } from '@angular/forms';
+import { ArrayOrGroupAbstractControls, FormHelperDirective } from '../form-helper.directive';
+import { arrayOfAbstractControls, splitClassNames } from '../utils';
 import { AfterViewInit, ElementRef, Input, OnInit, Renderer2 } from '@angular/core';
-import { FormHelperDirective } from '../form-helper.directive';
-import { AbstractControl, FormControl, NgModel, NgModelGroup } from '@angular/forms';
-import { splitClassNames } from '../utils';
-import { ErrorMessageHandler } from './error-message-handler';
 
-export abstract class ErrorHandler implements OnInit, AfterViewInit {
+export type RefType = string | AbstractControlDirective | AbstractControl;
 
+export abstract class ErrorHandler implements AfterViewInit, OnInit {
+
+    /**
+     * 错误信息关联的表单控件
+     *
+     * 可用格式:
+     * 1.string   -> name/ngModelGroup/formControlName/formGroupName/formArrayName
+     * 2.control  -> 表单控件对象，通常为模板变量，如：#ctrl="ngModel/ngModelGroup/formControl/formGroup/formArray"
+     */
+    @Input() ref: RefType;
+
+    // 覆盖FormHelperConfig中配置
+    // PS：参照物为关联的表单域，而不是错误消息自身
     @Input() scrollProxy: string;
 
+    // 覆盖FormHelperConfig中配置
     @Input() validateImmediate: boolean;
 
-    // 同form全局配置累加
-    @Input() errorClassNames: string;
+    // 覆盖FormHelperConfig中配置
+    @Input() validateImmediateDescendants: boolean;
 
-    // 同form全局配置累加
-    @Input() errorGroupClassNames: string;
-
+    controlName: string;
+    controlElement: Element;
     element: Element;
-    control: AbstractControl;
 
-    private _messageHandler: ErrorMessageHandler;
+    protected _control: AbstractControl;
 
-    private readonly _formHelper: FormHelperDirective;
-    private readonly _modelOrGroup: NgModel | NgModelGroup;
-    private readonly _renderer: Renderer2;
+    private initControlCount = 0;
 
-    protected constructor(
-        eleRef: ElementRef,
-        modelOrGroup: NgModel | NgModelGroup,
-        formHelper: FormHelperDirective,
-        renderer: Renderer2) {
-        this.element = eleRef.nativeElement;
-        this._modelOrGroup = modelOrGroup;
-        this._formHelper = formHelper;
-        this._renderer = renderer;
-
-        if (modelOrGroup instanceof NgModel) {
-            this.control = modelOrGroup.control;
-        } else {
-            setTimeout(() => this.control = modelOrGroup.control);
-        }
+    protected constructor(private _eleRef: ElementRef,
+                          private _formHelper: FormHelperDirective,
+                          private _renderer: Renderer2) {
+        this.element = _eleRef.nativeElement;
     }
 
-    // 优先使用自身的配置，否则使用form的配置
-    // PS: 子元素的ngOnInit在父元素ngOnInit后执行
     ngOnInit() {
+        if (this.scrollProxy === undefined || this.scrollProxy === null) {
+            this.scrollProxy = this._formHelper.scrollProxy;
+        }
         if (this.validateImmediate === undefined || this.validateImmediate === null) {
             this.validateImmediate = this._formHelper.validateImmediate;
         }
-        if (this.scrollProxy === undefined || this.scrollProxy === null) {
-            this.scrollProxy = this._formHelper.scrollProxy;
+        if (this.validateImmediateDescendants === undefined || this.validateImmediateDescendants === null) {
+            this.validateImmediateDescendants = this._formHelper.validateImmediateDescendants;
         }
     }
 
     ngAfterViewInit() {
-        if (this._modelOrGroup instanceof NgModel) {
-            this.listenStatusChanges();
+        // setTimeout保证动态表单正确绑定
+        setTimeout(() => this.prepareControl());
+    }
+
+    hasError(validator: string) {
+        if (!this.control || !this.control.errors || !validator) {
+            return false;
         } else {
-            // 等待NgModelGroup初始化完毕
-            setTimeout(() => this.listenStatusChanges());
+            return this.control.errors[ validator ];
         }
     }
 
-    set messageHandler(messageHandler: ErrorMessageHandler) {
-        this._messageHandler = messageHandler;
-
-        if (messageHandler) {
-            if (this.onBindMessageHandler) {
-                this.onBindMessageHandler();
-            }
-            if (this.validateImmediate) {
-                this.control.updateValueAndValidity();
+    get control() {
+        if (!this._control && this.ref) {
+            if (this._formHelper && typeof this.ref === 'string') {
+                this._control = this.findControlByName(this.ref);
+                this.controlName = this.ref;
+            } else if (this.ref instanceof AbstractControlDirective) {
+                this._control = this.ref.control;
+                this.setNameByControl(this.ref.control);
+            } else if (this.ref instanceof AbstractControl) {
+                this._control = this.ref;
+                this.setNameByControl(this.ref);
             }
         }
+
+        return this._control;
     }
 
-    get messageHandler() {
-        return this._messageHandler;
-    }
+    whenValid?(): void;
+
+    whenInvalid?(): void;
+
+    whenPending?(): void;
+
+    reposition?(): void;
+
+    onControlPrepared?(): void;
 
     protected addClasses(ele: Element, classNames: string | boolean) {
         splitClassNames(classNames).forEach(cls => this._renderer.addClass(ele, cls));
@@ -87,11 +100,90 @@ export abstract class ErrorHandler implements OnInit, AfterViewInit {
         splitClassNames(classNames).forEach(cls => this._renderer.removeClass(ele, cls));
     }
 
+    protected findControlByName(
+        name: string,
+        controls: ArrayOrGroupAbstractControls = this._formHelper.ngForm.controls
+    ): AbstractControl {
+        if (controls) {
+            let arrayControls = arrayOfAbstractControls(controls);
+
+            for (let item of arrayControls) {
+                if (item.name === name) {
+                    return item.control;
+                }
+            }
+
+            // 当前group下没有找到，从group中的group继续寻找
+            for (let item of arrayControls) {
+                if (item.control instanceof FormGroup || item.control instanceof FormArray) {
+                    let find = this.findControlByName(name, item.control.controls);
+                    if (find) {
+                        return find;
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
+
+    protected setNameByControl(control: AbstractControl,
+                               controls: ArrayOrGroupAbstractControls = this._formHelper.ngForm.controls) {
+        if (control && controls) {
+            let arrayControls = arrayOfAbstractControls(controls);
+
+            for (let item of arrayControls) {
+                if (item.control === control) {
+                    return this.controlName = item.name;
+                }
+            }
+
+            // 当前group下没有找到，从group中的group继续寻找
+            for (let item of arrayControls) {
+                if (item.control instanceof FormGroup || item.control instanceof FormArray) {
+                    this.setNameByControl(control, item.control.controls);
+                }
+            }
+        }
+    }
+
+    private findControlElement() {
+        if (!this.controlName) {
+            return;
+        }
+
+        this.controlElement = this._formHelper.form.querySelector(`
+            [name=${this.controlName}],
+            [ngModelGroup=${this.controlName}],
+            [formControlName=${this.controlName}],
+            [formGroupName=${this.controlName}],
+            [formArrayName=${this.controlName}]
+        `);
+    }
+
+    private prepareControl() {
+        // ngModelGroup需要时间初始化controls，每次等一个周期再执行
+        if (!this.control) {
+            this.initControlCount++;
+            if (this.initControlCount <= 10) {
+                setTimeout(() => this.prepareControl());
+            }
+        } else {
+            this.findControlElement();
+
+            if (this.onControlPrepared) {
+                this.onControlPrepared();
+            }
+
+            this.listenStatusChanges();
+        }
+    }
+
     private listenStatusChanges() {
         this.control.statusChanges.subscribe(() => {
             if (this.control.pending) {
                 // 系统内置处理
-                this.removeAllClasses();
+                this.removeControlEleClasses();
 
                 // 用户自定义处理
                 if (this.whenPending) {
@@ -102,16 +194,16 @@ export abstract class ErrorHandler implements OnInit, AfterViewInit {
             if (!this.control.pending) {
                 // 系统内置处理
                 if (this.control.disabled || this.control.pristine || this.control.valid) {
-                    this.removeAllClasses();
+                    this.removeControlEleClasses();
                 } else if (this.control.dirty && this.control.invalid) {
-                    this.addAllClasses();
+                    this.addControlEleClasses();
                 }
 
                 // 用户自定义处理
                 if (this.control.enabled && this.control.dirty) {
-                    if (this.control.valid) {
+                    if (this.control.valid && this.whenValid) {
                         this.whenValid();
-                    } else if (this.control.invalid) {
+                    } else if (this.control.invalid && this.whenInvalid) {
                         this.whenInvalid();
                     }
                 }
@@ -119,38 +211,46 @@ export abstract class ErrorHandler implements OnInit, AfterViewInit {
         });
 
         if (this.validateImmediate) {
-            setTimeout(() => {
-                this.control.markAsDirty();
-                this.control.updateValueAndValidity();
+            this.control.markAsDirty();
+            this.control.updateValueAndValidity();
+
+            if (this.validateImmediateDescendants
+                && (this.control instanceof FormGroup || this.control instanceof FormArray)) {
+                this.validateControls(this.control.controls);
+            }
+        }
+    }
+
+    private validateControls(controls: ArrayOrGroupAbstractControls) {
+        setTimeout(() => {
+            arrayOfAbstractControls(controls).forEach(item => {
+                item.control.markAsDirty({ onlySelf: true });
+                item.control.updateValueAndValidity({ onlySelf: true });
+
+                if (item.control instanceof FormGroup || item.control instanceof FormArray) {
+                    this.validateControls(item.control.controls);
+                }
             });
+        });
+    }
+
+    private addControlEleClasses() {
+        if (this.controlElement) {
+            if (this.control instanceof FormControl) {
+                this.addClasses(this.controlElement, this._formHelper.errorClassNames);
+            } else {
+                this.addClasses(this.controlElement, this._formHelper.errorGroupClassNames);
+            }
         }
     }
 
-    abstract whenValid(): void;
-
-    abstract whenInvalid(): void;
-
-    whenPending?(): void;
-
-    onBindMessageHandler?(): void;
-
-    private addAllClasses() {
-        if (this.control instanceof FormControl) {
-            this.addClasses(this.element, this._formHelper.errorClassNames);
-            this.addClasses(this.element, this.errorClassNames);
-        } else {
-            this.addClasses(this.element, this._formHelper.errorGroupClassNames);
-            this.addClasses(this.element, this.errorGroupClassNames);
-        }
-    }
-
-    private removeAllClasses() {
-        if (this.control instanceof FormControl) {
-            this.removeClasses(this.element, this._formHelper.errorClassNames);
-            this.removeClasses(this.element, this.errorClassNames);
-        } else {
-            this.removeClasses(this.element, this._formHelper.errorGroupClassNames);
-            this.removeClasses(this.element, this.errorGroupClassNames);
+    private removeControlEleClasses() {
+        if (this.controlElement) {
+            if (this.control instanceof FormControl) {
+                this.removeClasses(this.controlElement, this._formHelper.errorClassNames);
+            } else {
+                this.removeClasses(this.controlElement, this._formHelper.errorGroupClassNames);
+            }
         }
     }
 

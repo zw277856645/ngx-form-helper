@@ -1,6 +1,8 @@
 import { defer, from, Observable, of } from 'rxjs';
 import { SimpleChange } from '@angular/core';
 import { ErrorMessage } from './error-handler/error-message';
+import { ArrayOrGroupAbstractControls } from './form-helper.directive';
+import { AbstractControl, FormArray, FormGroup } from '@angular/forms';
 
 export const noop = (): any => null;
 
@@ -17,6 +19,10 @@ export function splitClassNames(classNames: string | boolean) {
 }
 
 export function getProxyElement(item: Element, expr: string) {
+    if (!item) {
+        return null;
+    }
+
     let reg = /^([\\^~+]+\d*)+$/;
     if (!reg.test(expr)) {
         return null;
@@ -137,7 +143,7 @@ export function loadMessagesFromDataset(ele: HTMLElement) {
                     : 0;
 
         messages.push({
-            validator: name,
+            error: name,
             message: ele.dataset[ k ],
             order: finalOrder
         });
@@ -148,4 +154,17 @@ export function loadMessagesFromDataset(ele: HTMLElement) {
 
 export function arrayProviderFactory(config: any, array: any[]) {
     return Array.isArray(array) ? [ ...array, config ] : [ config ];
+}
+
+export function arrayOfAbstractControls(controls: ArrayOrGroupAbstractControls)
+    : { name: string, control: AbstractControl }[] {
+    if (!controls) {
+        return [];
+    }
+
+    if (Array.isArray(controls)) {
+        return controls.map((v, i) => ({ name: String(i), control: v }));
+    } else {
+        return Object.keys(controls).map(k => ({ name: k, control: controls[ k ] }));
+    }
 }

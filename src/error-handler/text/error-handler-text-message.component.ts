@@ -1,109 +1,21 @@
-import {
-    Component, ElementRef, HostBinding, Inject, InjectionToken, Input, OnInit, Optional, Provider,
-    Renderer2, SkipSelf, ViewChild
-} from '@angular/core';
-import { ErrorHandlerTextMessageConfig } from './error-handler-text-message-config';
-import { arrayProviderFactory, loadMessagesFromDataset } from '../../utils';
-import { FormHelperDirective } from '../../form-helper.directive';
-import { ErrorMessage } from '../error-message';
-import { ErrorMessageHandler } from '../error-message-handler';
-
-export const ERROR_HANDLER_TEXT_MSG_CONFIG
-    = new InjectionToken<ErrorHandlerTextMessageConfig>('error_handler_text_msg_config');
-
-export const ERROR_HANDLER_TEXT_MSG_CONFIG_ARRAY
-    = new InjectionToken<ErrorHandlerTextMessageConfig[]>('error_handler_text_msg_config_array');
-
-export function errorHandlerTextMsgConfigProvider(config: ErrorHandlerTextMessageConfig): Provider[] {
-    return [
-        {
-            provide: ERROR_HANDLER_TEXT_MSG_CONFIG,
-            useValue: config
-        },
-        {
-            provide: ERROR_HANDLER_TEXT_MSG_CONFIG_ARRAY,
-            useFactory: arrayProviderFactory,
-            deps: [
-                ERROR_HANDLER_TEXT_MSG_CONFIG,
-                [ new SkipSelf(), new Optional(), ERROR_HANDLER_TEXT_MSG_CONFIG_ARRAY ]
-            ]
-        }
-    ];
-}
+import { Component, HostBinding, Input } from '@angular/core';
+import { ErrorHandlerTextComponent } from './error-handler-text.component';
 
 @Component({
     selector: 'eh-text-message',
-    templateUrl: './error-handler-text-message.component.html',
-    styleUrls: [ './error-handler-text-message.component.less' ]
+    templateUrl: './error-handler-text-message.component.html'
 })
-export class ErrorHandlerTextMessageComponent extends ErrorMessageHandler implements OnInit {
+export class ErrorHandlerTextMessageComponent {
 
-    @ViewChild('container') containerRef: ElementRef;
+    @Input() error: string;
 
-    @Input() classNames: string | false = 'eh-text-theme';
+    @Input() message: string;
 
-    @Input() animation: string;
-
-    @HostBinding('class.inline') @Input() inline: boolean = true;
-
-    @HostBinding('class.float') @Input() float: boolean;
-
-    @HostBinding('class.right') @Input() right: boolean;
-
-    @HostBinding('style.font-size.px') @Input() fontSize: number = 13;
-
-    @HostBinding('style.left.px') @Input() offsetX: number = 0;
-
-    @HostBinding('style.top.px') @Input() offsetY: number = 0;
-
-    // 消息显示/隐藏
-    @HostBinding('class.visible') visible: boolean;
-
-    // 当消息在form外部时有用，使用此属性关联formHelper实例
-    @Input() refForm: FormHelperDirective;
-
-    messages: ErrorMessage[] = [];
-
-    constructor(private eleRef: ElementRef,
-                private renderer: Renderer2,
-                @Optional() @SkipSelf() private fhCtrl: FormHelperDirective,
-                @Optional() @Inject(ERROR_HANDLER_TEXT_MSG_CONFIG_ARRAY)
-                private overrideConfigs: ErrorHandlerTextMessageConfig[]) {
-        super(eleRef, renderer);
-        Object.assign(this, ...(overrideConfigs || []));
+    @HostBinding('class.active')
+    get isError() {
+        return this.errorHandlerText.hasError(this.error);
     }
 
-    ngOnInit() {
-        super.addClasses(this.element, this.classNames);
-        this.messages = loadMessagesFromDataset(this.element as HTMLElement);
+    constructor(private errorHandlerText: ErrorHandlerTextComponent) {
     }
-
-    whenValid() {
-        this.visible = false;
-
-        if (this.containerRef && this.animation) {
-            super.removeClasses(this.containerRef.nativeElement, this.animation);
-        }
-    }
-
-    whenInvalid() {
-        this.visible = true;
-
-        if (this.containerRef && this.animation) {
-            super.addClasses(this.containerRef.nativeElement, this.animation);
-        }
-    }
-
-    whenPending() {
-        this.whenValid();
-    }
-
-    trackByMessages(i: number, msg: ErrorMessage) {
-        return msg.validator;
-    }
-
-    get formHelper() {
-        return this.fhCtrl || this.refForm;
-    }
-
 }

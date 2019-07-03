@@ -2,18 +2,22 @@ import {
     Input, ElementRef, Directive, OnDestroy, HostListener, AfterViewInit, NgZone, Inject, Renderer2, Output, Optional,
     QueryList, InjectionToken, EventEmitter, ContentChildren, SkipSelf, Provider
 } from '@angular/core';
-import { AbstractControl, FormGroup, NgForm } from '@angular/forms';
+import { AbstractControl, AbstractControlDirective, FormArray, FormGroup, NgForm } from '@angular/forms';
 import { EMPTY, forkJoin, interval, Observable, of, Subscription } from 'rxjs';
 import { FormHelperConfig } from './form-helper-config';
-import { arrayProviderFactory, async2Observable, getProxyElement, noop, splitClassNames } from './utils';
+import {
+    arrayOfAbstractControls, arrayProviderFactory, async2Observable, getProxyElement, noop, splitClassNames
+} from './utils';
 import { catchError, finalize, first, map, skipWhile, switchMap } from 'rxjs/operators';
-import { ErrorHandler } from './error-handler/error-handler';
 import { SubmitHandler } from './submit-handler/submit-handler';
 import { getOffset, getScrollTop, isVisible, setScrollTop } from 'cmjs-lib';
+import { ErrorHandler, RefType } from './error-handler/error-handler';
 
 const TWEEN = require('@tweenjs/tween.js');
 
 export type SubmitWrapper = (request?: any) => Observable<any>;
+
+export type ArrayOrGroupAbstractControls = { [ key: string ]: AbstractControl } | AbstractControl[];
 
 export const FORM_HELPER_CONFIG = new InjectionToken<FormHelperConfig>('form_helper_config');
 
@@ -48,8 +52,9 @@ export function formHelperConfigProvider(config: FormHelperConfig): Provider[] {
  *    原因：已rxjs为例，请求通常写法为 request.subscribe(() => response())，需要在request与response之间插入一些操作，
  *         借助 submitWrapper(request).subscribe(() => response()) 实现功能，但需要用户调用，对用户不透明
  *
- *  2)加载message不友好，格式为validator[.order][.async]
+ *  2)data api加载message不友好，格式为validator[.order][.async]
  *    原因：指定order是因为页面被浏览器解析后属性顺序是不确定的，跟源代码书写顺序无关
+ *         指定async是因为AbstractControl无法获取控件注册的验证器，无法自动识别异步消息
  */
 @Directive({
     selector: '[formHelper]',
@@ -87,6 +92,8 @@ export class FormHelperDirective implements OnDestroy, AfterViewInit {
 
     @Input() validateImmediate: boolean;
 
+    @Input() validateImmediateDescendants: boolean = true;
+
     @Input() classNames: string | false = 'fh-theme';
 
     @Input() errorClassNames: string | false = 'fh-error';
@@ -109,8 +116,8 @@ export class FormHelperDirective implements OnDestroy, AfterViewInit {
 
     @HostListener('window:resize') onResize() {
         this.errorHandlers.forEach(eh => {
-            if (eh.messageHandler && eh.messageHandler.reposition) {
-                eh.messageHandler.reposition();
+            if (eh.reposition) {
+                eh.reposition();
             }
         });
     }
@@ -206,6 +213,46 @@ export class FormHelperDirective implements OnDestroy, AfterViewInit {
         this.resetControls();
     }
 
+    repositionMessages(type?: RefType, delay?: number) {
+        if (!type) {
+            this.errorHandlers.forEach(errorHandler => {
+                if (errorHandler.reposition) {
+                    if (isVisible(errorHandler.element)) {
+                        errorHandler.reposition();
+                    } else {
+                        setTimeout(() => errorHandler.reposition(), delay || 0);
+                    }
+                }
+            });
+        } else {
+            let errorHandler: ErrorHandler;
+
+            if (typeof type === 'string') {
+                errorHandler = this.errorHandlers.find(eh => eh.controlName === type);
+            } else if (type instanceof AbstractControlDirective) {
+                errorHandler = this.errorHandlers.find(eh => eh.control === type.control);
+            } else if (type instanceof AbstractControl) {
+                errorHandler = this.errorHandlers.find(eh => eh.control === type);
+            }
+
+            if (errorHandler) {
+                if (errorHandler.reposition) {
+                    if (isVisible(errorHandler.element)) {
+                        errorHandler.reposition();
+                    } else {
+                        setTimeout(() => errorHandler.reposition(), delay || 0);
+                    }
+                }
+
+                // 继续重定位后代错误消息
+                if (errorHandler.control instanceof FormGroup || errorHandler.control instanceof FormArray) {
+                    arrayOfAbstractControls(errorHandler.control.controls)
+                        .forEach(item => this.repositionMessages(item.control, delay));
+                }
+            }
+        }
+    }
+
     private static validateControl(control: AbstractControl) {
         // 设置control为dirty状态，使错误信息显示
         control.markAsDirty();
@@ -214,32 +261,27 @@ export class FormHelperDirective implements OnDestroy, AfterViewInit {
         control.updateValueAndValidity();
     }
 
-    private validateControls(controls: { [ key: string ]: AbstractControl; } = this.ngForm.controls) {
-        let control: AbstractControl;
+    private validateControls(controls: ArrayOrGroupAbstractControls = this.ngForm.controls) {
+        arrayOfAbstractControls(controls).forEach(item => {
+            FormHelperDirective.validateControl(item.control);
 
-        for (let name in controls) {
-            control = controls[ name ];
-            FormHelperDirective.validateControl(control);
-
-            if (control instanceof FormGroup) {
-                this.validateControls(control.controls);
+            if (item.control instanceof FormGroup || item.control instanceof FormArray) {
+                this.validateControls(item.control.controls);
             }
-        }
+        });
     }
 
-    private getPendingControls(controls: { [ key: string ]: AbstractControl; } = this.ngForm.controls) {
+    private getPendingControls(controls: ArrayOrGroupAbstractControls = this.ngForm.controls) {
         let pendings: Observable<any>[] = [];
 
-        for (let name in controls) {
-            let control = controls[ name ];
-
-            if (control.enabled && control.pending) {
-                pendings.push(interval(100).pipe(skipWhile(() => control.pending), first()));
+        arrayOfAbstractControls(controls).forEach(item => {
+            if (item.control.enabled && item.control.pending) {
+                pendings.push(interval(100).pipe(skipWhile(() => item.control.pending), first()));
             }
-            if (control instanceof FormGroup) {
-                pendings.push(...this.getPendingControls(control.controls));
+            if (item.control instanceof FormGroup || item.control instanceof FormArray) {
+                pendings.push(...this.getPendingControls(item.control.controls));
             }
-        }
+        });
 
         return pendings;
     }
@@ -259,7 +301,7 @@ export class FormHelperDirective implements OnDestroy, AfterViewInit {
 
         minOffsetTop -= +this.offsetTop;
 
-        // 非window滚动窗体中表单域/表单组实际offsetTop需要减去滚动体offsetTop，加上滚动体当前scrollTop
+        // 非window滚动窗体中表单域实际offsetTop需要减去滚动体offsetTop，加上滚动体当前scrollTop
         if (context !== window && context instanceof HTMLElement && context.nodeName.toUpperCase() !== 'HTML') {
             minOffsetTop -= getOffset(context).top;
             minOffsetTop += context.scrollTop;
@@ -316,19 +358,16 @@ export class FormHelperDirective implements OnDestroy, AfterViewInit {
         }
     }
 
-    private calcMinOffsetTop(controls: { [ key: string ]: AbstractControl; } = this.ngForm.controls) {
+    private calcMinOffsetTop(controls: ArrayOrGroupAbstractControls = this.ngForm.controls) {
         let minOffsetTop = Number.MAX_SAFE_INTEGER;
-        let control: AbstractControl;
         let offsetTop: number;
         let closestVisibleElement: HTMLElement;
 
-        for (let name in controls) {
-            control = controls[ name ];
-
-            if (control.enabled && control.invalid) {
+        for (let item of arrayOfAbstractControls(controls)) {
+            if (item.control.enabled && item.control.invalid) {
                 // 跳过ngModelGroup，由其子控件计算合适的元素
-                if (control instanceof FormGroup) {
-                    offsetTop = this.calcMinOffsetTop(control.controls);
+                if (item.control instanceof FormGroup || item.control instanceof FormArray) {
+                    offsetTop = this.calcMinOffsetTop(item.control.controls);
 
                     if (offsetTop !== Number.MAX_SAFE_INTEGER) {
                         minOffsetTop = Math.min(offsetTop, minOffsetTop);
@@ -342,7 +381,7 @@ export class FormHelperDirective implements OnDestroy, AfterViewInit {
                     // fix：这种场景下ngModelGroup不跳过，加入下面的计算
                 }
 
-                closestVisibleElement = this.findClosestVisibleItem(control) as HTMLElement;
+                closestVisibleElement = this.findClosestVisibleItem(item.control) as HTMLElement;
                 if (closestVisibleElement) {
                     minOffsetTop = Math.min(getOffset(closestVisibleElement).top, minOffsetTop);
                 }
@@ -356,22 +395,22 @@ export class FormHelperDirective implements OnDestroy, AfterViewInit {
         let errorHandler = this.errorHandlers.find(eh => eh.control === control);
 
         // 没有使用ErrorHandler指令标记的控件，将失去插件相关功能
-        if (!errorHandler) {
+        if (!errorHandler || !errorHandler.controlElement) {
             return null;
         }
 
         // 优先使用滚动代理
-        let proxyEle = getProxyElement(errorHandler.element, errorHandler.scrollProxy);
+        let proxyEle = getProxyElement(errorHandler.controlElement, errorHandler.scrollProxy);
         if (proxyEle && isVisible(proxyEle)) {
             return proxyEle;
         }
 
-        // 表单域/表单组本身
-        if (isVisible(errorHandler.element)) {
-            return errorHandler.element;
+        // 表单域本身
+        if (isVisible(errorHandler.controlElement)) {
+            return errorHandler.controlElement;
         }
 
-        // 最近可见ngModelGroup
+        // 最近可见父组件
         if (control.parent && control.parent !== this.ngForm.control) {
             return this.findClosestVisibleItem(control.parent);
         }
@@ -380,27 +419,28 @@ export class FormHelperDirective implements OnDestroy, AfterViewInit {
         return null;
     }
 
-    private resetControls(controls: { [ key: string ]: AbstractControl; } = this.ngForm.controls) {
-        // 表单值重置
-        // PS: 设置了standalone的表单域/表单组无法重置。使用form.reset()只能重置view，不能重置对应model
+    private resetControls() {
+        // 表单域值重置
+        // PS: 设置了standalone的表单域无法重置。使用form.reset()只能重置view，不能重置对应model
         this.ngForm.reset();
 
-        // 表单状态还原
+        // 表单域状态还原
         this.markAllControlsPristine();
 
         // 关闭错误提示
         if (this.errorHandlers) {
-            this.errorHandlers.forEach(eh => eh.whenValid());
+            this.errorHandlers.forEach(eh => eh.whenValid && eh.whenValid());
         }
     }
 
-    private markAllControlsPristine(controls: { [ key: string ]: AbstractControl; } = this.ngForm.controls) {
-        for (let name in controls) {
-            controls[ name ].markAsPristine();
-            if (controls[ name ] instanceof FormGroup) {
-                this.markAllControlsPristine((controls[ name ] as FormGroup).controls);
+    private markAllControlsPristine(controls: ArrayOrGroupAbstractControls = this.ngForm.controls) {
+        arrayOfAbstractControls(controls).forEach(item => {
+            item.control.markAsPristine({ onlySelf: true });
+
+            if (item.control instanceof FormGroup || item.control instanceof FormArray) {
+                this.markAllControlsPristine(item.control.controls);
             }
-        }
+        });
     }
 
 }

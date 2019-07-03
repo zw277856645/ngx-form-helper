@@ -8,7 +8,8 @@
   text-align: left;
   & > .container {
     animation-fill-mode: both;
-    ::ng-deep > * + * {
+    & > div + div,
+    ::ng-deep > eh-text-message.active ~ eh-text-message {
       display: none;
     }
   }

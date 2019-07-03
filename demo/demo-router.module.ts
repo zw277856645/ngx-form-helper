@@ -1,7 +1,7 @@
 import { RouterModule, Routes } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { DemoComponent } from './demo.component';
-import { ErrorHandlerTextComponent } from './error-handler-text.component';
+import { DemoTextComponent } from './demo-text.component';
 
 const routes: Routes = [
     {
@@ -10,7 +10,7 @@ const routes: Routes = [
     },
     {
         path: 'error-handler-text',
-        component: ErrorHandlerTextComponent
+        component: DemoTextComponent
     }
 ];
 

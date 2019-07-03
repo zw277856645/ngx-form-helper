@@ -155,7 +155,8 @@
     }
   }
 
-  & > * {
+  & > div,
+  ::ng-deep > eh-tooltip-message > div {
     display: flex;
     align-items: center;
     &:before {
@@ -176,15 +177,20 @@
       text-align: center;
       font-size: 1em;
     }
+  }
+  & > div,
+  ::ng-deep > eh-tooltip-message {
     & + * {
       margin-top: .142857em;
     }
   }
+
   & {
     .statusTheme(#A3C293);
     box-shadow: 0 2px 4px 0 hsla(100, 27.81%, 66.86%, .42), 0 2px 10px 0 hsla(100, 27.81%, 66.86%, .45);
     color: #6fba33;
-    & > *:before {
+    & > *:before,
+    ::ng-deep > eh-tooltip-message > div:before {
       content: '\e900';
       background-image: linear-gradient(to right bottom, #d0f669 8%, #5eb210);
     }
@@ -192,7 +198,8 @@
   &.pending {
     .statusTheme(#f1a274);
     box-shadow: 0 2px 4px 0 hsla(22, 81.70%, 70.00%, .42), 0 2px 10px 0 hsla(22, 81.70%, 70.00%, .45);
-    & > .pending {
+    & > .pending,
+    ::ng-deep > eh-tooltip-message > .pending {
       color: #f2711b;
       &:before {
         content: '\1f32b';
@@ -207,7 +214,8 @@
   &.invalid {
     .statusTheme(#e0b4b4);
     box-shadow: 0 2px 4px 0 hsla(0, 42%, 79%, .42), 0 2px 10px 0 hsla(0, 42%, 79%, .45);
-    & > .invalid {
+    & > .invalid,
+    ::ng-deep > eh-tooltip-message > .invalid {
       color: #9f3a38;
       &:before {
         content: '\e901';

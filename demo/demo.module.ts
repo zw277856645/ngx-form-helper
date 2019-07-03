@@ -6,10 +6,9 @@ import { CommonModule } from '@angular/common';
 import { FormHelperModule } from '../src/form-helper.module';
 import { DemoRouterModule } from './demo-router.module';
 import { AppComponent } from './app.component';
-import { GroupedCheckboxRequiredDirective } from './directive/grouped-checkbox-required.directive';
 import { NameUniqueDirective } from './directive/name-unique.directive';
 import { NameValidateService } from './directive/name-unique.service';
-import { ErrorHandlerTextComponent } from './error-handler-text.component';
+import { DemoTextComponent } from './demo-text.component';
 import { DropdownDirective } from './directive/dropdown.directive';
 import { AccordionDirective } from './directive/accordion.directive';
 import { ModalDirective } from './directive/modal.directive';
@@ -33,8 +32,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     declarations: [
         AppComponent,
         DemoComponent,
-        ErrorHandlerTextComponent,
-        GroupedCheckboxRequiredDirective,
+        DemoTextComponent,
         NameUniqueDirective,
         DropdownDirective,
         AccordionDirective,

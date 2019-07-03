@@ -6,6 +6,6 @@ import { of } from 'rxjs';
 export class NameValidateService {
 
     isNameUnique(name: string) {
-        return of(name).pipe(delay(500), map(() => name === 'admin'));
+        return of(name).pipe(delay(300), map(() => name === 'admin'));
     }
 }
