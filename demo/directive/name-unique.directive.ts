@@ -1,9 +1,18 @@
-import { AbstractControl, AsyncValidator, NG_ASYNC_VALIDATORS, ValidationErrors } from '@angular/forms';
+import { AbstractControl, AsyncValidator, AsyncValidatorFn, NG_ASYNC_VALIDATORS } from '@angular/forms';
 import { Directive } from '@angular/core';
-import { Observable } from 'rxjs';
 import { NameValidateService } from './name-unique.service';
-import { AsyncValidatorLimit } from '../../src/async-validator-limit';
-import { map } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
+import { timer } from 'rxjs';
+
+export function nameUnique(nameValidateService: NameValidateService): AsyncValidatorFn {
+    return (c: AbstractControl) => {
+        return timer(300).pipe(switchMap(() => {
+            return nameValidateService.isNameUnique(c.value).pipe(map((res: any) => {
+                return !res ? null : { nameUnique: true };
+            }));
+        }));
+    };
+}
 
 @Directive({
     selector: '[nameUnique]',
@@ -11,24 +20,19 @@ import { map } from 'rxjs/operators';
         { provide: NG_ASYNC_VALIDATORS, useExisting: NameUniqueDirective, multi: true }
     ]
 })
-export class NameUniqueDirective extends AsyncValidatorLimit implements AsyncValidator {
+export class NameUniqueDirective implements AsyncValidator {
 
     private ctrl: AbstractControl;
 
     constructor(private nameValidateService: NameValidateService) {
-        super();
     }
 
-    validate(c: AbstractControl): Observable<ValidationErrors | null> {
+    validate(c: AbstractControl) {
         if (!this.ctrl) {
             this.ctrl = c;
         }
 
-        return super.limit(
-            this.nameValidateService.isNameUnique(c.value).pipe(map((res: any) => {
-                return !res ? null : { nameUnique: true };
-            }))
-        );
+        return nameUnique(this.nameValidateService)(c);
     }
 
 }

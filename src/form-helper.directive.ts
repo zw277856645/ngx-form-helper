@@ -51,10 +51,6 @@ export function formHelperConfigProvider(config: FormHelperConfig): Provider[] {
  *  1)validPass事件中需要向用户传递 SubmitWrapper
  *    原因：已rxjs为例，请求通常写法为 request.subscribe(() => response())，需要在request与response之间插入一些操作，
  *         借助 submitWrapper(request).subscribe(() => response()) 实现功能，但需要用户调用，对用户不透明
- *
- *  2)data api加载message不友好，格式为validator[.order][.async]
- *    原因：指定order是因为页面被浏览器解析后属性顺序是不确定的，跟源代码书写顺序无关
- *         指定async是因为AbstractControl无法获取控件注册的验证器，无法自动识别异步消息
  */
 @Directive({
     selector: '[formHelper]',

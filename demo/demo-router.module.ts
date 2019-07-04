@@ -1,16 +1,16 @@
 import { RouterModule, Routes } from '@angular/router';
 import { NgModule } from '@angular/core';
-import { DemoComponent } from './demo.component';
-import { DemoTextComponent } from './demo-text.component';
+import { DemoTemplateDrivenComponent } from './demo-template-driven.component';
+import { DemoModelDrivenComponent } from './demo-model-driven.component';
 
 const routes: Routes = [
     {
         path: '',
-        component: DemoComponent
+        component: DemoTemplateDrivenComponent
     },
     {
-        path: 'error-handler-text',
-        component: DemoTextComponent
+        path: 'model-driven',
+        component: DemoModelDrivenComponent
     }
 ];
 

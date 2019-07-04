@@ -2,21 +2,20 @@ import { Component } from '@angular/core';
 import { uuid } from 'cmjs-lib';
 
 @Component({
-    templateUrl: './demo.component.html',
-    styleUrls: [ './demo.component.less' ]
+    templateUrl: './demo-template-driven.component.html',
+    styleUrls: [ './demo-template-driven.component.less' ]
 })
-export class DemoComponent {
+export class DemoTemplateDrivenComponent {
 
     name: string;
     desc: string;
     type: number = 0;
     sex: string;
+    sex2: string;
     love: string;
     cks: any[] = [];
-    remote: string;
     remote2: string;
     birth: string;
-    uuid = uuid;
     pageHeight = 0;
     birth2: string;
     addr: string;
@@ -25,6 +24,7 @@ export class DemoComponent {
     issue2: string;
     url: string;
     hidden: string;
+    assertMatch: string[] = [];
 
     constructor() {
         this.cks = [

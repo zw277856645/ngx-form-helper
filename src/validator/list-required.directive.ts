@@ -1,6 +1,24 @@
 import { Directive, DoCheck, Input, IterableDiffer, IterableDiffers, OnChanges, SimpleChanges } from '@angular/core';
-import { AbstractControl, NG_VALIDATORS, ValidationErrors, Validator } from '@angular/forms';
+import { AbstractControl, NG_VALIDATORS, ValidationErrors, Validator, ValidatorFn } from '@angular/forms';
 import { isNotFirstChange } from '../utils';
+
+export function listRequired({ minListNum, maxListNum }: { minListNum?: number, maxListNum?: number }): ValidatorFn {
+    return (c: AbstractControl) => {
+        if (!c.value || !c.value.length) {
+            return { listRequired: true };
+        }
+
+        let minNum = minListNum ? +minListNum : 0;
+        if (minNum > 0 && c.value.length < minNum) {
+            return { listRequiredMin: true };
+        }
+
+        let maxNum = maxListNum ? +maxListNum : 0;
+        if (maxNum > 0 && c.value.length > maxNum) {
+            return { listRequiredMax: true };
+        }
+    };
+}
 
 @Directive({
     selector: '[listRequired][ngModel],[listRequired][formControl],[listRequired][formControlName]',
@@ -45,18 +63,6 @@ export class ListRequiredDirective implements Validator, DoCheck, OnChanges {
             this.ctrl = c;
         }
 
-        if (!c.value || !c.value.length) {
-            return { listRequired: true };
-        }
-
-        let minNum = this.minListNum ? +this.minListNum : 0;
-        if (minNum > 0 && c.value.length < minNum) {
-            return { listRequiredMin: true };
-        }
-
-        let maxNum = this.maxListNum ? +this.maxListNum : 0;
-        if (maxNum > 0 && c.value.length > maxNum) {
-            return { listRequiredMax: true };
-        }
+        return listRequired({ minListNum: this.minListNum, maxListNum: this.maxListNum })(c);
     }
 }

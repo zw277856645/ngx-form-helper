@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { DemoComponent } from './demo.component';
+import { DemoTemplateDrivenComponent } from './demo-template-driven.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { FormHelperModule } from '../src/form-helper.module';
@@ -8,7 +8,7 @@ import { DemoRouterModule } from './demo-router.module';
 import { AppComponent } from './app.component';
 import { NameUniqueDirective } from './directive/name-unique.directive';
 import { NameValidateService } from './directive/name-unique.service';
-import { DemoTextComponent } from './demo-text.component';
+import { DemoModelDrivenComponent } from './demo-model-driven.component';
 import { DropdownDirective } from './directive/dropdown.directive';
 import { AccordionDirective } from './directive/accordion.directive';
 import { ModalDirective } from './directive/modal.directive';
@@ -31,8 +31,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     ],
     declarations: [
         AppComponent,
-        DemoComponent,
-        DemoTextComponent,
+        DemoTemplateDrivenComponent,
+        DemoModelDrivenComponent,
         NameUniqueDirective,
         DropdownDirective,
         AccordionDirective,

@@ -4,8 +4,6 @@ export * from './form-helper.module';
 export * from './form-helper-config';
 export { FormHelperDirective, formHelperConfigProvider, SubmitWrapper } from './form-helper.directive';
 
-export * from './async-validator-limit';
-
 export * from './validator/trimmed-required.directive';
 export * from './validator/list-required.directive';
 export * from './validator/checkbox-required.directive';

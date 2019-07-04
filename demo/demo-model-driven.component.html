@@ -1,0 +1,22 @@
+<div class="ui container">
+  <form class="ui form" [formGroup]="formGroup" formHelper offsetTop="28" (validPass)="save($event)">
+    <div class="field">
+      <label>formControl</label>
+      <input type="text" formControlName="name" autocomplete="off">
+    </div>
+
+    <div class="blank" [style.height.px]="pageHeight"></div>
+
+    <div class="field buttons">
+      <button #submit type="button" class="ui button small instagram right labeled icon">
+        <i class="icon save"></i>
+        保存
+      </button>
+      <button #reset type="button" class="ui button small">重置</button>
+    </div>
+  </form>
+
+  <div class="ui divider"></div>
+  <button type="button" class="ui button tiny" (click)="pageHeight = pageHeight + 1000">增加页面高度(+1000px)</button>
+  <a class="ui tiny button teal" routerLink="/">Template Driven Form</a>
+</div>

@@ -52,6 +52,15 @@
         </div>
       </div>
 
+      <div class="field required">
+        <label class="inline">性别</label>
+        <input type="text" name="sex" [(ngModel)]="sex" autocomplete="off" trimmedRequired pattern="^[a-zA-Z]*$">
+        <eh-text ref="sex" animation="slideDown" [inline]="false" [float]="true" [right]="true">
+          <eh-text-message error="trimmedRequired">不能为空</eh-text-message>
+          <eh-text-message error="pattern">请输入字符</eh-text-message>
+        </eh-text>
+      </div>
+
       <div class="field">
         <label>组(动态)</label>
         <div ngModelGroup="group" checkboxRequired minCheckedNum="2" maxCheckedNum="4" class="inline">
@@ -62,7 +71,7 @@
               <i class="icon red remove" (click)="removeCk(i)"></i>
             </label>
           </div>
-          <button type="button" class="ui button tiny teal" (click)="addCK()">添加</button>
+          <button type="button" class="ui button tiny" (click)="addCK()">添加</button>
         </div>
         <eh-tooltip ref="group" position="right center">
           <eh-tooltip-message error="checkboxRequired">请选择</eh-tooltip-message>
@@ -132,15 +141,35 @@
       </div>
     </div>
 
-    <ng-container *ngTemplateOutlet="template;context:{type:type,$implicit:sex}"></ng-container>
+    <ng-container *ngTemplateOutlet="template;context:{type:type,$implicit:sex2}"></ng-container>
 
     <!-- ng-template 必须在form内部，否则模板内的ngModel将不会注册到ngForm中 -->
     <ng-template #template let-type="type">
       <div *ngIf="type == 1">
         <div class="field">
           <label>性别</label>
-          <input type="text" name="sex" required [(ngModel)]="sex" autocomplete="off" pattern="^\d*$">
-          <eh-tooltip ref="sex" data-required="不能为空" data-pattern="只能为数字"></eh-tooltip>
+          <input type="text" name="sex2" required [(ngModel)]="sex2" autocomplete="off" pattern="^\d*$">
+          <eh-tooltip ref="sex2" data-required="不能为空" data-pattern="只能为数字"></eh-tooltip>
+        </div>
+        <div class="field required">
+          <label>List Required</label>
+          <tag-input name="assertMatch"
+                     [(ngModel)]="assertMatch"
+                     theme="bootstrap3-info"
+                     [addOnBlur]="true"
+                     [addOnPaste]="true"
+                     [modelAsStrings]="true"
+                     [ripple]="false"
+                     [animationDuration]="{enter:'0ms',leave:'0ms'}"
+                     placeholder="请输入"
+                     secondaryPlaceholder="请输入"
+                     listRequired
+                     minListNum="2"
+                     maxListNum="4"></tag-input>
+          <eh-tooltip ref="assertMatch"
+                      data-list-required.first="不能为空"
+                      data-list-required-min="至少设置两个值"
+                      data-list-required-max.last="至多设置四个值"></eh-tooltip>
         </div>
         <div class="field buttons">
           <button shLoader type="submit" class="ui button small instagram">保存2</button>
@@ -163,7 +192,7 @@
   <button type="button" class="ui tiny button modal-inner-button" (click)="innerModalCtrl.behavior('show')">
     Modal Inner Scroll
   </button>
-  <a class="ui tiny button" routerLink="/error-handler-text">error handler text</a>
+  <a class="ui tiny button teal" routerLink="/model-driven">Model Driven Form</a>
 </div>
 
 <div class="ui small modal modal-scroll" modal #modalCtrl="modal">
