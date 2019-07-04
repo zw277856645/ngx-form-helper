@@ -1,8 +1,138 @@
 <div class="ui container">
-  <form class="ui form" [formGroup]="formGroup" formHelper offsetTop="28" (validPass)="save($event)">
+  <form class="ui form" [formGroup]="formGroup" formHelper #formHelperCtrl="formHelper" offsetTop="28"
+        (validPass)="save($event)">
     <div class="field">
-      <label>formControl</label>
+      <label>名字</label>
       <input type="text" formControlName="name" autocomplete="off">
+      <eh-tooltip ref="name">
+        <eh-tooltip-message error="trimmedRequired">不能为空</eh-tooltip-message>
+        <eh-tooltip-message error="nameUnique" [async]="true">重复</eh-tooltip-message>
+      </eh-tooltip>
+    </div>
+
+    <div class="field">
+      <label>说明</label>
+      <textarea formControlName="desc" autocomplete="off" rows="3" autoSize
+                (sizeChange)="descCtrl.reposition()"></textarea>
+      <eh-tooltip ref="desc" data-trimmed-required="不能为空" #descCtrl="ehTooltip"></eh-tooltip>
+    </div>
+
+    <div class="field">
+      <label>Input Hidden</label>
+      <input type="text" placeholder="占位" disabled>
+      <input type="hidden" formControlName="hidden">
+      <eh-tooltip ref="hidden" data-required="不能为空" positionProxy="~" scrollProxy="~"></eh-tooltip>
+    </div>
+
+    <div class="field">
+      <label class="inline">选择喜好</label>
+      <eh-text ref="love" data-required="至少选择一项" animation="flyLeft"></eh-text>
+      <div class="ui fluid selection dropdown" dropdown formControlName="love">
+        <i class="icon dropdown"></i>
+        <div class="default text">请选择</div>
+        <div class="menu">
+          <div class="item" data-value="">请选择</div>
+          <div class="item" data-value="1">读书</div>
+          <div class="item" data-value="2">看报</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="field required">
+      <label class="inline">性别</label>
+      <input type="text" formControlName="sex" autocomplete="off">
+      <eh-text ref="sex" animation="slideDown" [inline]="false" [float]="true" [right]="true">
+        <eh-text-message error="trimmedRequired">不能为空</eh-text-message>
+        <eh-text-message error="pattern">请输入字符</eh-text-message>
+      </eh-text>
+    </div>
+
+    <div class="field">
+      <label>组(动态)</label>
+      <div formArrayName="group" class="inline">
+        <ng-container *ngFor="let ck of group.controls;index as i">
+          <div class="ui checkbox">
+            <input type="checkbox" [formControl]="ck">
+            <label>
+              {{cks[ i ].label}}
+              <i class="icon red remove" (click)="removeCk(i)"></i>
+            </label>
+          </div>
+        </ng-container>
+        <button type="button" class="ui button tiny" (click)="addCK()">添加</button>
+      </div>
+      <eh-tooltip ref="group" position="right center">
+        <eh-tooltip-message error="checkboxRequired">请选择</eh-tooltip-message>
+        <eh-tooltip-message error="checkboxRequiredMin">至少选择两项</eh-tooltip-message>
+        <eh-tooltip-message error="checkboxRequiredMax">至多选择四项</eh-tooltip-message>
+      </eh-tooltip>
+    </div>
+
+    <div class="field required">
+      <label>List Required</label>
+      <tag-input formControlName="assertMatch"
+                 theme="bootstrap3-info"
+                 [addOnBlur]="true"
+                 [addOnPaste]="true"
+                 [modelAsStrings]="true"
+                 [ripple]="false"
+                 [animationDuration]="{enter:'0ms',leave:'0ms'}"
+                 placeholder="请输入"
+                 secondaryPlaceholder="请输入"></tag-input>
+      <eh-tooltip ref="assertMatch"
+                  data-list-required.first="不能为空"
+                  data-list-required-min="至少设置两个值"
+                  data-list-required-max.last="至多设置四个值"></eh-tooltip>
+    </div>
+
+    <div class="field">
+      <label>滚动对象</label>
+      <div class="ui styled fluid accordion" accordion>
+        <div class="title" ehSimple ref="gp" [validateImmediate]="true" scrollProxy="~"
+             (click)="formHelperCtrl.repositionMessages('gp')">
+          <i class="dropdown icon"></i>
+          Accordion
+        </div>
+        <div class="content" formGroupName="gp">
+          <div class="field">
+            <label>生日</label>
+            <input type="text" formControlName="birth">
+            <eh-tooltip ref="birth" data-required="不能为空"></eh-tooltip>
+          </div>
+          <div class="field required">
+            <label>请求url</label>
+            <div class="ui left action input">
+              <div class="ui selection dropdown" dropdown>
+                <i class="dropdown icon"></i>
+                <div class="default text">请选择</div>
+                <div class="menu">
+                  <div class="item">GET</div>
+                  <div class="item">POST</div>
+                </div>
+              </div>
+              <input type="text" formControlName="url" autocomplete="off" maxlength="500">
+            </div>
+            <eh-tooltip ref="url" data-required="不能为空"></eh-tooltip>
+          </div>
+          <div class="field">
+            <label>远程2</label>
+            <input type="text" formControlName="remote2" autocomplete="off">
+            <eh-tooltip ref="remote2" data-name-unique.async="重复"></eh-tooltip>
+          </div>
+        </div>
+
+        <div class="title" (click)="simpleCtrl.repositionMessages()">
+          <i class="dropdown icon"></i>
+          Accordion2
+        </div>
+        <div class="content" formGroupName="gp2" ehSimple scrollProxy="~" #simpleCtrl="ehSimple">
+          <div class="field">
+            <label>生日2</label>
+            <input type="text" formControlName="birth2">
+            <eh-tooltip ref="birth2" data-required="不能为空"></eh-tooltip>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="blank" [style.height.px]="pageHeight"></div>

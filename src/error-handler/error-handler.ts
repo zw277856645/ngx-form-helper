@@ -1,9 +1,11 @@
-import { AbstractControl, AbstractControlDirective, FormArray, FormControl, FormGroup } from '@angular/forms';
+import {
+    AbstractControl, ControlContainer, FormArray, FormControl, FormGroup, NgControl, NgModel, NgModelGroup
+} from '@angular/forms';
 import { ArrayOrGroupAbstractControls, FormHelperDirective } from '../form-helper.directive';
 import { arrayOfAbstractControls, splitClassNames } from '../utils';
 import { AfterViewInit, ElementRef, Input, OnInit, Renderer2 } from '@angular/core';
 
-export type RefType = string | AbstractControlDirective | AbstractControl;
+export type RefType = string | NgModel | NgModelGroup;
 
 export abstract class ErrorHandler implements AfterViewInit, OnInit {
 
@@ -12,7 +14,7 @@ export abstract class ErrorHandler implements AfterViewInit, OnInit {
      *
      * 可用格式:
      * 1.string   -> name/ngModelGroup/formControlName/formGroupName/formArrayName
-     * 2.control  -> 表单控件对象，通常为模板变量，如：#ctrl="ngModel/ngModelGroup/formControl/formGroup/formArray"
+     * 2.control  -> 表单控件对象，通常为模板变量，如：#ctrl="ngModel/ngModelGroup"
      */
     @Input() ref: RefType;
 
@@ -70,12 +72,9 @@ export abstract class ErrorHandler implements AfterViewInit, OnInit {
             if (this._formHelper && typeof this.ref === 'string') {
                 this._control = this.findControlByName(this.ref);
                 this.controlName = this.ref;
-            } else if (this.ref instanceof AbstractControlDirective) {
+            } else if (this.ref instanceof NgControl || this.ref instanceof ControlContainer) {
                 this._control = this.ref.control;
-                this.setNameByControl(this.ref.control);
-            } else if (this.ref instanceof AbstractControl) {
-                this._control = this.ref;
-                this.setNameByControl(this.ref);
+                this.controlName = this.ref.name;
             }
         }
 
@@ -102,7 +101,7 @@ export abstract class ErrorHandler implements AfterViewInit, OnInit {
 
     protected findControlByName(
         name: string,
-        controls: ArrayOrGroupAbstractControls = this._formHelper.ngForm.controls
+        controls: ArrayOrGroupAbstractControls = this._formHelper.controls
     ): AbstractControl {
         if (controls) {
             let arrayControls = arrayOfAbstractControls(controls);
@@ -127,26 +126,6 @@ export abstract class ErrorHandler implements AfterViewInit, OnInit {
         return null;
     }
 
-    protected setNameByControl(control: AbstractControl,
-                               controls: ArrayOrGroupAbstractControls = this._formHelper.ngForm.controls) {
-        if (control && controls) {
-            let arrayControls = arrayOfAbstractControls(controls);
-
-            for (let item of arrayControls) {
-                if (item.control === control) {
-                    return this.controlName = item.name;
-                }
-            }
-
-            // 当前group下没有找到，从group中的group继续寻找
-            for (let item of arrayControls) {
-                if (item.control instanceof FormGroup || item.control instanceof FormArray) {
-                    this.setNameByControl(control, item.control.controls);
-                }
-            }
-        }
-    }
-
     private findControlElement() {
         if (!this.controlName) {
             return;
@@ -162,7 +141,7 @@ export abstract class ErrorHandler implements AfterViewInit, OnInit {
     }
 
     private prepareControl() {
-        // ngModelGroup需要时间初始化controls，每次等一个周期再执行
+        // ngModelGroup需要时间初始化control，每次等一个周期再执行
         if (!this.control) {
             this.initControlCount++;
             if (this.initControlCount <= 10) {

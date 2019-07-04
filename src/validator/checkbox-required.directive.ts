@@ -1,15 +1,16 @@
 import { Directive, Input, OnChanges } from '@angular/core';
-import { AbstractControl, FormGroup, NG_VALIDATORS, Validator, ValidatorFn } from '@angular/forms';
+import { AbstractControl, FormArray, FormGroup, NG_VALIDATORS, Validator, ValidatorFn } from '@angular/forms';
+import { arrayOfAbstractControls } from '../utils';
 
 export function checkboxRequired(
     { minCheckedNum, maxCheckedNum }: { minCheckedNum?: number, maxCheckedNum?: number }
 ): ValidatorFn {
     return (c: AbstractControl) => {
-        if (c instanceof FormGroup) {
+        if (c instanceof FormGroup || c instanceof FormArray) {
             let checkedNum = 0;
 
-            for (let name in c.controls) {
-                if (c.controls[ name ].value) {
+            for (let item of arrayOfAbstractControls(c.controls)) {
+                if (item.control.value) {
                     checkedNum++;
                 }
             }
@@ -34,7 +35,11 @@ export function checkboxRequired(
 }
 
 @Directive({
-    selector: '[checkboxRequired][ngModelGroup],[checkboxRequired][formGroup],[checkboxRequired][formGroupName]',
+    selector: `
+        [checkboxRequired][ngModelGroup],
+        [checkboxRequired][formGroup],[checkboxRequired][formGroupName],
+        [checkboxRequired][formArray],[checkboxRequired][formArrayName]
+    `,
     providers: [
         { provide: NG_VALIDATORS, useExisting: CheckboxRequiredDirective, multi: true }
     ]

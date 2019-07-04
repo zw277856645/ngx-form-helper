@@ -2,7 +2,9 @@ import {
     Input, ElementRef, Directive, OnDestroy, HostListener, AfterViewInit, NgZone, Inject, Renderer2, Output, Optional,
     QueryList, InjectionToken, EventEmitter, ContentChildren, SkipSelf, Provider
 } from '@angular/core';
-import { AbstractControl, AbstractControlDirective, FormArray, FormGroup, NgForm } from '@angular/forms';
+import {
+    AbstractControl, AbstractControlDirective, ControlContainer, FormArray, FormGroup, NgControl, NgForm
+} from '@angular/forms';
 import { EMPTY, forkJoin, interval, Observable, of, Subscription } from 'rxjs';
 import { FormHelperConfig } from './form-helper-config';
 import {
@@ -125,7 +127,7 @@ export class FormHelperDirective implements OnDestroy, AfterViewInit {
     private resetEles: Element[] = [];
     private submitEles: Element[] = [];
 
-    constructor(public ngForm: NgForm,
+    constructor(public ngForm: ControlContainer,
                 private eleRef: ElementRef,
                 private zone: NgZone,
                 private renderer: Renderer2,
@@ -209,7 +211,7 @@ export class FormHelperDirective implements OnDestroy, AfterViewInit {
         this.resetControls();
     }
 
-    repositionMessages(type?: RefType, delay?: number) {
+    repositionMessages(type?: RefType | AbstractControl, delay?: number) {
         if (!type) {
             this.errorHandlers.forEach(errorHandler => {
                 if (errorHandler.reposition) {
@@ -249,6 +251,14 @@ export class FormHelperDirective implements OnDestroy, AfterViewInit {
         }
     }
 
+    get controls() {
+        if (this.ngForm instanceof NgForm) {
+            return this.ngForm.controls;
+        } else {
+            return (this.ngForm.control as FormGroup).controls;
+        }
+    }
+
     private static validateControl(control: AbstractControl) {
         // 设置control为dirty状态，使错误信息显示
         control.markAsDirty();
@@ -257,7 +267,7 @@ export class FormHelperDirective implements OnDestroy, AfterViewInit {
         control.updateValueAndValidity();
     }
 
-    private validateControls(controls: ArrayOrGroupAbstractControls = this.ngForm.controls) {
+    private validateControls(controls: ArrayOrGroupAbstractControls = this.controls) {
         arrayOfAbstractControls(controls).forEach(item => {
             FormHelperDirective.validateControl(item.control);
 
@@ -267,7 +277,7 @@ export class FormHelperDirective implements OnDestroy, AfterViewInit {
         });
     }
 
-    private getPendingControls(controls: ArrayOrGroupAbstractControls = this.ngForm.controls) {
+    private getPendingControls(controls: ArrayOrGroupAbstractControls = this.controls) {
         let pendings: Observable<any>[] = [];
 
         arrayOfAbstractControls(controls).forEach(item => {
@@ -354,7 +364,7 @@ export class FormHelperDirective implements OnDestroy, AfterViewInit {
         }
     }
 
-    private calcMinOffsetTop(controls: ArrayOrGroupAbstractControls = this.ngForm.controls) {
+    private calcMinOffsetTop(controls: ArrayOrGroupAbstractControls = this.controls) {
         let minOffsetTop = Number.MAX_SAFE_INTEGER;
         let offsetTop: number;
         let closestVisibleElement: HTMLElement;
@@ -429,7 +439,7 @@ export class FormHelperDirective implements OnDestroy, AfterViewInit {
         }
     }
 
-    private markAllControlsPristine(controls: ArrayOrGroupAbstractControls = this.ngForm.controls) {
+    private markAllControlsPristine(controls: ArrayOrGroupAbstractControls = this.controls) {
         arrayOfAbstractControls(controls).forEach(item => {
             item.control.markAsPristine({ onlySelf: true });
 

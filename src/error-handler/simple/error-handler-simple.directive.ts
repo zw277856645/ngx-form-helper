@@ -5,10 +5,7 @@ import { ErrorHandler } from '../error-handler';
 import { FormHelperDirective } from '../../form-helper.directive';
 import { arrayProviderFactory } from '../../utils';
 import { ErrorHandlerSimpleConfig } from './error-handler-simple-config';
-import {
-    FormArray, FormArrayName, FormControl, FormControlName,
-    FormGroup, FormGroupName, NgModel, NgModelGroup
-} from '@angular/forms';
+import { FormArrayName, FormControlName, FormGroupName, NgModel, NgModelGroup } from '@angular/forms';
 
 export const ERROR_HANDLER_SIMPLE_CONFIG
     = new InjectionToken<ErrorHandlerSimpleConfig>('error_handler_simple_config');
@@ -53,9 +50,6 @@ export class ErrorHandlerSimpleDirective extends ErrorHandler implements AfterVi
                 private renderer: Renderer2,
                 @Optional() private model: NgModel,
                 @Optional() private group: NgModelGroup,
-                @Optional() private formCtrl: FormControl,
-                @Optional() private formGroup: FormGroup,
-                @Optional() private formArray: FormArray,
                 @Optional() private formCtrlName: FormControlName,
                 @Optional() private formGroupName: FormGroupName,
                 @Optional() private formArrayName: FormArrayName,
@@ -94,29 +88,20 @@ export class ErrorHandlerSimpleDirective extends ErrorHandler implements AfterVi
     }
 
     private initControlByDI() {
-        let templateCtrl = this.model || this.group;
-        let modelCtrl = this.formCtrl || this.formGroup || this.formArray;
-        let modelCtrlName = this.formCtrlName || this.formGroupName || this.formArrayName;
+        let ctrl = this.model || this.group || this.formCtrlName || this.formGroupName || this.formArrayName;
+        if (ctrl) {
+            this._control = ctrl.control;
+            this.controlName = ctrl.name;
 
-        if (templateCtrl) {
-            this._control = templateCtrl.control;
-            this.setNameByControl(this._control);
-        } else if (modelCtrl) {
-            this._control = modelCtrl;
-            this.setNameByControl(this._control);
-        } else if (modelCtrlName) {
-            this._control = modelCtrlName.control;
-            this.controlName = modelCtrlName.name;
-        }
-
-        // ngModelGroup需要时间初始化controls，每次等一个周期再执行
-        if (!this._control) {
-            this.initCount++;
-            if (this.initCount <= 10) {
-                setTimeout(() => this.initControlByDI());
+            // ngModelGroup需要时间初始化control，每次等一个周期再执行
+            if (!this._control) {
+                this.initCount++;
+                if (this.initCount <= 10) {
+                    setTimeout(() => this.initControlByDI());
+                }
+            } else {
+                super.ngAfterViewInit();
             }
-        } else {
-            super.ngAfterViewInit();
         }
     }
 }

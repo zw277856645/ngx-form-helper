@@ -121,7 +121,9 @@ export class ErrorHandlerTooltipComponent extends ErrorHandler implements AfterV
     whenInvalid() {
         this.visible = true;
         this.hostStatusChange();
-        this.reposition();
+
+        // setTimeout保证动态表单域创建完毕后执行
+        setTimeout(() => this.reposition());
     }
 
     whenPending() {
