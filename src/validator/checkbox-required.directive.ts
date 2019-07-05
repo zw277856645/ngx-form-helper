@@ -1,5 +1,7 @@
 import { Directive, Input, OnChanges } from '@angular/core';
-import { AbstractControl, FormArray, FormGroup, NG_VALIDATORS, Validator, ValidatorFn } from '@angular/forms';
+import {
+    AbstractControl, FormArray, FormGroup, NG_VALIDATORS, ValidationErrors, Validator, ValidatorFn
+} from '@angular/forms';
 import { arrayOfAbstractControls } from '../utils';
 
 export function checkboxRequired(
@@ -58,7 +60,7 @@ export class CheckboxRequiredDirective implements Validator, OnChanges {
         }
     }
 
-    validate(c: AbstractControl) {
+    validate(c: AbstractControl): ValidationErrors | null {
         if (!this.ctrl) {
             this.ctrl = c;
         }
