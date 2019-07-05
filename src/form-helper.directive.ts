@@ -3,7 +3,7 @@ import {
     QueryList, InjectionToken, EventEmitter, ContentChildren, SkipSelf, Provider
 } from '@angular/core';
 import {
-    AbstractControl, AbstractControlDirective, ControlContainer, FormArray, FormGroup, NgControl, NgForm
+    AbstractControl, AbstractControlDirective, ControlContainer, FormArray, FormGroup, NgForm
 } from '@angular/forms';
 import { EMPTY, forkJoin, interval, Observable, of, Subscription } from 'rxjs';
 import { FormHelperConfig } from './form-helper-config';
@@ -101,7 +101,7 @@ export class FormHelperDirective implements OnDestroy, AfterViewInit {
     @Input() resultOkAssertion: (res: any) => boolean;
 
     // 验证通过
-    @Output() validPass = new EventEmitter();
+    @Output() validPass = new EventEmitter<SubmitWrapper>();
 
     // 验证不通过
     @Output() validFail = new EventEmitter();
