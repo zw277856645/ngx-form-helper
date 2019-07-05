@@ -136,7 +136,8 @@ export abstract class ErrorHandler implements AfterViewInit, OnInit {
             [ngModelGroup=${this.controlName}],
             [formControlName=${this.controlName}],
             [formGroupName=${this.controlName}],
-            [formArrayName=${this.controlName}]
+            [formArrayName=${this.controlName}],
+            [ng-reflect-name=${this.controlName}]
         `);
     }
 

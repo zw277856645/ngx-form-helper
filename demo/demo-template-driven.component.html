@@ -3,7 +3,7 @@
     <div class="field">
       <label>名字</label>
       <div class="ui input">
-        <input type="text" name="name" [(ngModel)]="name" autocomplete="off" trimmedRequired nameUnique>
+        <input type="text" [name]="'name'" [(ngModel)]="name" autocomplete="off" trimmedRequired nameUnique>
       </div>
       <eh-tooltip ref="name">
         <eh-tooltip-message error="trimmedRequired" message="不能为空"></eh-tooltip-message>
@@ -63,7 +63,7 @@
 
       <div class="field">
         <label>组(动态)</label>
-        <div ngModelGroup="group" checkboxRequired minCheckedNum="2" maxCheckedNum="4" class="inline">
+        <div [ngModelGroup]="'group'" checkboxRequired minCheckedNum="2" maxCheckedNum="4" class="inline">
           <div class="ui checkbox" *ngFor="let ck of cks;trackBy:trackByCk;index as i">
             <input type="checkbox" [(ngModel)]="ck.checked" [name]="'ck-' + ck.uuid">
             <label>
