@@ -17,7 +17,9 @@ import { ErrorHandler, RefType } from './error-handler/error-handler';
 
 const TWEEN = require('@tweenjs/tween.js');
 
-export type SubmitWrapper = (request?: any) => Observable<any>;
+export type SubmitWrapper = (
+    request?: Observable<any> | Promise<any> | ((...args: any[]) => Observable<any> | Promise<any> | any) | any
+) => Observable<any>;
 
 export type ArrayOrGroupAbstractControls = { [ key: string ]: AbstractControl } | AbstractControl[];
 
