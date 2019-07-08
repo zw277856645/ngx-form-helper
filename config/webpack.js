@@ -5,6 +5,8 @@ const helpers = require('./helpers');
 
 module.exports = {
 
+    mode: "production",
+
     entry: {
         "ngx-form-helper": [
             "./src/form-helper.less",

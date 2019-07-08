@@ -14,7 +14,6 @@ export {
     SubmitHandlerLoaderDirective, submitHandlerLoaderConfigProvider
 }from './submit-handler/submit-handler-loader.directive';
 
-export * from './error-handler/tooltip/tooltip-message';
 export * from './error-handler/error-handler';
 
 export * from './error-handler/simple/error-handler-simple-config';
