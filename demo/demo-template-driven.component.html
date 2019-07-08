@@ -5,10 +5,7 @@
       <div class="ui input">
         <input type="text" [name]="'name'" [(ngModel)]="name" autocomplete="off" trimmedRequired nameUnique>
       </div>
-      <eh-tooltip ref="name">
-        <eh-tooltip-message error="trimmedRequired" message="不能为空"></eh-tooltip-message>
-        <eh-tooltip-message error="nameUnique" message="重复" [async]="true"></eh-tooltip-message>
-      </eh-tooltip>
+      <eh-tooltip ref="name" [errorMessages]="nameMessages"></eh-tooltip>
     </div>
 
     <div class="field">
@@ -28,19 +25,25 @@
         <label>说明</label>
         <textarea name="desc" trimmedRequired [(ngModel)]="desc" autocomplete="off" rows="3" autoSize
                   (sizeChange)="descCtrl.reposition()"></textarea>
-        <eh-tooltip ref="desc" data-trimmed-required="不能为空" #descCtrl="ehTooltip"></eh-tooltip>
+        <eh-tooltip ref="desc" #descCtrl="ehTooltip">
+          <eh-tooltip-message error="trimmedRequired">不能为空</eh-tooltip-message>
+        </eh-tooltip>
       </div>
 
       <div class="field">
         <label>Input Hidden</label>
         <input type="text" placeholder="占位" disabled>
         <input type="hidden" name="hidden" [(ngModel)]="hidden" required>
-        <eh-tooltip ref="hidden" data-required="不能为空" positionProxy="~" scrollProxy="~"></eh-tooltip>
+        <eh-tooltip ref="hidden" positionProxy="~" scrollProxy="~">
+          <eh-tooltip-message error="required">不能为空</eh-tooltip-message>
+        </eh-tooltip>
       </div>
 
       <div class="field">
         <label class="inline">选择喜好</label>
-        <eh-text ref="love" data-required="至少选择一项" animation="flyLeft"></eh-text>
+        <eh-text ref="love" animation="flyLeft">
+          <eh-text-message error="required">至少选择一项</eh-text-message>
+        </eh-text>
         <div class="ui fluid selection dropdown" dropdown name="love" [(ngModel)]="love" required>
           <i class="icon dropdown"></i>
           <div class="default text">请选择</div>
@@ -92,7 +95,9 @@
             <div class="field">
               <label>生日</label>
               <input type="text" name="birth" [(ngModel)]="birth" required>
-              <eh-tooltip ref="birth" data-required="不能为空"></eh-tooltip>
+              <eh-tooltip ref="birth">
+                <eh-tooltip-message error="required">不能为空</eh-tooltip-message>
+              </eh-tooltip>
             </div>
             <div class="field required">
               <label>请求url</label>
@@ -107,12 +112,16 @@
                 </div>
                 <input type="text" name="url" [(ngModel)]="url" required autocomplete="off" maxlength="500">
               </div>
-              <eh-tooltip ref="url" data-required="不能为空"></eh-tooltip>
+              <eh-tooltip ref="url">
+                <eh-tooltip-message error="required">不能为空</eh-tooltip-message>
+              </eh-tooltip>
             </div>
             <div class="field">
               <label>远程2</label>
               <input type="text" name="remote2" [(ngModel)]="remote2" autocomplete="off" nameUnique>
-              <eh-tooltip ref="remote2" data-name-unique.async="重复"></eh-tooltip>
+              <eh-tooltip ref="remote2">
+                <eh-tooltip-message error="nameUnique" [async]="true">重复</eh-tooltip-message>
+              </eh-tooltip>
             </div>
           </div>
 
@@ -124,7 +133,9 @@
             <div class="field">
               <label>生日2</label>
               <input type="text" name="birth2" [(ngModel)]="birth2" required>
-              <eh-tooltip ref="birth2" data-required="不能为空"></eh-tooltip>
+              <eh-tooltip ref="birth2">
+                <eh-tooltip-message error="required">不能为空</eh-tooltip-message>
+              </eh-tooltip>
             </div>
           </div>
         </div>
@@ -149,7 +160,10 @@
         <div class="field">
           <label>性别</label>
           <input type="text" name="sex2" required [(ngModel)]="sex2" autocomplete="off" pattern="^\d*$">
-          <eh-tooltip ref="sex2" data-required="不能为空" data-pattern="只能为数字"></eh-tooltip>
+          <eh-tooltip ref="sex2">
+            <eh-tooltip-message error="required">不能为空</eh-tooltip-message>
+            <eh-tooltip-message error="pattern">只能为数字</eh-tooltip-message>
+          </eh-tooltip>
         </div>
         <div class="field required">
           <label>List Required</label>
@@ -166,10 +180,7 @@
                      listRequired
                      minListNum="2"
                      maxListNum="4"></tag-input>
-          <eh-tooltip ref="assertMatch"
-                      data-list-required.first="不能为空"
-                      data-list-required-min="至少设置两个值"
-                      data-list-required-max.last="至多设置四个值"></eh-tooltip>
+          <eh-tooltip ref="assertMatch" [errorMessages]="assertMatchMessages"></eh-tooltip>
         </div>
         <div class="field buttons">
           <button shLoader type="submit" class="ui button small instagram">保存2</button>
@@ -204,12 +215,16 @@
       <div class="field">
         <label>地址</label>
         <input type="text" name="addr" [(ngModel)]="addr" autocomplete="off" required>
-        <eh-tooltip ref="addr" data-required="不能为空"></eh-tooltip>
+        <eh-tooltip ref="addr">
+          <eh-tooltip-message error="required">不能为空</eh-tooltip-message>
+        </eh-tooltip>
       </div>
       <div class="field">
         <label>评论</label>
         <textarea name="issue" required [(ngModel)]="issue" autocomplete="off" rows="60"></textarea>
-        <eh-tooltip ref="issue" data-required="不能为空"></eh-tooltip>
+        <eh-tooltip ref="issue">
+          <eh-tooltip-message error="required">不能为空</eh-tooltip-message>
+        </eh-tooltip>
       </div>
     </form>
   </div>
@@ -231,13 +246,17 @@
       <div class="field">
         <label>地址</label>
         <input type="text" name="addr2" [(ngModel)]="addr2" autocomplete="off" required>
-        <eh-tooltip ref="addr2" data-required="不能为空"></eh-tooltip>
+        <eh-tooltip ref="addr2">
+          <eh-tooltip-message error="required">不能为空</eh-tooltip-message>
+        </eh-tooltip>
       </div>
       <div class="field">
         <label>评论</label>
         <textarea name="issue2" trimmedRequired [(ngModel)]="issue2" autocomplete="off" autoSize rows="3"
                   minHeight="100" (sizeChange)="issue2Ctrl.reposition()"></textarea>
-        <eh-tooltip ref="issue2" data-trimmed-required="不能为空" #issue2Ctrl="ehTooltip"></eh-tooltip>
+        <eh-tooltip ref="issue2" #issue2Ctrl="ehTooltip">
+          <eh-tooltip-message error="trimmedRequired">不能为空</eh-tooltip-message>
+        </eh-tooltip>
       </div>
     </form>
   </div>

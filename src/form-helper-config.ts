@@ -6,7 +6,7 @@ export interface FormHelperConfig {
     // 表单域所处上下文，通常为window或含有滚动条的对象，影响滚动条正确滚动到第一条错误
     // 可用格式: 1.css选择器
     //          2.点号表达式，语法：. -> 当前form，.. -> 父元素，../../ etc
-    //          3.window或dom元素
+    //          3.window/dom/elementRef对象
     context?: Window | HTMLElement | string;
 
     // 表单域的滚动代理

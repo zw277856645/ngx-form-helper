@@ -1,12 +1,12 @@
 import {
-    AfterViewInit, Component, ElementRef, HostBinding, Inject, InjectionToken, Input, NgZone, OnInit,
-    Optional, Provider, Renderer2, SkipSelf
+    AfterViewInit, Component, ElementRef, HostBinding, Inject, InjectionToken, Input, NgZone, OnChanges, OnInit,
+    Optional, Provider, Renderer2, SimpleChanges, SkipSelf
 } from '@angular/core';
 import { ErrorHandler } from '../error-handler';
 import { ErrorHandlerTooltipConfig, TooltipPosition } from './error-handler-tooltip-config';
 import { FormHelperDirective } from '../../form-helper.directive';
-import { ErrorMessage } from '../error-message';
-import { arrayProviderFactory, getProxyElement, loadMessagesFromDataset } from '../../utils';
+import { TooltipMessage, Message } from './tooltip-message';
+import { arrayProviderFactory, getProxyElement } from '../../utils';
 import { getOuterHeight, getOuterWidth, getStyle, isHidden } from 'cmjs-lib';
 
 export const ERROR_HANDLER_TOOLTIP_CONFIG
@@ -44,7 +44,9 @@ export function errorHandlerTooltipConfigProvider(config: ErrorHandlerTooltipCon
     ],
     exportAs: 'ehTooltip'
 })
-export class ErrorHandlerTooltipComponent extends ErrorHandler implements AfterViewInit, OnInit {
+export class ErrorHandlerTooltipComponent extends ErrorHandler implements AfterViewInit, OnInit, OnChanges {
+
+    @Input() errorMessages: TooltipMessage[] | { [ error: string ]: Message | string };
 
     @Input() classNames: string | false = 'eh-tooltip-theme';
 
@@ -70,7 +72,7 @@ export class ErrorHandlerTooltipComponent extends ErrorHandler implements AfterV
     @HostBinding('class.invalid') invalid: boolean;
     @HostBinding('class.pending') pending: boolean;
 
-    messages: ErrorMessage[] = [];
+    messages: TooltipMessage[];
 
     private proxyEle: HTMLElement;
 
@@ -88,18 +90,11 @@ export class ErrorHandlerTooltipComponent extends ErrorHandler implements AfterV
         super.ngOnInit();
 
         this.addClasses(this.element, this.classNames);
-        this.messages = loadMessagesFromDataset(this.element as HTMLElement);
+    }
 
-        // 从HTML加载是否是异步验证
-        for (let k in (this.element as HTMLElement).dataset) {
-            let [ name, order, type ] = k.split('.');
-            let message = this.messages.find(m => m.error === name);
-
-            if (/^async$/i.test(type || order)) {
-                message.async = true;
-            } else if (/^sync$/i.test(type || order)) {
-                message.async = false;
-            }
+    ngOnChanges(changes: SimpleChanges) {
+        if (changes.errorMessages) {
+            this.messages = ErrorHandlerTooltipComponent.convertErrorMessages2Array(this.errorMessages);
         }
     }
 
@@ -207,7 +202,7 @@ export class ErrorHandlerTooltipComponent extends ErrorHandler implements AfterV
         });
     }
 
-    trackByMessages(i: number, msg: ErrorMessage) {
+    trackByMessages(i: number, msg: TooltipMessage) {
         return msg.error;
     }
 
@@ -223,6 +218,28 @@ export class ErrorHandlerTooltipComponent extends ErrorHandler implements AfterV
         } else {
             this.valid = this.invalid = this.pending = false;
         }
+    }
+
+    private static convertErrorMessages2Array(messages: TooltipMessage[] | { [ error: string ]: Message | string }) {
+        let parsedMessages: TooltipMessage[] = [];
+
+        if (Array.isArray(messages)) {
+            parsedMessages = messages || parsedMessages;
+        } else if (messages !== null && typeof messages === 'object') {
+            for (let error in messages) {
+                let message = messages[ error ];
+
+                if (typeof message === 'string') {
+                    parsedMessages.push({ error, message });
+                } else if (message !== null && typeof message === 'object') {
+                    parsedMessages.push({ error, ...message });
+                } else {
+                    parsedMessages.push({ error, message: '' });
+                }
+            }
+        }
+
+        return parsedMessages.sort((a, b) => (a.order || 0) - (b.order || 0));
     }
 
 }

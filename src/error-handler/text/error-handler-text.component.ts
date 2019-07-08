@@ -1,12 +1,12 @@
 import {
-    Component, ElementRef, HostBinding, Inject, InjectionToken, Input, OnInit, Optional, Provider,
-    Renderer2, SkipSelf, ViewChild
+    Component, ElementRef, HostBinding, Inject, InjectionToken, Input, OnChanges, OnInit, Optional, Provider,
+    Renderer2, SimpleChanges, SkipSelf, ViewChild
 } from '@angular/core';
 import { ErrorHandlerTextConfig } from './error-handler-text-config';
-import { arrayProviderFactory, loadMessagesFromDataset } from '../../utils';
+import { arrayProviderFactory } from '../../utils';
 import { FormHelperDirective } from '../../form-helper.directive';
 import { ErrorHandler } from '../error-handler';
-import { ErrorMessage } from '../error-message';
+import { TextMessage } from './text-message';
 
 export const ERROR_HANDLER_TEXT_CONFIG
     = new InjectionToken<ErrorHandlerTextConfig>('error_handler_text_config');
@@ -43,9 +43,11 @@ export function errorHandlerTextConfigProvider(config: ErrorHandlerTextConfig): 
     ],
     exportAs: 'ehText'
 })
-export class ErrorHandlerTextComponent extends ErrorHandler implements OnInit {
+export class ErrorHandlerTextComponent extends ErrorHandler implements OnInit, OnChanges {
 
     @ViewChild('container') containerRef: ElementRef;
+
+    @Input() errorMessages: TextMessage[] | { [ error: string ]: string };
 
     @Input() classNames: string | false = 'eh-text-theme';
 
@@ -66,7 +68,7 @@ export class ErrorHandlerTextComponent extends ErrorHandler implements OnInit {
     // 消息显示/隐藏
     @HostBinding('class.visible') visible: boolean;
 
-    messages: ErrorMessage[] = [];
+    messages: TextMessage[];
 
     constructor(private eleRef: ElementRef,
                 private renderer: Renderer2,
@@ -81,7 +83,12 @@ export class ErrorHandlerTextComponent extends ErrorHandler implements OnInit {
         super.ngOnInit();
 
         this.addClasses(this.element, this.classNames);
-        this.messages = loadMessagesFromDataset(this.element as HTMLElement);
+    }
+
+    ngOnChanges(changes: SimpleChanges) {
+        if (changes.errorMessages) {
+            this.messages = ErrorHandlerTextComponent.convertErrorMessages2Array(this.errorMessages);
+        }
     }
 
     whenValid() {
@@ -104,8 +111,22 @@ export class ErrorHandlerTextComponent extends ErrorHandler implements OnInit {
         this.whenValid();
     }
 
-    trackByMessages(i: number, msg: ErrorMessage) {
+    trackByMessages(i: number, msg: TextMessage) {
         return msg.error;
+    }
+
+    private static convertErrorMessages2Array(messages: TextMessage[] | { [ error: string ]: string }) {
+        let parsedMessages: TextMessage[] = [];
+
+        if (Array.isArray(messages)) {
+            parsedMessages = messages || parsedMessages;
+        } else if (messages !== null && typeof messages === 'object') {
+            for (let error in messages) {
+                parsedMessages.push({ error, message: messages[ error ] });
+            }
+        }
+
+        return parsedMessages;
     }
 
 }

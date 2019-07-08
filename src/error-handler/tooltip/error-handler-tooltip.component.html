@@ -1,5 +1,7 @@
 <ng-content></ng-content>
 
 <ng-container *ngFor="let msg of messages;trackBy:trackByMessages">
-  <div [class.invalid]="hasError(msg.error)" [class.pending]="msg.async">{{msg.message}}</div>
+  <div [class.invalid]="hasError(msg.error)" [class.pending]="msg.async">
+    {{compileMessage(msg.context, msg.message)}}
+  </div>
 </ng-container>

@@ -23,12 +23,12 @@ export function checkboxRequired(
 
             let minNum = minCheckedNum ? +minCheckedNum : 0;
             if (minNum && checkedNum < minNum) {
-                return { checkboxRequiredMin: true };
+                return { checkboxRequiredMin: { value: minCheckedNum } };
             }
 
             let maxNum = maxCheckedNum ? +maxCheckedNum : 0;
             if (maxNum && checkedNum > maxNum) {
-                return { checkboxRequiredMax: true };
+                return { checkboxRequiredMax: { value: maxCheckedNum } };
             }
         }
 

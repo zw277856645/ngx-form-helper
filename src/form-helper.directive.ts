@@ -82,7 +82,7 @@ export class FormHelperDirective implements OnDestroy, AfterViewInit {
 
     @Input() autoReset: boolean = true;
 
-    @Input() context: Window | HTMLElement | string = window;
+    @Input() context: Window | ElementRef | HTMLElement | string = window;
 
     @Input() scrollProxy: string;
 
@@ -295,7 +295,7 @@ export class FormHelperDirective implements OnDestroy, AfterViewInit {
     }
 
     private scrollToTopError() {
-        let context = this.findContext();
+        let context = this.findContext() || window;
 
         if (!context) {
             return;
@@ -359,10 +359,12 @@ export class FormHelperDirective implements OnDestroy, AfterViewInit {
                     return field;
                 }
             } else {
-                return document.querySelector(this.context) || window;
+                return document.querySelector(this.context);
             }
+        } else if (this.context instanceof ElementRef) {
+            return this.context.nativeElement;
         } else {
-            return this.context || window;
+            return this.context;
         }
     }
 

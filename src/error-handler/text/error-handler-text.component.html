@@ -2,6 +2,6 @@
   <ng-content></ng-content>
 
   <ng-container *ngFor="let msg of messages;trackBy:trackByMessages">
-    <div *ngIf="hasError(msg.error)">{{msg.message}}</div>
+    <div *ngIf="hasError(msg.error)">{{compileMessage(hasError(msg.error), msg.message)}}</div>
   </ng-container>
 </div>

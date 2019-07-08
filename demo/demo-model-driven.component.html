@@ -4,29 +4,32 @@
     <div class="field">
       <label>名字</label>
       <input type="text" [formControlName]="'name'" autocomplete="off">
-      <eh-tooltip ref="name">
-        <eh-tooltip-message error="trimmedRequired">不能为空</eh-tooltip-message>
-        <eh-tooltip-message error="nameUnique" [async]="true">重复</eh-tooltip-message>
-      </eh-tooltip>
+      <eh-tooltip ref="name" [errorMessages]="nameMessages"></eh-tooltip>
     </div>
 
     <div class="field">
       <label>说明</label>
       <textarea formControlName="desc" autocomplete="off" rows="3" autoSize
                 (sizeChange)="descCtrl.reposition()"></textarea>
-      <eh-tooltip ref="desc" data-trimmed-required="不能为空" #descCtrl="ehTooltip"></eh-tooltip>
+      <eh-tooltip ref="desc" #descCtrl="ehTooltip">
+        <eh-tooltip-message error="trimmedRequired">不能为空</eh-tooltip-message>
+      </eh-tooltip>
     </div>
 
     <div class="field">
       <label>Input Hidden</label>
       <input type="text" placeholder="占位" disabled>
       <input type="hidden" formControlName="hidden">
-      <eh-tooltip ref="hidden" data-required="不能为空" positionProxy="~" scrollProxy="~"></eh-tooltip>
+      <eh-tooltip ref="hidden" positionProxy="~" scrollProxy="~">
+        <eh-tooltip-message error="required">不能为空</eh-tooltip-message>
+      </eh-tooltip>
     </div>
 
     <div class="field">
       <label class="inline">选择喜好</label>
-      <eh-text ref="love" data-required="至少选择一项" animation="flyLeft"></eh-text>
+      <eh-text ref="love" animation="flyLeft">
+        <eh-text-message error="required">至少选择一项</eh-text-message>
+      </eh-text>
       <div class="ui fluid selection dropdown" dropdown formControlName="love">
         <i class="icon dropdown"></i>
         <div class="default text">请选择</div>
@@ -79,10 +82,11 @@
                  [animationDuration]="{enter:'0ms',leave:'0ms'}"
                  placeholder="请输入"
                  secondaryPlaceholder="请输入"></tag-input>
-      <eh-tooltip ref="assertMatch"
-                  data-list-required.first="不能为空"
-                  data-list-required-min="至少设置两个值"
-                  data-list-required-max.last="至多设置四个值"></eh-tooltip>
+      <eh-tooltip ref="assertMatch">
+        <eh-tooltip-message error="listRequired">不能为空</eh-tooltip-message>
+        <eh-tooltip-message error="listRequiredMin">至少设置两个值</eh-tooltip-message>
+        <eh-tooltip-message error="listRequiredMax">至多设置四个值</eh-tooltip-message>
+      </eh-tooltip>
     </div>
 
     <div class="field">
@@ -97,7 +101,9 @@
           <div class="field">
             <label>生日</label>
             <input type="text" formControlName="birth">
-            <eh-tooltip ref="birth" data-required="不能为空"></eh-tooltip>
+            <eh-tooltip ref="birth">
+              <eh-tooltip-message error="required">不能为空</eh-tooltip-message>
+            </eh-tooltip>
           </div>
           <div class="field required">
             <label>请求url</label>
@@ -112,12 +118,16 @@
               </div>
               <input type="text" formControlName="url" autocomplete="off" maxlength="500">
             </div>
-            <eh-tooltip ref="url" data-required="不能为空"></eh-tooltip>
+            <eh-tooltip ref="url">
+              <eh-tooltip-message error="required">不能为空</eh-tooltip-message>
+            </eh-tooltip>
           </div>
           <div class="field">
             <label>远程2</label>
             <input type="text" formControlName="remote2" autocomplete="off">
-            <eh-tooltip ref="remote2" data-name-unique.async="重复"></eh-tooltip>
+            <eh-tooltip ref="remote2">
+              <eh-tooltip-message error="nameUnique" [async]="true">重复</eh-tooltip-message>
+            </eh-tooltip>
           </div>
         </div>
 
@@ -129,7 +139,9 @@
           <div class="field">
             <label>生日2</label>
             <input type="text" formControlName="birth2">
-            <eh-tooltip ref="birth2" data-required="不能为空"></eh-tooltip>
+            <eh-tooltip ref="birth2">
+              <eh-tooltip-message error="required">不能为空</eh-tooltip-message>
+            </eh-tooltip>
           </div>
         </div>
       </div>

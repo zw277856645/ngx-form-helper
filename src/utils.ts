@@ -1,8 +1,8 @@
 import { defer, from, Observable, of } from 'rxjs';
 import { SimpleChange } from '@angular/core';
-import { ErrorMessage } from './error-handler/error-message';
 import { ArrayOrGroupAbstractControls } from './form-helper.directive';
 import { AbstractControl } from '@angular/forms';
+import { TooltipMessage, Message } from './error-handler/tooltip/tooltip-message';
 
 export const noop = (): any => null;
 
@@ -130,31 +130,6 @@ export function async2Observable(fn: any): Observable<any> {
             return of(fn);
         }
     });
-}
-
-/**
- * data api加载message，格式为validator[.order][.async]
- * 参数：指定order是因为页面被浏览器解析后属性顺序是不确定的，跟源代码书写顺序无关
- *      指定async是因为AbstractControl无法获取控件注册的验证器，无法自动识别异步消息
- */
-export function loadMessagesFromDataset(ele: HTMLElement) {
-    let messages: ErrorMessage[] = [];
-
-    for (let k in ele.dataset) {
-        let [ name, order ] = k.split('.');
-        let finalOrder = /^first$/i.test(order) ? Number.MIN_SAFE_INTEGER
-            : /^last$/i.test(order) ? Number.MAX_SAFE_INTEGER
-                : /^-?\d+$/.test(order) ? parseInt(order)
-                    : 0;
-
-        messages.push({
-            error: name,
-            message: ele.dataset[ k ],
-            order: finalOrder
-        });
-    }
-
-    return messages.sort((a, b) => a.order - b.order);
 }
 
 export function arrayProviderFactory(config: any, array: any[]) {

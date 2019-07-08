@@ -10,12 +10,12 @@ export function listRequired({ minListNum, maxListNum }: { minListNum?: number, 
 
         let minNum = minListNum ? +minListNum : 0;
         if (minNum > 0 && c.value.length < minNum) {
-            return { listRequiredMin: true };
+            return { listRequiredMin: { value: minListNum } };
         }
 
         let maxNum = maxListNum ? +maxListNum : 0;
         if (maxNum > 0 && c.value.length > maxNum) {
-            return { listRequiredMax: true };
+            return { listRequiredMax: { value: maxListNum } };
         }
     };
 }

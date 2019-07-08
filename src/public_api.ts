@@ -1,4 +1,4 @@
-export { getProxyElement, loadMessagesFromDataset } from './utils';
+export { getProxyElement } from './utils';
 
 export * from './form-helper.module';
 export * from './form-helper-config';
@@ -14,7 +14,7 @@ export {
     SubmitHandlerLoaderDirective, submitHandlerLoaderConfigProvider
 }from './submit-handler/submit-handler-loader.directive';
 
-export * from './error-handler/error-message';
+export * from './error-handler/tooltip/tooltip-message';
 export * from './error-handler/error-handler';
 
 export * from './error-handler/simple/error-handler-simple-config';
@@ -22,12 +22,14 @@ export {
     ErrorHandlerSimpleDirective, errorHandlerSimpleConfigProvider
 } from './error-handler/simple/error-handler-simple.directive';
 
+export * from './error-handler/text/text-message';
 export * from './error-handler/text/error-handler-text-config';
 export {
     ErrorHandlerTextComponent, errorHandlerTextConfigProvider
 } from './error-handler/text/error-handler-text.component';
 export * from './error-handler/text/error-handler-text-message.component';
 
+export * from './error-handler/tooltip/tooltip-message';
 export * from './error-handler/tooltip/error-handler-tooltip-config';
 export {
     ErrorHandlerTooltipComponent, errorHandlerTooltipConfigProvider

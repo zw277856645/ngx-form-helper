@@ -67,6 +67,30 @@ export abstract class ErrorHandler implements AfterViewInit, OnInit {
         }
     }
 
+    /**
+     * 替换消息中的占位符，上下文为错误返回对象(如果有)
+     */
+    compileMessage(context: any, message: string) {
+        if (context !== null && typeof context === 'object') {
+            let reg = /{{.*?}}/g;
+            let find: RegExpExecArray | null;
+            let parsedMessage = '';
+            let lastIndex = 0;
+
+            while ((find = reg.exec(message))) {
+                parsedMessage += message.substring(lastIndex, find.index);
+                parsedMessage += context[ find[ 0 ].replace('{{', '').replace('}}', '') ];
+                lastIndex = find.index + find[ 0 ].length;
+            }
+
+            parsedMessage += message.substring(lastIndex);
+
+            return parsedMessage;
+        }
+
+        return message;
+    }
+
     get control() {
         if (!this._control && this.ref) {
             if (this._formHelper && typeof this.ref === 'string') {

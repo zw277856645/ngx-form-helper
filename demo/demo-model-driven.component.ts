@@ -6,6 +6,7 @@ import { nameUnique } from './directive/name-unique.directive';
 import { NameValidateService } from './directive/name-unique.service';
 import { checkboxRequired } from '../src/validator/checkbox-required.directive';
 import { listRequired } from '../src/validator/list-required.directive';
+import { Message } from '../src/error-handler/tooltip/tooltip-message';
 
 @Component({
     templateUrl: './demo-model-driven.component.html',
@@ -16,6 +17,11 @@ export class DemoModelDrivenComponent {
     pageHeight = 0;
     formGroup: FormGroup;
     cks: any[] = [];
+
+    nameMessages: { [ e: string ]: Message | string } = {
+        nameUnique: { message: '重复', async: true, order: 2 },
+        trimmedRequired: '不能为空'
+    };
 
     constructor(private nameValidateService: NameValidateService,
                 private fb: FormBuilder) {
