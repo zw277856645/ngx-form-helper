@@ -3,7 +3,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { DemoTemplateDrivenComponent } from './demo-template-driven.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { FormHelperModule } from '../src/form-helper.module';
 import { DemoRouterModule } from './demo-router.module';
 import { AppComponent } from './app.component';
 import { NameUniqueDirective } from './directive/name-unique.directive';
@@ -16,6 +15,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { TextareaAutoSizeDirective } from './directive/textarea-auto-size.directive';
 import { TagInputModule } from 'ngx-chips';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { FormHelperModule } from '../src/form-helper.module';
 
 @NgModule({
     imports: [
@@ -25,9 +25,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
         CommonModule,
         FormsModule,
         HttpClientModule,
-        FormHelperModule,
         DemoRouterModule,
-        TagInputModule
+        TagInputModule,
+        FormHelperModule
     ],
     declarations: [
         AppComponent,
