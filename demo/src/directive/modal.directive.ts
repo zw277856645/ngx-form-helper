@@ -1,5 +1,7 @@
 import { AfterViewInit, Directive, ElementRef, Input, OnDestroy } from '@angular/core';
 
+declare var $: any;
+
 @Directive({
     selector: '[modal]',
     exportAs: 'modal'

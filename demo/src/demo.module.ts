@@ -15,7 +15,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { TextareaAutoSizeDirective } from './directive/textarea-auto-size.directive';
 import { TagInputModule } from 'ngx-chips';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { FormHelperModule } from '../src/form-helper.module';
+import { FormHelperModule } from 'ngx-form-helper';
 
 @NgModule({
     imports: [

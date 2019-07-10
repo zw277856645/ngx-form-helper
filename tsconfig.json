@@ -16,5 +16,10 @@
       "node_modules/@types"
     ]
   },
-  "compileOnSave": true
+  "compileOnSave": true,
+  "exclude": [
+    "node_modules",
+    "**/*.spec.ts",
+    "dist"
+  ]
 }

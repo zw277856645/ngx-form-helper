@@ -5,25 +5,22 @@
   "projects": {
     "demo": {
       "root": "",
-      "sourceRoot": "demo",
+      "sourceRoot": "src",
       "projectType": "application",
       "prefix": "app",
-      "schematics": {},
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/demo",
-            "index": "demo/index.html",
-            "main": "demo/main.ts",
-            "polyfills": "demo/polyfills.ts",
-            "tsConfig": "demo/tsconfig.demo.json",
+            "outputPath": "dist",
+            "index": "src/index.html",
+            "main": "src/main.ts",
+            "polyfills": "src/polyfills.ts",
+            "tsConfig": "tsconfig.demo.json",
             "styles": [
               "node_modules/semantic-ui-css/semantic.css",
-              "demo/asset/tag-input.less",
-              "src/form-helper.less",
-              "src/submit-handler/submit-handler-loader.less",
-              "src/error-handler/simple/error-handler-simple.less"
+              "node_modules/ngx-form-helper/ngx-form-helper.css",
+              "src/asset/tag-input.less"
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.min.js",

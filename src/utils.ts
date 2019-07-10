@@ -2,7 +2,6 @@ import { defer, from, Observable, of } from 'rxjs';
 import { SimpleChange } from '@angular/core';
 import { ArrayOrGroupAbstractControls } from './form-helper.directive';
 import { AbstractControl } from '@angular/forms';
-import { TooltipMessage, Message } from './error-handler/tooltip/tooltip-message';
 
 export const noop = (): any => null;
 

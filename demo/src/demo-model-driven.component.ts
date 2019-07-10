@@ -1,12 +1,8 @@
 import { Component } from '@angular/core';
-import { SubmitWrapper } from '../src/form-helper.directive';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { trimmedRequired } from '../src/validator/trimmed-required.directive';
 import { nameUnique } from './directive/name-unique.directive';
 import { NameValidateService } from './directive/name-unique.service';
-import { checkboxRequired } from '../src/validator/checkbox-required.directive';
-import { listRequired } from '../src/validator/list-required.directive';
-import { Message } from '../src/error-handler/tooltip/tooltip-message';
+import { trimmedRequired, checkboxRequired, listRequired, SubmitWrapper } from 'ngx-form-helper';
 
 @Component({
     templateUrl: './demo-model-driven.component.html',
@@ -18,7 +14,7 @@ export class DemoModelDrivenComponent {
     formGroup: FormGroup;
     cks: any[] = [];
 
-    nameMessages: { [ e: string ]: Message | string } = {
+    nameMessages = {
         nameUnique: { message: '重复', async: true, order: 2 },
         trimmedRequired: '不能为空'
     };

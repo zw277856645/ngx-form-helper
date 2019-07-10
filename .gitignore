@@ -1,5 +1,6 @@
 # Directory for built files
 dist/
+dist-demo/
 
 # Logs
 logs

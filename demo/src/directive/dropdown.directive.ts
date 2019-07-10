@@ -4,6 +4,8 @@ import {
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { isNullOrUndefined } from 'util';
 
+declare var $: any;
+
 @Directive({
     selector: '[dropdown]',
     exportAs: 'dropdown',

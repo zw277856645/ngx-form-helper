@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { uuid } from 'cmjs-lib';
-import { Message, TooltipMessage } from '../src/error-handler/tooltip/tooltip-message';
 
 @Component({
     templateUrl: './demo-template-driven.component.html',
@@ -27,12 +26,12 @@ export class DemoTemplateDrivenComponent {
     hidden: string;
     assertMatch: string[] = [];
 
-    nameMessages: TooltipMessage[] = [
+    nameMessages = [
         { error: 'trimmedRequired', message: '不能为空' },
         { error: 'nameUnique', message: '重复', async: true }
     ];
 
-    assertMatchMessages: { [ e: string ]: Message | string } = {
+    assertMatchMessages = {
         listRequired: '不能为空',
         listRequiredMin: { message: '至少设置{{value}}个值', context: { value: 2 } },
         listRequiredMax: { message: '至多设置{{value}}个值', context: { value: 4 } }

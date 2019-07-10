@@ -2,6 +2,8 @@ import { AfterViewInit, Directive, ElementRef, Input } from '@angular/core';
 import { timer } from 'rxjs';
 import { first, map, skipWhile } from 'rxjs/operators';
 
+declare var $: any;
+
 @Directive({
     selector: '[accordion]'
 })
