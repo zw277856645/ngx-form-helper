@@ -1,21 +1,10 @@
-# Directory for built files
-dist/
-dist-demo/
-
-# Logs
+node_modules
+dist
 logs
 *.log
 npm-debug.log*
-
-# Runtime data
 pids
 *.pid
 *.seed
-
-# Dependency directories
-node_modules
-
-# Optional npm cache directory
 .npm
-
 .idea
