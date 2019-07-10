@@ -1,7 +1,8 @@
-import { defer, from, Observable, of } from 'rxjs';
+import { asyncScheduler, defer, from, Observable, of, timer } from 'rxjs';
 import { SimpleChange } from '@angular/core';
 import { ArrayOrGroupAbstractControls } from './form-helper.directive';
-import { AbstractControl } from '@angular/forms';
+import { AbstractControl, ControlContainer, NgControl } from '@angular/forms';
+import { first, map, skipWhile } from 'rxjs/operators';
 
 export const noop = (): any => null;
 
@@ -145,5 +146,29 @@ export function arrayOfAbstractControls(controls: ArrayOrGroupAbstractControls)
         return controls.map((v, i) => ({ name: String(i), control: v }));
     } else {
         return Object.keys(controls).map(k => ({ name: k, control: controls[ k ] }));
+    }
+}
+
+/**
+ * 某些控件需要时间初始化control，每次等一个周期再执行，默认最多10个周期
+ */
+export function waitForControlInit(control: NgControl | ControlContainer | (() => AbstractControl | null),
+                                   count: number = 10): Observable<AbstractControl | null> {
+    if (!control) {
+        return of(null);
+    } else {
+        return timer(0, 1, asyncScheduler).pipe(
+            map(() => {
+                count--;
+
+                if (typeof control === 'function') {
+                    return control();
+                } else {
+                    return control.control;
+                }
+            }),
+            skipWhile(ctrl => !ctrl && count > 0),
+            first()
+        );
     }
 }

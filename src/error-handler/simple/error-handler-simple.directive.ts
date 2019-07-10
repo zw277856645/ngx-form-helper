@@ -3,9 +3,9 @@ import {
 } from '@angular/core';
 import { ErrorHandler } from '../error-handler';
 import { FormHelperDirective } from '../../form-helper.directive';
-import { arrayProviderFactory } from '../../utils';
+import { arrayProviderFactory, waitForControlInit } from '../../utils';
 import { ErrorHandlerSimpleConfig } from './error-handler-simple-config';
-import { FormArrayName, FormControlName, FormGroupName, NgModel, NgModelGroup } from '@angular/forms';
+import { ControlContainer, NgControl } from '@angular/forms';
 
 export const ERROR_HANDLER_SIMPLE_CONFIG
     = new InjectionToken<ErrorHandlerSimpleConfig>('error_handler_simple_config');
@@ -44,15 +44,10 @@ export class ErrorHandlerSimpleDirective extends ErrorHandler implements AfterVi
 
     @Input() errorClassNames: string | false = 'eh-simple-error';
 
-    private initCount = 0;
-
     constructor(private eleRef: ElementRef,
                 private renderer: Renderer2,
-                @Optional() private model: NgModel,
-                @Optional() private group: NgModelGroup,
-                @Optional() private formCtrlName: FormControlName,
-                @Optional() private formGroupName: FormGroupName,
-                @Optional() private formArrayName: FormArrayName,
+                @Optional() private ngControl: NgControl,
+                @Optional() private controlContainer: ControlContainer,
                 @SkipSelf() private formHelper: FormHelperDirective,
                 @Optional() @Inject(ERROR_HANDLER_SIMPLE_CONFIG_ARRAY)
                 private overrideConfigs: ErrorHandlerSimpleConfig[]) {
@@ -88,20 +83,17 @@ export class ErrorHandlerSimpleDirective extends ErrorHandler implements AfterVi
     }
 
     private initControlByDI() {
-        let ctrl = this.model || this.group || this.formCtrlName || this.formGroupName || this.formArrayName;
-        if (ctrl) {
-            this._control = ctrl.control;
-            this.controlName = ctrl.name;
+        let finalControl = this.ngControl || this.controlContainer;
 
-            // ngModelGroup需要时间初始化control，每次等一个周期再执行
-            if (!this._control) {
-                this.initCount++;
-                if (this.initCount <= 10) {
-                    setTimeout(() => this.initControlByDI());
-                }
-            } else {
+        if (finalControl) {
+            this.controlName = finalControl.name;
+        }
+
+        waitForControlInit(finalControl).subscribe(ctrl => {
+            if (ctrl) {
+                this._control = ctrl;
                 super.ngAfterViewInit();
             }
-        }
+        });
     }
 }

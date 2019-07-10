@@ -10,6 +10,7 @@ import { CheckboxRequiredDirective } from './validator/checkbox-required.directi
 import { ErrorHandlerSimpleDirective } from './error-handler/simple/error-handler-simple.directive';
 import { ErrorHandlerTextMessageComponent } from './error-handler/text/error-handler-text-message.component';
 import { ErrorHandlerTooltipMessageComponent } from './error-handler/tooltip/error-handler-tooltip-message.component';
+import { ControlBindElementDirective } from './error-handler/control-bind-element.directive';
 
 @NgModule({
     imports: [
@@ -17,6 +18,7 @@ import { ErrorHandlerTooltipMessageComponent } from './error-handler/tooltip/err
     ],
     declarations: [
         FormHelperDirective,
+        ControlBindElementDirective,
 
         // validations
         TrimmedRequiredDirective,
@@ -26,14 +28,14 @@ import { ErrorHandlerTooltipMessageComponent } from './error-handler/tooltip/err
         // submit handlers
         SubmitHandlerLoaderDirective,
 
-        // simple handler
+        // simple error handler
         ErrorHandlerSimpleDirective,
 
-        // text handler
+        // text error handler
         ErrorHandlerTextComponent,
         ErrorHandlerTextMessageComponent,
 
-        // tooltip handler
+        // tooltip error handler
         ErrorHandlerTooltipComponent,
         ErrorHandlerTooltipMessageComponent
     ],
@@ -47,7 +49,8 @@ import { ErrorHandlerTooltipMessageComponent } from './error-handler/tooltip/err
         ErrorHandlerTextComponent,
         ErrorHandlerTooltipComponent,
         ErrorHandlerTextMessageComponent,
-        ErrorHandlerTooltipMessageComponent
+        ErrorHandlerTooltipMessageComponent,
+        ControlBindElementDirective
     ]
 })
 export class FormHelperModule {

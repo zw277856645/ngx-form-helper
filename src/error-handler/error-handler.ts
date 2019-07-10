@@ -2,8 +2,9 @@ import {
     AbstractControl, ControlContainer, FormArray, FormControl, FormGroup, NgControl, NgModel, NgModelGroup
 } from '@angular/forms';
 import { ArrayOrGroupAbstractControls, FormHelperDirective } from '../form-helper.directive';
-import { arrayOfAbstractControls, splitClassNames } from '../utils';
+import { arrayOfAbstractControls, splitClassNames, waitForControlInit } from '../utils';
 import { AfterViewInit, ElementRef, Input, OnInit, Renderer2 } from '@angular/core';
+import { ControlBindElementDirective } from './control-bind-element.directive';
 
 export type RefType = string | NgModel | NgModelGroup;
 
@@ -34,8 +35,6 @@ export abstract class ErrorHandler implements AfterViewInit, OnInit {
 
     protected _control: AbstractControl;
 
-    private initControlCount = 0;
-
     protected constructor(private _eleRef: ElementRef,
                           private _formHelper: FormHelperDirective,
                           private _renderer: Renderer2) {
@@ -56,7 +55,23 @@ export abstract class ErrorHandler implements AfterViewInit, OnInit {
 
     ngAfterViewInit() {
         // setTimeout保证动态表单正确绑定
-        setTimeout(() => this.prepareControl());
+        setTimeout(() => {
+            waitForControlInit(() => this.control).subscribe(ctrl => {
+                if (ctrl) {
+                    // 踩坑记录
+                    // 起先使用的是根据属性名dom查询的方式，如：document.querySelector('[name=xxx]')，但在
+                    // 用户使用了模板变量的形式，如：[name]="name"，[formControlName]="name"的情况下不会生成 ng-reflect-name，
+                    // angular 在 prod 模式下 @Input 不会生成 ng-reflect-* 属性
+                    this.controlElement = ctrl[ ControlBindElementDirective.ELEMENT_BIND_KEY ];
+
+                    if (this.onControlPrepared) {
+                        this.onControlPrepared();
+                    }
+
+                    this.listenStatusChanges();
+                }
+            });
+        });
     }
 
     hasError(validator: string) {
@@ -148,39 +163,6 @@ export abstract class ErrorHandler implements AfterViewInit, OnInit {
         }
 
         return null;
-    }
-
-    private findControlElement() {
-        if (!this.controlName) {
-            return;
-        }
-
-        this.controlElement = this._formHelper.form.querySelector(`
-            [name=${this.controlName}],
-            [ngModelGroup=${this.controlName}],
-            [formControlName=${this.controlName}],
-            [formGroupName=${this.controlName}],
-            [formArrayName=${this.controlName}],
-            [ng-reflect-name=${this.controlName}]
-        `);
-    }
-
-    private prepareControl() {
-        // ngModelGroup需要时间初始化control，每次等一个周期再执行
-        if (!this.control) {
-            this.initControlCount++;
-            if (this.initControlCount <= 10) {
-                setTimeout(() => this.prepareControl());
-            }
-        } else {
-            this.findControlElement();
-
-            if (this.onControlPrepared) {
-                this.onControlPrepared();
-            }
-
-            this.listenStatusChanges();
-        }
     }
 
     private listenStatusChanges() {
