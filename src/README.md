@@ -1,15 +1,19 @@
 # ngx-form-helper
-angular表单验证辅助插件
-for angular >= 6
+angular 表单验证辅助插件 for angular >= 6
 
+## DEMO
+<https://ngx-form-helper-demo.stackblitz.io>
 
 ## 安装
 > npm install ngx-form-helper --save
+>
 > PS：请使用`3.0.0`及之后的版本
 
-
-## 引入module
+## 使用
+#### 1. 引入module
 ```javascript
+import { FormHelperModule } from 'ngx-form-helper';
+
 @NgModule({
     imports: [
         FormHelperModule
@@ -19,15 +23,38 @@ export class AppModule {
 }
 ```
 
-
-## 引入内置样式
-在项目中第三方模块引入文件(通常为vendor.ts)中添加如下代码
-```css
+#### 2. 引入内置样式
+在项目中第三方模块引入文件(通常为`vendor.ts`)中添加如下代码
+``` css
 import 'ngx-form-helper/ngx-form-helper.css';
 ```
-> note：ngx-form-helper.css中包含了完整的animate.css
+如果使用的是 angular cli，在 angular.json 中引入样式文件
+``` json
+{
+  ...
+  "projects": {
+    "app": {
+      ...
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            ...
+            "styles": [
+              ...
+              "node_modules/ngx-form-helper/ngx-form-helper.css"
+            ]
+          }
+        }
+      }
+    }
+  }
+}
+```
 
+#### 3. 具体使用方式及效果请参见[demo](https://ngx-form-helper-demo.stackblitz.io)
 
+## API
 ## 表单配置(FormHelperConfig)
 使用方法如下
 ```html
