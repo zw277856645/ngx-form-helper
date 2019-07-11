@@ -65,26 +65,36 @@ import 'ngx-form-helper/ngx-form-helper.css';
 ## 配置文档
 #### 1. formHelper指令配置（FormHelperConfig）
 使用方法如下
-```html
+``` html
 <form formHelper></form>
 ```
 
-| 配置项                 | 参数类型                                        | 默认值                | 其他可选值 | 说明 |
-| :--------------------- | :---------------------------------------------- | :-------------------- | :--------- | :--- |
-| autoReset              | boolean                                         | true                  |            | `成功提交`后是否自动重置表单<br><font color="#f0f0f0">成功提交：指验证通过且提交回调函数执行也符合预期</font>
-| validateImmediate      | boolean                                         | false                 |            | 默认只在控件dirty状态触发，设置为true可立即触发验证。<br><br>可被表单域/表单组的data api配置覆盖
-| context                | window/selector                                 | window                |            | 表单所处上下文，通常为window或含有滚动条的对象，影响滚动条正确滚动到第一条错误。<br><br>支持点号表达式：. -> 当前form，.. -> 父元素，../../ etc
-| extraSubmits           | selector                                        |                       |            | 额外的提交按钮选择器。默认查找当前form下的type=submit的按钮。<br><br>若触发提交的按钮在form外部，或其他形式的提交按钮(如div)可设置此参数指定
-| autoScroll             | boolean                                         | true                  |            | 是否自动滚动到第一个错误。<br><br>当表单域不可见时，自动寻找包含该元素的表单组，不可见继续寻找直到ngForm(不包含)，以此元素为定位对象。<br><br>若通过data api设置了滚动代理，则以滚动代理为优先定位对象。详情参见data-scroll-proxy语法
-| offsetTop              | number                                          | 0                     |            | 错误定位使用，错误项距离浏览器顶部偏移量，负数向上，正数向下。通常设置为position:fixed的head高度
-| className              | string/false                                    | fh-theme-default      |            | 表单域主题。指定的字符串会添加到form类名中。可修改默认值实现自定义主题
-| errorClassName         | string/false                                    | fh-error              |            | 验证失败时`表单域`自动添加的类名
-| errorGroupClassName    | string/false                                    | fh-group-error        |            | 验证失败时`表单组`自动添加的类名
-| errorHandler           | string/false/{name:string; config?:any;}        | tooltip               | text       | 错误提示处理组件。<br>1. false：不使用错误处理组件<br>2. string：表示处理组件的名称<br>3. object：name表示处理组件的名称，config表示配置参数，覆盖组件中的默认参数
-| submitHandler          | string/false/{name:string; config?:any;}        | loader                |            | 表单验证通过后，提交请求到请求结束之间状态的处理。<br>1. false：不使用提交处理组件<br>2. string：表示提交处理组件的名称<br>3. name表示提交处理组件的名称，config表示配置参数，覆盖组件中的默认参数
-| onSuccess              | () => Promise/Observable/any                    |                       |            | 验证通过后的回调。如果含有异步处理，请返回异步句柄，否则submitHandler会立即执行结束，且后续的onComplete获取不到正确的参数
-| onComplete             | (...res: any[]) => void                         |                       |            | submitHandler处理完成后的回调。在onSuccess后面执行，参数为onSuccess返回值
-| onDeny                 | () => void                                      |                       |            | 验证不通过后的回调
+> 名词解释  
+> 
+> 表单域：指绑定了 ngModel、formControl、formControlName 中某一个指令的控件  
+> 表单组：指绑定了 ngModelGroup、formGroup、formGroupName、formArray、formArrayName 中某一个指令的控件    
+> 父域：指表单域/表单组的父控件。父域必定为表单组  
+> 子域：指表单组的子孙控件。子域可能为表单域，也可能为表单组  
+> 错误域：指验证失败的表单域或表单组  
+
+| 配置项                           | 参数类型                                        | 默认值                | 说明 |
+| :------------------------------- | :---------------------------------------------- | :-------------------- | :--- |
+| autoReset                        | boolean                                         | true                  | `成功提交`后是否自动重置表单<br><br>**成功提交：指验证通过且提交回调函数`(resultOkAssertion)`执行也符合预期**
+| context                          | window/ElementRef/Element/string                | window                | 表单所处上下文，通常为 window 或含有滚动条的对象，影响滚动条正确滚动到第一条错误。<br><br>当类型为 string 时，支持[css选择器](https://developer.mozilla.org/zh-CN/docs/Learn/CSS/Introduction_to_CSS/Selectors)和`点号表达式`<br><br>**点号表达式：语法：. => 当前元素，.. => 父元素，../../ etc**
+| scrollProxy                      | string                                          |                       | 表单域的滚动代理<br><br>默认滚动到错误项本身，但当错误项本身处于不可见状态时，使用另一个可见对象作为代理。若没有设置滚动代理，且错误项本身不可见，会一直寻找其父域直到 ngForm (不包含)，使用第一个可见域作为代理<br><br>语法：^ => 父节点，~ => 前一个兄弟节点，+ => 后一个兄弟节点，可以任意组合<br>示例：^^^，^2，~3^4+2  
+| autoScroll                       | boolean                                         | true                  | 是否自动滚动到第一个错误，设置为 false 将关闭滚动到第一个错误域功能
+| offsetTop                        | number                                          | 0                     | 滚动定位使用，错误域距离浏览器顶部偏移量。<br><br>默认滚动到第一个错误域与浏览器可视区域顶部重合处，但大多数情况下页面是有绝对定位(absolute)或固定定位(fixed)的头部的，此时会盖住滚动到此的错误域，通过设置 offsetTop 解决此问题
+| validateImmediate                | boolean                                         | false                 | 设置表单域或表单组是否`初始`就显示错误<br><br>默认只在控件 dirty 状态触发错误显示，所以表单初始不会显示错误，当用户修改了表单或点提交按钮后才会显示错误
+| validateImmediateDescendants     | boolean                                         | true                  | 设置`表单组`是否`初始`就显示其所有子域的错误<br><br>此配置在`validateImmediate = true`的条件下才有效，且只对`表单组`有效
+| extraSubmits                     | selector                                        |                       | 额外的提交按钮选择器。默认查找当前form下的type=submit的按钮。<br><br>若触发提交的按钮在form外部，或其他形式的提交按钮(如div)可设置此参数指定
+| className                        | string/false                                    | fh-theme-default      | 表单域主题。指定的字符串会添加到form类名中。可修改默认值实现自定义主题
+| errorClassName                   | string/false                                    | fh-error              | 验证失败时`表单域`自动添加的类名
+| errorGroupClassName              | string/false                                    | fh-group-error        | 验证失败时`表单组`自动添加的类名
+| errorHandler                     | string/false/{name:string; config?:any;}        | tooltip               | 错误提示处理组件。<br>1. false：不使用错误处理组件<br>2. string：表示处理组件的名称<br>3. object：name表示处理组件的名称，config表示配置参数，覆盖组件中的默认参数
+| submitHandler                    | string/false/{name:string; config?:any;}        | loader                | 表单验证通过后，提交请求到请求结束之间状态的处理。<br>1. false：不使用提交处理组件<br>2. string：表示提交处理组件的名称<br>3. name表示提交处理组件的名称，config表示配置参数，覆盖组件中的默认参数
+| onSuccess                        | () => Promise/Observable/any                    |                       | 验证通过后的回调。如果含有异步处理，请返回异步句柄，否则submitHandler会立即执行结束，且后续的onComplete获取不到正确的参数
+| onComplete                       | (...res: any[]) => void                         |                       | submitHandler处理完成后的回调。在onSuccess后面执行，参数为onSuccess返回值
+| onDeny                           | () => void                                      |                       | 验证不通过后的回调
 
 
 ## 全局data api
