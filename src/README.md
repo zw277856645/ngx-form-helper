@@ -5,8 +5,7 @@ for angular >= 6
 
 ## 安装
 > npm install ngx-form-helper --save
-
-> PS：请使用3.0.0及之后的版本
+> PS：请使用`3.0.0`及之后的版本
 
 
 ## 引入module
