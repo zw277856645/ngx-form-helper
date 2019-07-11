@@ -7,7 +7,7 @@ for angular >= 6
 > npm install ngx-form-helper --save
 
 ```bash
-$ npm install ng-zorro-antd
+# PS：请使用3.0.0及之后的版本
 ```
 
 
