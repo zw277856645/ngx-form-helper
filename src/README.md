@@ -6,6 +6,10 @@ for angular >= 6
 ## 安装
 > npm install ngx-form-helper --save
 
+```bash
+$ npm install ng-zorro-antd
+```
+
 
 ## 引入module
 ```javascript
