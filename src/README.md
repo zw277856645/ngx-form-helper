@@ -1,6 +1,14 @@
 # ngx-form-helper
 angular 表单验证辅助插件 for angular >= 6
 
+## 插件特性
+* 极简的使用方式，屏蔽 angular 验证底层细节
+* 内置丰富的功能，如：自动滚动到第一个错误域、防重复提交、消息动画、隐藏域滚动代理、全局配置叠加等
+* 内置两种使用最广泛的错误提示显示方式
+* 丰富的参数配置，易于适配各种使用场景
+* 可通过继承内置基类，仅仅实现个别接口实现自定义的错误提示方式
+* template driven 和 model driven 表单都支持
+
 ## DEMO
 <https://ngx-form-helper-demo.stackblitz.io>
 
@@ -54,22 +62,16 @@ import 'ngx-form-helper/ngx-form-helper.css';
 
 #### 3. 具体使用方式及效果请参见[demo](https://ngx-form-helper-demo.stackblitz.io)
 
-## API
-## 表单配置(FormHelperConfig)
+## 配置文档
+#### 1. formHelper指令配置（FormHelperConfig）
 使用方法如下
 ```html
-<form [formHelper]="config"></form>
+<form formHelper></form>
 ```
-
-> *名词解释*  
-> selector：css选择器(string) | JQuery对象(JQuery) | dom对象(HTMLElement)  
-> 表单域：指绑定了ngModel的元素  
-> 表单组：指绑定了ngModelGroup的元素  
-> 类名：指dom元素class属性
 
 | 配置项                 | 参数类型                                        | 默认值                | 其他可选值 | 说明 |
 | :--------------------- | :---------------------------------------------- | :-------------------- | :--------- | :--- |
-| autoReset              | boolean                                         | true                  |            | 成功提交后是否自动重置表单 
+| autoReset              | boolean                                         | true                  |            | `成功提交`后是否自动重置表单<br><font color="#f0f0f0">成功提交：指验证通过且提交回调函数执行也符合预期</font>
 | validateImmediate      | boolean                                         | false                 |            | 默认只在控件dirty状态触发，设置为true可立即触发验证。<br><br>可被表单域/表单组的data api配置覆盖
 | context                | window/selector                                 | window                |            | 表单所处上下文，通常为window或含有滚动条的对象，影响滚动条正确滚动到第一条错误。<br><br>支持点号表达式：. -> 当前form，.. -> 父元素，../../ etc
 | extraSubmits           | selector                                        |                       |            | 额外的提交按钮选择器。默认查找当前form下的type=submit的按钮。<br><br>若触发提交的按钮在form外部，或其他形式的提交按钮(如div)可设置此参数指定
