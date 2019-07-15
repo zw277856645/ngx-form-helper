@@ -1,7 +1,7 @@
 {
   "scripts": {
     "build": "ng-packagr -p src/package.json && npm run build-style",
-    "build-style": "webpack --config config/webpack.js",
+    "build-style": "webpack --config webpack.js",
     "publish": "npm publish dist",
     "lint": "tslint -c tslint.json -p tsconfig.json",
     "clean": "rimraf dist"
