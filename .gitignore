@@ -8,3 +8,4 @@ pids
 *.seed
 .npm
 .idea
+package-lock.json
