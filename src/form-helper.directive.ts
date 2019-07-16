@@ -53,7 +53,7 @@ export function formHelperConfigProvider(config: FormHelperConfig): Provider[] {
  *
  * 设计不好的地方
  *  1)validPass事件中需要向用户传递 SubmitWrapper
- *    原因：已rxjs为例，请求通常写法为 request.subscribe(() => response())，需要在request与response之间插入一些操作，
+ *    原因：以rxjs为例，请求通常写法为 request.subscribe(() => response())，需要在request与response之间插入一些操作，
  *         借助 submitWrapper(request).subscribe(() => response()) 实现功能，但需要用户调用，对用户不透明
  */
 @Directive({
