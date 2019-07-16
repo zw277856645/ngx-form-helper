@@ -19,7 +19,7 @@ angular 表单验证辅助插件 for angular >= 6
 
 ## 使用
 #### 1. 引入module
-```javascript
+``` js
 import { FormHelperModule } from 'ngx-form-helper';
 
 @NgModule({
@@ -32,10 +32,23 @@ export class AppModule {
 ```
 
 #### 2. 引入内置样式
-在项目中第三方模块引入文件(通常为`vendor.ts`)中添加如下代码
-``` css
+如果使用 webpack 打包方式，在项目中第三方插件入口文件(通常为`vendor.ts`)中添加如下代码
+``` js
+// vendor.ts
 import 'ngx-form-helper/ngx-form-helper.css';
 ```
+``` js
+// webpack.js
+module.exports = {
+    ...
+    entry: {
+        ...
+        'vendor': './src/vendor.ts',
+    }
+    ...
+}
+```
+
 如果使用的是 angular cli，在 angular.json 中引入样式文件
 ``` json
 {
@@ -107,7 +120,7 @@ import 'ngx-form-helper/ngx-form-helper.css';
 
 ## 错误处理组件配置(ErrorHandlerTooltipConfig)
 tooltip示例
-```html
+``` html
 <div class="fh-message">
   <div [class.error]="nameCtrl.errors?.required">不能为空</div>
   <div class="pending" [class.error]="nameCtrl.errors?.nameUnique">重复</div>
@@ -143,7 +156,7 @@ tooltip示例
 
 ## 错误处理组件配置(ErrorHandlerTextConfig)
 错误文本示例  
-```html
+``` html
 <div class="fh-message">  
   <div *ngIf="nameCtrl.errors?.required">不能为空</div>  
   <div *ngIf="nameCtrl.errors?.nameUnique">重复</div>  
@@ -172,7 +185,7 @@ tooltip示例
 
 ## 远程验证辅助类
 自动读取data-debounce-time(如果有)，默认为300。在抖动时间内的重复请求，之前的请求订阅会被取消
-```javascript
+``` js
 @Directive({
     selector: '[nameUnique]',
     providers: [
@@ -203,7 +216,7 @@ export class NameUniqueDirective extends AsyncValidatorLimit implements AsyncVal
 
 ## 自定义错误处理组件
 第一步：创建一个类并实现ErrorHandler接口
-```javascript
+``` js
 export interface ErrorHandler {
 
     // 组件验证通过时调用
@@ -249,12 +262,12 @@ export class MyErrorHandler implements ErrorHandler {
 ```
 
 第二步：注册错误处理组件
-```javascript
+``` js
 FormHelperDirective.registerErrorHandler('myErrorHandlerName', MyErrorHandler);
 ```
 
 第三步：使用
-```javascript
+``` js
 <form [formHelper]="formConfig"></form>
 
 // 带参
@@ -274,7 +287,7 @@ this.formConfig = {
 
 ## 自定义提交处理组件
 第一步：创建一个类并实现SubmitHandler接口
-```javascript
+``` js
 export interface SubmitHandler {
 
     // 点击提交按钮时触发
@@ -315,12 +328,12 @@ export class MySubmitHandler implements SubmitHandler {
 ```
 
 第二步：注册提交处理组件
-```javascript
+``` js
 FormHelperDirective.registerSubmitHandler('mySubmitHandlerName', MySubmitHandler);
 ```
 
 第三步：使用
-```javascript
+``` js
 <form [formHelper]="formConfig"></form>
 
 // 带参
