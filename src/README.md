@@ -85,7 +85,7 @@ module.exports = {
 > 子域：指表单组的子孙控件。子域可能为表单域，也可能为表单组  
 > 错误域：指验证失败的表单域或表单组  
 
-#### 1. formHelper指令配置（FormHelperConfig）
+#### 1. formHelper 指令配置（FormHelperConfig）
 使用方法如下
 ``` html
 <form formHelper [autoReset]="false" (validPass)="request($event)" ...></form>
@@ -193,20 +193,28 @@ request(submitWrapper: SubmitWrapper) {
 <input type="text" class="thin" name="name" [(ngModel)]="xxx" required>
 ```
 
-#### 2. shLoader指令配置（SubmitHandlerLoaderConfig）
+#### 2. shLoader 指令配置（SubmitHandlerLoaderConfig）
 使用方法如下
 ``` html
-<button type="button" shLoader>保存</button>
+<!-- 提交按钮在表单内部 -->
+<form formHelper>
+    <button type="button" shLoader>保存</button>
+</form>
+
+<!-- 提交按钮在表单外部 -->
+<form formHelper #formHelperCtrl="formHelper"></form>
+<button type="button" shLoader [refForm]="formHelperCtrl">保存</button>
 ```
 
 | `输入属性`配置项         | 参数类型              | 默认值                  | 说明 |
 | :----------------------- | :-------------------- | :---------------------- | :--- |
-| classNames               | string                | sh-loader-theme         | 全局主题样式。<br><br>指定的字符串会添加到指令所在元素类名中。可设置多个值，空格符分割。插件已为默认值定义了一套主题样式，可通过修改配置实现自定义主题
+| classNames               | string                | sh-loader-theme         | 全局主题样式<br><br>指定的字符串会添加到指令所在元素类名中。可设置多个值，空格符分割。插件已为默认值定义了一套主题样式，可通过修改配置实现自定义主题
 | iconClassNames           | string                | sh-loader-theme-icon    | 局部图标主题样式
-| iconSelector             | string/false          | i.icon, i.fa            | 寻找图标的选择器，若找到，则使用局部图标主题样式，否则使用全局主题样式
+| iconSelector             | string/false          | i.icon, i.fa            | 寻找图标的选择器，若找到，则使用`局部图标主题样式`，否则使用`全局主题样式`
 | iconToggleStrategy       | APPEND/REPLACE        | APPEND                  | 图标类名的替换策略，append: 在原有类名基础上增加，replace: 完全使用新类名替换原类名
 | duration                 | number                | 400                     | loader动画时长(ms)
 | disableTheme             | boolean               | false                   | 是否禁用主题样式
+| refForm                  | FormHelperDirective   |                         | 当 submit 元素在 form 外部时有用，使用此属性关联 formHelper 实例
 
 ## 全局data api
 | 配置项                 | 参数类型 | 说明 |
