@@ -86,7 +86,7 @@ module.exports = {
 > 错误域：指验证失败的表单域或表单组  
 
 #### 1. formHelper 指令配置（FormHelperConfig）
-使用方法如下
+使用方法如下：
 ``` html
 <form formHelper [autoReset]="false" (validPass)="request($event)" ...></form>
 ```
@@ -194,8 +194,8 @@ request(submitWrapper: SubmitWrapper) {
 ```
 
 #### 2. shLoader 指令配置（SubmitHandlerLoaderConfig）
-主要作用：防重复提交和设定等待请求返回前的 loading 反馈
-使用方法如下
+主要作用：防重复提交和设定等待请求返回前的 loading 反馈  
+使用方法如下：
 ``` html
 <!-- 提交按钮在表单内部 -->
 <form formHelper>
@@ -216,6 +216,13 @@ request(submitWrapper: SubmitWrapper) {
 | duration                 | number                | 400                     | loader动画时长(ms)
 | disableTheme             | boolean               | false                   | 是否禁用主题样式
 | refForm                  | FormHelperDirective   |                         | 当 submit 元素在 form 外部时有用，使用此属性关联 formHelper 实例
+
+如果不需要 shLoader 指令的功能，还可以使用为提交按钮添加 #submit 模板变量的方式
+``` html
+<form formHelper>
+    <button type="button" #submit>保存</button>
+</form>
+```
 
 ## 全局data api
 | 配置项                 | 参数类型 | 说明 |
