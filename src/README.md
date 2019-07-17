@@ -189,7 +189,7 @@ request(submitWrapper: SubmitWrapper) {
 | ngForm               | ControlContainer                                    | 关联的 angular form 实例，template driven form 时为 NgForm，Model driven form 时为 FormGroup
 | form                 | HTMLFormElement                                     | dom 元素
 | controls             | { [key: string]: AbstractControl }                  | 控件树
-| submit               | (submitHandler?: SubmitHandler) => void             | 提交处理函数，不需要用户调用，通常在实现自定义的提交处理指令时需要。详情参见`自定义 SubmitHandler`章节文档
+| submit               | (submitHandler?: SubmitHandler) => void             | 提交处理函数，不需要用户调用，通常在实现自定义的提交处理指令时需要。详情参见`自定义提交处理组件（SubmitHandler）`章节文档
 | reset                | () => void                                          | 重置，在重置按钮使用了 #reset 模板变量时可省略调用。详情参见`shLoader 指令配置`章节文档
 | repositionMessages   | (type?: RefType / AbstractControl, delay?: number)  | 重定位错误消息<br><br>页面布局变化时，某些绝对定位错误消息位置可能需要重新定位。window:resize 事件已被插件处理，会自动重定位错误消息，其他情况需要手动调用此方法<br><br>参数：<br>type：需要重定位错误信息关联的表单控件指引，当控件为表单组时，其子域也会同时重定位<br>delay：延时重定位时间，默认不延时
 
@@ -519,6 +519,85 @@ group = new FormGroup([ ... ], [ checkboxRequired({ minCheckedNum: 2, maxChecked
 </div>
 ```
 
+## 全局配置叠加
+假如有如下组件树，在组件自身和其任意祖先模块中定义了全局配置
+``` mermaid
+graph LR
+A[Root Module<br>config1] --> B[Child Module A<br>config2]
+B --> C[Child Module B<br>config3]
+C --> D[Some Component<br>config4]
+```
+最终插件得到的`全局配置` = extend({}, config1, config2, config3, config4);
+
+> 指令/组件自身的`输入属性配置`优先级永远`大于全局配置`  
+
+#### 1. formHelper 全局配置
+``` js
+// 示例
+@NgModule({
+    ...
+    providers: [
+        ...
+        formHelperConfigProvider({
+            autoReset: false,
+            offsetTop: 100
+            ...
+        })
+    ]
+})
+export class XxxModule {
+}
+```
+
+#### 2. shLoader 全局配置
+``` js
+// 示例
+submitHandlerLoaderConfigProvider({
+    duration: 300
+    ...
+})
+```
+
+#### 3. eh-text 全局配置
+``` js
+// 示例
+errorHandlerTextConfigProvider({
+    animation: 'flyLeft'
+    ...
+})
+```
+
+#### 4. eh-tooltip 全局配置
+``` js
+// 示例
+errorHandlerTooltipConfigProvider({
+    fontSize: 14
+    ...
+})
+```
+
+#### 5. ehSimple 全局配置
+``` js
+// 示例
+errorHandlerSimpleConfigProvider({
+    errorClassNames: 'eh-simple-error my-special-style'
+    ...
+})
+```
+
+## 自定义
+#### 1. 自定义提交处理组件（SubmitHandler）
+``` js
+// 原型
+export interface SubmitHandler {
+
+    // 初始点击submit按钮
+    start(): void;
+
+    // 表单请求结束
+    end(): Promise<any> | Observable<any> | void;
+}
+```
 
 
 
