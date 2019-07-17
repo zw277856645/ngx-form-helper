@@ -85,7 +85,7 @@ module.exports = {
 > 子域：指表单组的子孙控件。子域可能为表单域，也可能为表单组  
 > 错误域：指验证失败的表单域或表单组  
 
-#### 1. formHelper 指令配置（FormHelperConfig）
+#### 1. formHelper 指令配置
 使用方法如下：
 ``` html
 <form formHelper [autoReset]="false" (validPass)="request($event)" ...></form>
@@ -189,7 +189,7 @@ request(submitWrapper: SubmitWrapper) {
 | ngForm               | ControlContainer                                    | 关联的 angular form 实例，template driven form 时为 NgForm，Model driven form 时为 FormGroup
 | form                 | HTMLFormElement                                     | dom 元素
 | controls             | { [key: string]: AbstractControl }                  | 控件树
-| submit               | (submitHandler?: SubmitHandler) => void             | 提交处理函数，不需要用户调用，通常在实现自定义的提交处理指令时需要。详情参见`自定义 SubmitHandler`章节文档
+| submit               | (submitHandler?: SubmitHandler) => void             | 提交处理函数，不需要用户调用，通常在实现自定义的提交处理指令时需要。详情参见`自定义提交处理组件（SubmitHandler）`章节文档
 | reset                | () => void                                          | 重置，在重置按钮使用了 #reset 模板变量时可省略调用。详情参见`shLoader 指令配置`章节文档
 | repositionMessages   | (type?: RefType / AbstractControl, delay?: number)  | 重定位错误消息<br><br>页面布局变化时，某些绝对定位错误消息位置可能需要重新定位。window:resize 事件已被插件处理，会自动重定位错误消息，其他情况需要手动调用此方法<br><br>参数：<br>type：需要重定位错误信息关联的表单控件指引，当控件为表单组时，其子域也会同时重定位<br>delay：延时重定位时间，默认不延时
 
@@ -213,7 +213,7 @@ export type RefType = string | NgModel | NgModelGroup;
 <input type="text" class="thin" name="name" [(ngModel)]="xxx" required>
 ```
 
-#### 2. shLoader 指令配置（SubmitHandlerLoaderConfig）
+#### 2. shLoader 指令配置
 主要作用：防重复提交和设定等待请求返回前的 loading 反馈  
 使用方法如下：
 ``` html
@@ -259,245 +259,380 @@ export type RefType = string | NgModel | NgModelGroup;
 > 单独使用 type="submit"、type="reset" 不具备插件附加的一些功能  
 > 为防止出现未知影响，请一律使用 type="button"，不要使用 <button type="submit" #submit></button>、< button type="button" shLoader></button> 和 <button type="reset" #reset></button> 的方式
 
-## 全局data api
-| 配置项                 | 参数类型 | 说明 |
-| :--------------------- | :------- | :--- |
-| validate-immediate     | boolean  | 覆盖FormHelperConfig中配置。使用方表单域/表单组
-| debounce-time          | number   | 远程验证时使用，指定请求抖动时间。单位ms，使用方表单域/表单组。推荐使用AsyncValidatorLimit，详情参见远程验证辅助类章节
-| scroll-proxy           | string   | 设置表单域/表单组滚动代理。<br><br>语法：^ -> 父节点，~ -> 前一个兄弟节点，+ -> 后一个兄弟节点，可以任意组合。<br>示例：\^\^\^，\^2，\~3\^4\+2
-
-
-## 错误处理组件配置(ErrorHandlerTooltipConfig)
-tooltip示例
+#### 3. eh-text 组件配置
+主要作用：文本形式的错误消息  
+特色：当多个验证条件失败时，显示期中一个错误消息，其他隐藏  
+使用方法如下：
 ``` html
-<div class="fh-message">
-  <div [class.error]="nameCtrl.errors?.required">不能为空</div>
-  <div class="pending" [class.error]="nameCtrl.errors?.nameUnique">重复</div>
+<!-- 示例1 - 消息体为文本节点 -->
+<input type="text" name="name" [(ngModel)]="xxx" required pattern="[a-zA-Z]*">
+<eh-text ref="name">
+  <eh-text-message error="required">不能为空</eh-text-message>
+  <eh-text-message error="pattern">请输入字符</eh-text-message>
+</eh-text>
+
+<!-- 示例2 - 消息体为属性 -->
+<input type="text" name="name" [(ngModel)]="xxx" required pattern="[a-zA-Z]*">
+<eh-text ref="name">
+  <eh-text-message error="required" message="不能为空"></eh-text-message>
+  <eh-text-message error="pattern" message="请输入字符"></eh-text-message>
+</eh-text>
+
+<!-- 
+示例3 - 消息为输入属性
+
+// 有序，优先显示排在前面的错误消息
+messages = [
+    { error: "required", message: "不能为空" },
+    { error: "pattern", message: "请输入字符" }
+];
+
+// 无序，多个验证条件失败时，显示任意一个错误消息
+messages = {
+    required: "不能为空",
+    pattern: "请输入字符"
+};
+-->
+<input type="text" name="name" [(ngModel)]="xxx" required pattern="[a-zA-Z]*">
+<eh-text ref="name" [errorMessages]="messages"></eh-text>
+```
+
+| `输入属性`配置项         | 参数类型                                       | 默认值                  | 说明 |
+| :----------------------- | :--------------------------------------------- | :---------------------- | :--- |
+| classNames               | string/false                                   | eh-text-theme           | 主题样式<br><br>指定的字符串会添加到组件所在元素类名中。可设置多个值，空格符分割。插件已为默认值定义了一套主题样式，可通过修改配置实现自定义主题
+| inline                   | boolean                                        | true                    | 错误文本是否使用行内样式，对应 display: inline / block
+| fontSize                 | number                                         | 13                      | 字体大小
+| offsetX                  | number                                         | 0                       | x轴偏移，用来微调错误消息位置
+| offsetY                  | number                                         | 0                       | y轴偏移，用来微调错误消息位置
+| float                    | boolean                                        | false                   | 是否浮动，浮动时采用绝对定位
+| right                    | boolean                                        | false                   | 错误文本是否右对齐
+| animation                | fade、slideUp、slideDown、flyLeft、flyRight    |                         | 消息显示动画
+| errorMessages            | TextMessage[] / { [ error: string ]: string }  |                         | 消息定义对象
+
+``` js
+// 原型
+export class TextMessage {
+
+    // 验证规则对应的名称
+    error: string;
+
+    // 验证不通过时显示的消息
+    message: string;
+}
+```
+
+#### 4. eh-tooltip 组件配置
+主要作用：标签形式的错误消息  
+特色：所有错误消息同时展示，动态切换消息状态，异步验证有 loading 反馈  
+使用方法如下：
+
+``` html
+<!-- 示例1 - 消息体为文本节点 -->
+<input type="text" name="name" [(ngModel)]="xxx" required pattern="[a-zA-Z]*">
+<eh-tooltip ref="name">
+  <eh-tooltip-message error="required" [async]="false">不能为空</eh-tooltip-message>
+  <eh-tooltip-message error="pattern" [async]="false">请输入字符</eh-tooltip-message>
+</eh-tooltip>
+
+<!-- 示例2 - 消息体为属性 -->
+<input type="text" name="name" [(ngModel)]="xxx" required pattern="[a-zA-Z]*">
+<eh-tooltip ref="name">
+  <eh-tooltip-message error="required" message="不能为空" [async]="false"></eh-tooltip-message>
+  <eh-tooltip-message error="pattern" message="请输入字符" [async]="false"></eh-tooltip-message>
+</eh-tooltip>
+
+<!-- 
+示例3 - 消息为输入属性
+
+// 有序
+messages = [
+    { error: "required", message: "不能为空", order: 0, async: false, context: null },
+    { error: "pattern", message: "请输入字符", order: 0, async: false, context: null }
+];
+
+// 无序 - 字符串
+// 此方式将不能定义 order、async、context
+messages = {
+    required: "不能为空",
+    pattern: "请输入字符"
+};
+
+// 无序 - 对象
+messages = {
+    required: { message: "不能为空", order: 0, async: false, context: null },
+    pattern: { message: "请输入字符", order: 0, async: false, context: null }
+};
+-->
+<input type="text" name="name" [(ngModel)]="xxx" required pattern="[a-zA-Z]*">
+<eh-tooltip ref="name" [errorMessages]="messages"></eh-tooltip>
+```
+
+| `输入属性`配置项         | 参数类型                                                    | 默认值                  | 说明 |
+| :----------------------- | :---------------------------------------------------------- | :---------------------- | :--- |
+| classNames               | string/false                                                | eh-text-theme           | 主题样式<br><br>指定的字符串会添加到组件所在元素类名中。可设置多个值，空格符分割。插件已为默认值定义了一套主题样式，可通过修改配置实现自定义主题
+| fontSize                 | number                                                      | 13                      | 字体大小
+| offsetX                  | number                                                      | 0                       | x轴偏移，用来微调错误消息位置
+| offsetY                  | number                                                      | 0                       | y轴偏移，用来微调错误消息位置
+| position                 | TooltipPosition                                             | BOTTOM_RIGHT            | 提示相对表单域/表单组的位置
+| positionProxy            | string                                                      |                         | 错误消息定位代理<br><br>默认相对于表单域/表单组本身定位，可使用任意其他元素作为代理。代理元素必须包含在错误消息直接父元素下<br><br>语法：参见 formHelper 的 scrollProxy<br><br>PS：参照物为`关联的表单域/表单组`，而不是错误消息自身
+| duration                 | number                                                      | 200                     | 显示/隐藏动画时长(ms)，动画固定为 fade
+| zIndex                   | number                                                      | 1                       | z-index 值
+| errorMessages            | TooltipMessage[] / { [ error: string ]: Message / string }  |                         | 消息定义对象
+
+``` js
+// 原型
+export enum TooltipPosition {
+
+    TOP_LEFT = 'top left', TOP_CENTER = 'top center', TOP_RIGHT = 'top right',
+
+    BOTTOM_LEFT = 'bottom left', BOTTOM_CENTER = 'bottom center', BOTTOM_RIGHT = 'bottom right',
+
+    RIGHT_CENTER = 'right center', LEFT_CENTER = 'left center'
+}
+
+export class Message {
+
+    // 验证不通过时显示的消息
+    message: string;
+
+    // 验证规则是否是异步
+    // 异步有特定反馈动画，请正确设置
+    async?: boolean;
+
+    // 顺序
+    order?: number;
+
+    // 消息占位符被替换时的上下文环境
+    // 全局通用消息在不同组件中使用时有用
+    context?: any;
+}
+
+export class TooltipMessage extends Message {
+
+    // 验证规则对应的名称
+    error: string;
+}
+```
+
+| 公共成员             | 类型                 | 说明 |
+| :------------------- | :------------------- | :--- |
+| reposition           | () => void           | 错误消息重定位<br><br>插件自动调用，当出现插件无法跟踪的页面布局变化时，需要用户手动调用
+
+``` html
+<!-- 示例 - 重定位 -->
+<textarea name="name" required autoSize (sizeChange)="nameCtrl.reposition()"></textarea>
+<eh-tooltip ref="name" #nameCtrl="ehTooltip">
+    <eh-tooltip-message error="required">不能为空</eh-tooltip-message>
+</eh-tooltip>
+```
+
+#### 5. ehSimple 指令配置
+主要作用：标记任意元素为错误处理控件  
+特色：没有错误消息，仅被标记的控件自身和对应的表单域/表单组有反馈  
+使用方法如下：
+``` html
+<!-- 示例1 - 作用在任意元素，引用表单域/表单组。此方式与 eh-text/eh-tooltip 相同 -->
+<input type="text" name="name" [(ngModel)]="xxx" required pattern="[a-zA-Z]*">
+<div ehSimple ref="name"></div>
+
+<!-- 示例2 - 作用在表单域/表单组上 - 此情况不需要设置 ref 属性 -->
+<input type="text" name="name" [(ngModel)]="xxx" required pattern="[a-zA-Z]*" ehSimple>
+```
+
+| `输入属性`配置项         | 参数类型                | 默认值                  | 说明 |
+| :----------------------- | :---------------------- | :---------------------- | :--- |
+| errorClassNames          | string/false            | eh-simple-error         | 验证失败时自身自动添加的类名
+
+| 公共成员                     | 类型                        | 说明 |
+| :--------------------------- | :-------------------------- | :--- |
+| repositionMessages           | (delay?: number) => void    | 错误消息重定位<br><br>当关联控件为表单组时，其子域也会同时重定位<br><br>参数：<br>delay：延时重定位时间，默认不延时
+
+#### 6. eh-text、eh-tooltop、ehSimple 共有配置
+| `输入属性`配置项              | 参数类型                | 默认值          | 说明 |
+| :---------------------------- | :---------------------- | :-------------- | :--- |
+| ref                           | RefType                 |                 | 错误信息关联的表单控件
+| scrollProxy                   | string                  |                 | 覆盖 formHelper 中的 scrollProxy
+| validateImmediate             | boolean                 | false           | 覆盖 formHelper 中的 validateImmediate
+| validateImmediateDescendants  | boolean                 | false           | 覆盖 formHelper 中的 validateImmediateDescendants
+
+## 内置验证器
+
+#### 1. trimmedRequired
+主要作用：验证是否为空。同 angular 自带的 required 区别是本规则剔除空白符  
+适用对象：表单域  
+验证失败时返回：{ trimmedRequired: true }  
+使用方法如下：
+``` html
+<!-- template driven form -->
+<input type="text" name="name" [(ngModel)]="xxx" trimmedRequired>
+
+<!-- 
+model driven form 
+
+// xxx.component.ts
+name = new FormControl('', [ trimmedRequired ]);
+-->
+<input type="text" name="name" formControlName="name">
+```
+
+#### 2. listRequired
+主要作用：验证数组长度在 minListNum ~ maxListNum 之间  
+适用对象：表单域  
+数组不存在或长度为0时返回：{ listRequired: true }  
+
+参数：  
+minListNum：数组最小长度，非必填，失败返回 { minListNum: true }   
+maxListNum：数组最大长度，非必填，失败返回 { maxListNum: true }   
+
+使用方法如下：
+``` html
+<!-- template driven form -->
+<input type="text" name="name" [(ngModel)]="xxx" listRequired minListNum="2" maxListNum="4">
+
+<!-- 
+model driven form 
+
+// xxx.component.ts
+name = new FormControl('', [ listRequired({ minListNum: 2, maxListNum: 4 }) ]);
+-->
+<input type="text" name="name" formControlName="name">
+```
+
+#### 3. checkboxRequired
+主要作用：验证某表单组下的多选框(checkbox)勾选数量在 minCheckedNum ~ maxCheckedNum 之间  
+适用对象：表单组  
+勾选数量为0时返回：{ checkboxRequired: true }  
+
+参数：  
+minCheckedNum：勾选数量最小值，非必填，失败返回 { minCheckedNum: true }   
+maxCheckedNum：勾选数量最大值，非必填，失败返回 { maxCheckedNum: true }   
+
+使用方法如下：
+``` html
+<!-- template driven form -->
+<div ngModelGroup="group" checkboxRequired minCheckedNum="2" maxCheckedNum="4">
+    <!-- checkboxes -->
+    ...
+</div>
+
+<!-- 
+model driven form 
+
+// xxx.component.ts
+group = new FormGroup([ ... ], [ checkboxRequired({ minCheckedNum: 2, maxCheckedNum: 4 }) ]);
+-->
+<div ngModelGroup="group" formGroup="group">
+    <!-- checkboxes -->
+    ...
 </div>
 ```
 
-> *名词解释*  
-> 验证项：具体的某一错误语句所在节点
-
-| 配置项                 | 参数类型                                                    | 默认值                    | 说明 |
-| :--------------------- | :---------------------------------------------------------- | :------------------------ | :--- |
-| selector               | string                                                      | .fh-message, [fh-message] | 如何查找tooltip的选择器
-| contextProxy           | string                                                      | \^                        | 查找tooltip的上下文代理，会在指定的代理对象`节点本身`或`子节点`中寻找selector指定的节点。语法同data-scroll-proxy
-| className              | string/false                                                | fh-tooltip-theme-default  | 主题样式。指定的字符串会添加到tooltip类名中。可修改默认值实现自定义主题
-| pendingClassName       | string                                                      | pending                   | pending状态自动添加到tooltip的类名。相应的验证项需指定pending类名或属性
-| invalidClassName       | string                                                      | invalid                   | invalid状态自动添加到tooltip的类名。相应的验证项需使用[class.error]指明错误时的条件
-| position               | [top bottom][left center right]/right center/left center    | bottom right              | 提示相对表单域/表单组的位置
-| animationIn            | string                                                      | animated fadeIn           | 显示动画。可使用animate.css
-| animationOut           | string                                                      | animated fadeOut          | 隐藏动画
-| duration               | number                                                      | 200                       | 动画时长(ms)。该设置会覆盖animationIn和animationOut动画的animation-duration
-| zIndex                 | number                                                      | 1                         | tooltip z-index
-
-### tooltip data api
-| 配置项                 | 参数类型      | 说明 |
-| :--------------------- | :------------ | :--- |
-| context-proxy          | string/false  | 覆盖ErrorHandlerTooltipConfig中配置，与config中不同的是值可为false，代表不使用tooltip。使用方表单域/表单组
-| offset-y               | number        | 垂直偏移量，负数向上，正数向下。使用方tooltip
-| offset-x               | number        | 提示水平偏移量，负数向左，正数向右。使用方tooltip
-| position               | string        | 覆盖ErrorHandlerTooltipConfig中配置。使用方tooltip
-| left/right/top/bottom  | number        | 当tooltip父元素不可见时，tooltip无法计算位置，可使用这些值设定固定位置。使用方tooltip
-| field-proxy            | string        | 表单域/表单组自身的代理对象。使用方表单域/表单组
-
-
-## 错误处理组件配置(ErrorHandlerTextConfig)
-错误文本示例  
-``` html
-<div class="fh-message">  
-  <div *ngIf="nameCtrl.errors?.required">不能为空</div>  
-  <div *ngIf="nameCtrl.errors?.nameUnique">重复</div>  
-</div> 
+## 全局配置叠加
+假如有如下组件树，在组件自身和其任意祖先模块中定义了全局配置
+``` mermaid
+graph LR
+A[Root Module<br>config1] --> B[Child Module A<br>config2]
+B --> C[Child Module B<br>config3]
+C --> D[Some Component<br>config4]
 ```
+最终插件得到的`全局配置` = extend({}, config1, config2, config3, config4);
 
-| 配置项                 | 参数类型                | 默认值                    | 说明 |
-| :--------------------- | :---------------------- | :------------------------ | :--- |
-| selector               | string                  | .fh-message, [fh-message] | 如何查找错误文本的选择器
-| contextProxy           | string                  | \^                        | 查找错误文本的上下文代理，会在指定的代理对象`节点本身`或`子节点`中寻找selector指定的节点。语法同data-scroll-proxy
-| className              | string/false            | fh-text-theme-default     | 主题样式。指定的字符串会添加到错误文本类名中。可修改默认值实现自定义主题
-| inline                 | boolean                 | true                      | 错误文本是否与表单域/表单组在同一行
-| align                  | left/center/right       | left                      | 错误文本水平位置。只在inline=false的情况下有效
-| fontSize               | number                  | 13                        | 字体大小
+> 指令/组件自身的`输入属性配置`优先级永远`大于全局配置`  
 
-
-## 提交处理组件配置(SubmitHandlerLoaderConfig)
-| 配置项                 | 参数类型                | 默认值                         | 说明 |
-| :--------------------- | :---------------------- | :----------------------------- | :--- |
-| className              | string                  | fh-loader-theme-default        | 按钮主题样式
-| iconClassName          | string                  | fh-loader-theme-icon-default   | 按钮中图标主题样式
-| iconSelector           | string/false            | i.icon, i.fa                   | 寻找按钮中图标的css选择器，若找到，则用iconClassName替换找到的图标类名，否则在整个按钮区域使用className
-| iconToggleStrategy     | append/replace          | append                         | iconClassName替换策略。<br>1. append: 在原有类名基础上增加<br>2. replace：完全使用新类名替换原类名
-| duration               | number                  | 400                            | 动画时长(ms)
-
-
-## 远程验证辅助类
-自动读取data-debounce-time(如果有)，默认为300。在抖动时间内的重复请求，之前的请求订阅会被取消
+#### 1. formHelper 全局配置
 ``` js
-@Directive({
-    selector: '[nameUnique]',
+// 示例
+@NgModule({
+    ...
     providers: [
-        { provide: NG_ASYNC_VALIDATORS, useExisting: NameUniqueDirective, multi: true }
+        ...
+        formHelperConfigProvider({
+            autoReset: false,
+            offsetTop: 100
+            ...
+        })
     ]
 })
-export class NameUniqueDirective extends AsyncValidatorLimit implements AsyncValidator {
-
-    constructor(private nameValidateService: NameValidateService,
-                private ele: ElementRef) {
-        super(ele);
-    }
-
-    validate(c: AbstractControl) {
-        return super.limit(
-            this.nameValidateService.isNameUnique(c.value).map(exist => {
-                return exist ? { nameUnique: true } : null;
-            })
-        );
-    }
+export class XxxModule {
 }
 ```
 
-
-## 内置的验证指令
-- **trimmedRequired** - 去除左右空格后再验证非空
-
-
-## 自定义错误处理组件
-第一步：创建一个类并实现ErrorHandler接口
+#### 2. shLoader 全局配置
 ``` js
-export interface ErrorHandler {
-
-    // 组件验证通过时调用
-    whenValid(): void;
-
-    // 组件验证不通过时调用
-    whenInvalid(): void;
-
-    // 窗口改变大小时调用(window.resize)，非必须
-    reposition?(): void;
-
-    // 组件销毁时释放资源，非必须
-    destroy?(): void;
-}
-
-export class MyErrorHandlerConfig {
-}
-
-export class MyErrorHandler implements ErrorHandler {
-
-    private config: MyErrorHandlerConfig;
-
-    // 系统会自动创建该实例，并注入4个参数，可根据需要自行选择
-    // $ele：与之想关的表单域/表单组jQuery对象
-    // config：FormHelperConfig中定义的errorHandler参数，可能为空
-    // control：与之想关的表单域/表单组控件
-    // formConfig：完整的FormHelperConfig参数
-    constructor(private $ele: JQuery,
-                config: MyErrorHandlerConfig,
-                private control: AbstractControl,
-                private formConfig: FormHelperConfig) {
-        // 在此定义默认参数
-        this.config = {};
-        
-        // 用外部参数覆盖默认参数
-        extend(this.config, config);
-    }
-    
-    whenValid() {}
-    
-    whenInvalid() {}
-}
+// 示例
+submitHandlerLoaderConfigProvider({
+    duration: 300
+    ...
+})
 ```
 
-第二步：注册错误处理组件
+#### 3. eh-text 全局配置
 ``` js
-FormHelperDirective.registerErrorHandler('myErrorHandlerName', MyErrorHandler);
+// 示例
+errorHandlerTextConfigProvider({
+    animation: 'flyLeft'
+    ...
+})
 ```
 
-第三步：使用
+#### 4. eh-tooltip 全局配置
 ``` js
-<form [formHelper]="formConfig"></form>
-
-// 带参
-this.formConfig = {
-    errorHandler: {
-        name: 'myErrorHandlerName',
-        config: {}
-    }
-};
-
-// 不带参
-this.formConfig = {
-    errorHandler: 'myErrorHandlerName'
-};
+// 示例
+errorHandlerTooltipConfigProvider({
+    fontSize: 14
+    ...
+})
 ```
 
-
-## 自定义提交处理组件
-第一步：创建一个类并实现SubmitHandler接口
+#### 5. ehSimple 全局配置
 ``` js
+// 示例
+errorHandlerSimpleConfigProvider({
+    errorClassNames: 'eh-simple-error my-special-style'
+    ...
+})
+```
+
+## 自定义
+#### 1. 自定义提交处理组件（SubmitHandler）
+``` js
+// 原型
 export interface SubmitHandler {
 
-    // 点击提交按钮时触发
-    // 执行后会调用FormHelperConfig中定义的onSuccess方法
+    // 初始点击submit按钮
     start(): void;
-    
-    // 结束状态处理时触发
-    // 在onSuccess之后调用，end执行完后调用FormHelperConfig中定义的onComplete方法
-    end(): Promise | Observable | void;
 
-    // 组件销毁时释放资源，非必须
-    destroy?(): void;
+    // 表单请求结束
+    end(): Promise<any> | Observable<any> | void;
 }
 
-export class MySubmitHandlerConfig {
-}
-
-export class MySubmitHandler implements SubmitHandler {
-
-    private config: MySubmitHandlerConfig;
+// 自定义提交处理组件
+export class SubmitHandlerXxxDirective implements SubmitHandler {
     
-    // 系统会自动创建该实例，并注入2个参数，可根据需要自行选择
-    // $ele：与之想关的表单域/表单组jQuery对象
-    // config：FormHelperConfig中定义的submitHandler参数，可能为空
-    constructor(private $ele: JQuery,
-                config: MySubmitHandlerConfig) {
-        // 在此定义默认参数
-        this.config = {};
-        
-        // 用外部参数覆盖默认参数
-        extend(this.config, config);
+    start() {
+        // do something
     }
     
-    start() {}
-    
-    end() {}
+    end() {
+        // do something
+    }
 }
 ```
 
-第二步：注册提交处理组件
-``` js
-FormHelperDirective.registerSubmitHandler('mySubmitHandlerName', MySubmitHandler);
-```
+#### 1. 自定义错误消息处理组件（ErrorHandler）
+ErrorHandler 为抽象类，内部已实现功能如下：
+- 根据 ref 输入属性自动关联表单域/表单组
+- 关联表单域/表单组成功后触发 onControlPrepared 回调，该回调由继承类实现
+- 自带 scrollProxy、validateImmediate、validateImmediateDescendants 输入属性，并覆盖 formHelper 中相应属性
+- 监听控件状态，自动触发 whenValid、whenInvalid、whenPending 回调，这些回调由继承类实现
+- 继承类如果实现了 reposition 回调，插件会在 window:resize 事件中自动调用
+- 内置 hasError(error:string) => ValidationErrors | null 方法，简化错误判断
+- 内置 compileMessage(context: any, message: string) => string 方法，根据指定上下文替换消息中的占位符
 
-第三步：使用
-``` js
-<form [formHelper]="formConfig"></form>
-
-// 带参
-this.formConfig = {
-    submitHandler: {
-        name: 'mySubmitHandlerName',
-        config: {}
-    }
-};
-
-// 不带参
-this.formConfig = {
-    submitHandler: 'mySubmitHandlerName'
-};
-```
-
-
-
+| 可能需要实现的接口       | 说明 |
+| :----------------------- | :--- |
+| whenValid                | 验证成功回调
+| whenInvalid              | 验证失败回调
+| whenPending              | 处于验证中时的回调
+| reposition               | 消息定位，通常在每次 whenInvalid 时调用一次，防止页面布局变化导致绝对定位消息显示位置不准确。window:resize 事件自动调用
+| onControlPrepared        | 消息处理组件关联表单域/表单组是由基类自动完成的，可根据需要在关联成功后执行一些操作
