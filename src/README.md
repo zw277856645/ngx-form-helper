@@ -196,8 +196,8 @@ request(submitWrapper: SubmitWrapper) {
 ##### RefType 说明
 作用：错误信息关联的表单控件指引  
 可用格式：  
-a.string  -> name/ngModelGroup/formControlName/formGroupName/formArrayName  
-b.control -> 表单控件对象，通常为模板变量，如：#ctrl="ngModel/ngModelGroup"
+a）string  -> name/ngModelGroup/formControlName/formGroupName/formArrayName  
+b）control -> 表单控件对象，通常为模板变量，如：#ctrl="ngModel/ngModelGroup"
 
 ``` js
 // 原型
