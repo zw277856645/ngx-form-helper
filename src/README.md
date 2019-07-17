@@ -194,6 +194,7 @@ request(submitWrapper: SubmitWrapper) {
 ```
 
 #### 2. shLoader 指令配置（SubmitHandlerLoaderConfig）
+主要作用：防重复提交和设定等待请求返回前的 loading 反馈
 使用方法如下
 ``` html
 <!-- 提交按钮在表单内部 -->
