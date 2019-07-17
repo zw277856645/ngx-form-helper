@@ -184,6 +184,26 @@ request(submitWrapper: SubmitWrapper) {
 }
 ```
 
+| 公共成员             | 类型                                                | 说明 |
+| :------------------- | :-------------------------------------------------- | :--- |
+| ngForm               | ControlContainer                                    | 关联的 angular form 实例，template driven form 时为 NgForm，Model driven form 时为 FormGroup
+| form                 | HTMLFormElement                                     | dom 元素
+| controls             | { [key: string]: AbstractControl }                  | 控件树
+| submit               | (submitHandler?: SubmitHandler) => void             | 提交处理函数，不需要用户调用，通常在实现自定义的提交处理指令时需要。详情参见`自定义 SubmitHandler`章节文档
+| reset                | () => void                                          | 重置，在重置按钮使用了 #reset 模板变量时可省略调用。详情参见`shLoader 指令配置`章节文档
+| repositionMessages   | (type?: RefType / AbstractControl, delay?: number)  | 重定位错误消息<br><br>页面布局变化时，某些绝对定位错误消息位置可能需要重新定位。window:resize 事件已被插件处理，会自动重定位错误消息，其他情况需要手动调用此方法<br><br>参数：<br>type：需要重定位错误信息关联的表单控件指引，当控件为表单组时，其子域也会同时重定位<br>delay：延时重定位时间，默认不延时
+
+##### RefType 说明
+作用：错误信息关联的表单控件指引  
+可用格式：  
+a.string  -> name/ngModelGroup/formControlName/formGroupName/formArrayName  
+b.control -> 表单控件对象，通常为模板变量，如：#ctrl="ngModel/ngModelGroup"
+
+``` js
+// 原型
+export type RefType = string | NgModel | NgModelGroup;
+```
+
 ##### 默认主题附加样式
 ``` html
 <!-- 表单域添加 ignore 类，将忽略给该元素设置验证失败样式 -->
@@ -223,6 +243,21 @@ request(submitWrapper: SubmitWrapper) {
     <button type="button" #submit>保存</button>
 </form>
 ```
+
+同此，重置按钮使用 #reset 模板变量方式
+``` html
+<form formHelper>
+    <button type="button" #reset>重置</button>
+</form>
+
+<!-- 绑定事件方式 -->
+<form formHelper #formHelperCtrl="formHelper">
+    <button type="button" (click)="formHelperCtrl.reset()">重置</button>
+</form>
+```
+
+> 单独使用 type="submit"、type="reset" 不具备插件附加的一些功能  
+> 为防止出现未知影响，请一律使用 type="button"，不要使用 <button type="submit" #submit></button>、< button type="button" shLoader></button> 和 <button type="reset" #reset></button> 的方式
 
 ## 全局data api
 | 配置项                 | 参数类型 | 说明 |
