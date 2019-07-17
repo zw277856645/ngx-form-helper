@@ -138,7 +138,7 @@ export abstract class ErrorHandler implements AfterViewInit, OnInit {
         splitClassNames(classNames).forEach(cls => this._renderer.removeClass(ele, cls));
     }
 
-    protected findControlByName(
+    private findControlByName(
         name: string,
         controls: ArrayOrGroupAbstractControls = this._formHelper.controls
     ): AbstractControl {
