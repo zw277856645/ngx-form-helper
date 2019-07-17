@@ -447,6 +447,14 @@ export class TooltipMessage extends Message {
 | :--------------------------- | :-------------------------- | :--- |
 | repositionMessages           | (delay?: number) => void    | 错误消息重定位<br><br>当关联控件为表单组时，其子域也会同时重定位<br><br>参数：<br>delay：延时重定位时间，默认不延时
 
+#### 6. eh-text、eh-tooltop、ehSimple 共有配置
+| `输入属性`配置项              | 参数类型                | 默认值          | 说明 |
+| :---------------------------- | :---------------------- | :-------------- | :--- |
+| ref                           | RefType                 |                 | 错误信息关联的表单控件
+| scrollProxy                   | string                  |                 | 覆盖 formHelper 中的 scrollProxy
+| validateImmediate             | boolean                 | false           | 覆盖 formHelper 中的 validateImmediate
+| validateImmediateDescendants  | boolean                 | false           | 覆盖 formHelper 中的 validateImmediateDescendants
+
 ## 内置验证器
 
 #### 1. trimmedRequired
@@ -597,8 +605,34 @@ export interface SubmitHandler {
     // 表单请求结束
     end(): Promise<any> | Observable<any> | void;
 }
+
+// 自定义提交处理组件
+export class SubmitHandlerXxxDirective implements SubmitHandler {
+    
+    start() {
+        // do something
+    }
+    
+    end() {
+        // do something
+    }
+}
 ```
 
+#### 1. 自定义错误消息处理组件（ErrorHandler）
+ErrorHandler 为抽象类，内部已实现功能如下：
+- 根据 ref 输入属性自动关联表单域/表单组
+- 关联表单域/表单组成功后触发 onControlPrepared 回调，该回调由继承类实现
+- 自带 scrollProxy、validateImmediate、validateImmediateDescendants 输入属性，并覆盖 formHelper 中相应属性
+- 监听控件状态，自动触发 whenValid、whenInvalid、whenPending 回调，这些回调由继承类实现
+- 继承类如果实现了 reposition 回调，插件会在 window:resize 事件中自动调用
+- 内置 hasError(error:string) => ValidationErrors | null 方法，简化错误判断
+- 内置 compileMessage(context: any, message: string) => string 方法，根据指定上下文替换消息中的占位符
 
-
-
+| 可能需要实现的接口       | 说明 |
+| :----------------------- | :--- |
+| whenValid                | 验证成功回调
+| whenInvalid              | 验证失败回调
+| whenPending              | 处于验证中时的回调
+| reposition               | 消息定位，通常在每次 whenInvalid 时调用一次，防止页面布局变化导致绝对定位消息显示位置不准确。window:resize 事件自动调用
+| onControlPrepared        | 消息处理组件关联表单域/表单组是由基类自动完成的，可根据需要在关联成功后执行一些操作
