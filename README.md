@@ -10,7 +10,7 @@ angular 表单验证辅助插件 for angular >= 6
 - template driven 和 model driven 表单都支持
 
 ## 🔗 链接
-- [DOCS](https://ngx-form-helper-demo.stackblitz.io)
+- [DOCS](https://zw277856645.gitlab.io/ngx-form-helper)
 - [DEMO](https://ngx-form-helper-demo.stackblitz.io)
 
 ## 📦 安装
