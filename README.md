@@ -1,3 +1,4 @@
-# ngx-form-helper-demo
+# ngx-form-helper
+angular 表单验证辅助插件 for angular >= 6
 
-[Edit on StackBlitz ⚡️](https://stackblitz.com/edit/ngx-form-helper-demo)
+[⚡ 文档链接️](https://stackblitz.com/edit/ngx-form-helper-demo)
