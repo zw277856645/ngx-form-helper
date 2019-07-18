@@ -7,22 +7,12 @@ variables:
 before_script:
   - bundle install
 
-test:
-  stage: test
-  script:
-  - bundle exec jekyll build -d test
-  artifacts:
-    paths:
-    - test
-  except:
-  - master
-
 pages:
   stage: deploy
   script:
-  - bundle exec jekyll build -d public
+  - bundle exec jekyll build -d docs
   artifacts:
     paths:
-    - public
+    - docs
   only:
   - master
