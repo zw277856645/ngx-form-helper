@@ -1,5 +1,6 @@
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { SuppressExtractedTextChunksWebpackPlugin } = require('@angular-devkit/build-angular/src/angular-cli-files/plugins/suppress-entry-chunks-webpack-plugin')
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 const helpers = require('./helpers');
 
@@ -44,7 +45,10 @@ module.exports = {
 
     plugins: [
         new MiniCssExtractPlugin({ filename: '[name].css' }),
-        new SuppressExtractedTextChunksWebpackPlugin()
+        new SuppressExtractedTextChunksWebpackPlugin(),
+        new CopyWebpackPlugin([
+            { from: 'README.md' }
+        ])
     ]
 };
 
