@@ -4,7 +4,8 @@
     "build-style": "webpack --config webpack.js",
     "publish": "npm publish dist",
     "lint": "tslint -c tslint.json -p tsconfig.json",
-    "clean": "rimraf dist"
+    "clean": "rimraf dist",
+    "doc": "docsify serve docs --open"
   },
   "dependencies": {
     "@angular/common": "6.1.10",
