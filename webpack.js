@@ -6,13 +6,13 @@ const helpers = require('./helpers');
 
 module.exports = {
 
-    mode: "production",
+    mode: 'production',
 
     entry: {
-        "ngx-form-helper": [
-            "./src/form-helper.less",
-            "./src/submit-handler/submit-handler-loader.less",
-            "./src/error-handler/simple/error-handler-simple.less"
+        'ngx-form-helper': [
+            './src/form-helper.less',
+            './src/submit-handler/submit-handler-loader.less',
+            './src/error-handler/simple/error-handler-simple.less'
         ]
     },
 
