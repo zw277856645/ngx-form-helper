@@ -9,9 +9,17 @@
   font-style: normal;
 }
 
-:host(.eh-tooltip-theme) {
+:host {
   visibility: hidden;
   opacity: 0;
+  transition: visibility .2s ease-out, opacity .2s ease-out;
+  &.visible {
+    visibility: visible;
+    opacity: 1;
+  }
+}
+
+:host(.eh-tooltip-theme) {
   position: absolute;
   top: 0;
   right: 0;
@@ -29,11 +37,6 @@
   transform: translateZ(0);
   backface-visibility: hidden;
   white-space: nowrap;
-  transition: visibility .2s ease-out, opacity .2s ease-out;
-  &.visible {
-    visibility: visible;
-    opacity: 1;
-  }
   &:before {
     position: absolute;
     content: '';
