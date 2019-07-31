@@ -1,4 +1,4 @@
-export { getProxyElement } from './utils';
+export { getProxyElement, async2Observable } from './utils';
 
 export * from './form-helper.module';
 export * from './form-helper-config';
