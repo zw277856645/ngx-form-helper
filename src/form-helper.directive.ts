@@ -8,11 +8,11 @@ import {
 import { EMPTY, forkJoin, interval, Observable, of, Subscription } from 'rxjs';
 import { FormHelperConfig } from './form-helper-config';
 import {
-    arrayOfAbstractControls, arrayProviderFactory, async2Observable, getProxyElement, noop, splitClassNames
+    arrayOfAbstractControls, arrayProviderFactory, getProxyElement, noop, splitClassNames
 } from './utils';
 import { catchError, finalize, first, map, skipWhile, switchMap } from 'rxjs/operators';
 import { SubmitHandler } from './submit-handler/submit-handler';
-import { getOffset, getScrollTop, isVisible, setScrollTop } from 'cmjs-lib';
+import { async2Observable, getOffset, getScrollTop, isVisible, setScrollTop } from 'cmjs-lib';
 import { ErrorHandler, RefType } from './error-handler/error-handler';
 
 const TWEEN = require('@tweenjs/tween.js');

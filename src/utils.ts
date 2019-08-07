@@ -118,20 +118,6 @@ function parseProxyExpression(expr: string) {
         .filter(v => v);
 }
 
-export function async2Observable(fn: any): Observable<any> {
-    return defer(() => {
-        if (fn instanceof Observable) {
-            return fn;
-        } else if (fn instanceof Promise) {
-            return from(fn);
-        } else if (typeof fn === 'function') {
-            return async2Observable(fn());
-        } else {
-            return of(fn);
-        }
-    });
-}
-
 export function arrayProviderFactory(config: any, array: any[]) {
     return Array.isArray(array) ? [ ...array, config ] : [ config ];
 }
