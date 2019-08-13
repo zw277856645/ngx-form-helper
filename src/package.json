@@ -1,6 +1,6 @@
 {
   "name": "ngx-form-helper",
-  "version": "3.0.5",
+  "version": "3.0.6",
   "description": "angular form validation helper",
   "$schema": "../node_modules/ng-packagr/package.schema.json",
   "ngPackage": {
@@ -37,6 +37,6 @@
   "dependencies": {
     "@tweenjs/tween.js": "~17.2.0",
     "@types/tween.js": "~16.9.0",
-    "cmjs-lib": "0.2.11"
+    "cmjs-lib": "*"
   }
 }
