@@ -18,7 +18,7 @@
     "@angular/upgrade": "6.1.10",
     "@types/jquery": "2.0.43",
     "@types/semantic-ui": "2.2.0",
-    "cmjs-lib": "*",
+    "cmjs-lib": "latest",
     "core-js": "2.5.7",
     "jquery": "3.2.1",
     "ngx-form-helper": "3.0.6",
