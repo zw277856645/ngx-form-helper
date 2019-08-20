@@ -109,7 +109,8 @@ export class FormHelperDirective implements OnDestroy, AfterViewInit {
     @Output() validFail = new EventEmitter();
 
     @HostListener('keydown', [ '$event' ]) onKeydown(event: KeyboardEvent) {
-        if ((event.keyCode || event.which) === 13 && event.srcElement.nodeName.toUpperCase() !== 'TEXTAREA') {
+        if ((event.keyCode || event.which) === 13
+            && (event.currentTarget as Element).nodeName.toUpperCase() !== 'TEXTAREA') {
             event.preventDefault();
         }
     }

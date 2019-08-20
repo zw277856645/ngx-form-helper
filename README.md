@@ -1,5 +1,5 @@
 # ngx-form-helper
-angular 表单验证辅助插件 for angular >= 6
+angular 表单验证辅助插件
 
 ## ✨ 插件特性
 - 极简的使用方式，屏蔽 angular 验证底层细节

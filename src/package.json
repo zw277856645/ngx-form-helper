@@ -1,6 +1,6 @@
 {
   "name": "ngx-form-helper",
-  "version": "3.0.7",
+  "version": "3.0.8",
   "description": "angular form validation helper",
   "$schema": "../node_modules/ng-packagr/package.schema.json",
   "ngPackage": {
@@ -28,11 +28,11 @@
   "author": "wei.zhang",
   "license": "MIT",
   "peerDependencies": {
-    "@angular/common": "^7.2.14",
-    "@angular/core": "^7.2.14",
-    "@angular/forms": "^7.2.14",
+    "@angular/common": "^8.1.2",
+    "@angular/core": "^8.1.2",
+    "@angular/forms": "^8.1.2",
     "rxjs": "^6.5.1",
-    "zone.js": "^0.8.29"
+    "zone.js": "^0.9.1"
   },
   "dependencies": {
     "@tweenjs/tween.js": "~17.2.0",

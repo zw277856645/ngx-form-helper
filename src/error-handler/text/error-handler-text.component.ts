@@ -45,7 +45,7 @@ export function errorHandlerTextConfigProvider(config: ErrorHandlerTextConfig): 
 })
 export class ErrorHandlerTextComponent extends ErrorHandler implements OnInit, OnChanges {
 
-    @ViewChild('container') containerRef: ElementRef;
+    @ViewChild('container', { static: false }) containerRef: ElementRef;
 
     @Input() errorMessages: TextMessage[] | { [ error: string ]: string };
 
