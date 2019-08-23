@@ -8,6 +8,7 @@ import { interval, Observable } from 'rxjs';
 import { first, map } from 'rxjs/operators';
 import { FormHelperDirective } from '../form-helper.directive';
 import { arrayProviderFactory, isNotFirstChange, splitClassNames } from '../utils';
+import { InputBoolean, InputNumber } from 'cmjs-lib';
 
 export const SUBMIT_HANDLER_LOADER_CONFIG =
     new InjectionToken<SubmitHandlerLoaderConfig>('submit_handler_loader_config');
@@ -42,13 +43,13 @@ export class SubmitHandlerLoaderDirective implements SubmitHandler, OnChanges, A
 
     @Input() iconClassNames: string = 'sh-loader-theme-icon';
 
-    @Input() iconSelector: string | false = 'i.icon, i.fa';
+    @Input() iconSelector: string = 'i.icon, i.fa';
 
     @Input() iconToggleStrategy: IconToggleStrategy = IconToggleStrategy.APPEND;
 
-    @Input() duration: number = 400;
+    @Input() @InputNumber() duration: number = 400;
 
-    @Input() disableTheme: boolean;
+    @Input() @InputBoolean() disableTheme: boolean;
 
     // 当submit元素在form外部时有用，使用此属性关联formHelper实例
     @Input() refForm: FormHelperDirective;
@@ -118,7 +119,7 @@ export class SubmitHandlerLoaderDirective implements SubmitHandler, OnChanges, A
 
     end(): Observable<any> {
         let diff = new Date().getTime() - this.startTime;
-        let duration = diff < +this.duration ? +this.duration - diff : 0;
+        let duration = diff < this.duration ? this.duration - diff : 0;
 
         return interval(duration).pipe(
             first(),

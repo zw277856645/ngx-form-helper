@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
 import { uuid } from 'cmjs-lib';
+import { Component } from '@angular/core';
 
 @Component({
     templateUrl: './demo-template-driven.component.html',

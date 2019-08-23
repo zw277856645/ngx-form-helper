@@ -1,7 +1,7 @@
 export interface ErrorHandlerTextConfig {
 
     // 主题样式
-    classNames?: string | false;
+    classNames?: string;
 
     // 错误文本是否与表单域/表单组在同一行
     inline?: boolean;

@@ -22,7 +22,7 @@
 
 ### errorClassNames
 
-- 类型：`string | false`
+- 类型：`string`
 - 默认值：`eh-simple-error`
 
 验证失败时自身自动添加的类名

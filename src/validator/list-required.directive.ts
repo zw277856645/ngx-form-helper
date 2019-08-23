@@ -1,6 +1,7 @@
 import { Directive, DoCheck, Input, IterableDiffer, IterableDiffers, OnChanges, SimpleChanges } from '@angular/core';
 import { AbstractControl, NG_VALIDATORS, ValidationErrors, Validator, ValidatorFn } from '@angular/forms';
 import { isNotFirstChange } from '../utils';
+import { InputNumber } from 'cmjs-lib';
 
 export function listRequired({ minListNum, maxListNum }: { minListNum?: number, maxListNum?: number }): ValidatorFn {
     return (c: AbstractControl) => {
@@ -30,9 +31,9 @@ export class ListRequiredDirective implements Validator, DoCheck, OnChanges {
 
     @Input() ngModel: any;
 
-    @Input() minListNum: number;
+    @Input() @InputNumber() minListNum: number;
 
-    @Input() maxListNum: number;
+    @Input() @InputNumber() maxListNum: number;
 
     private ctrl: AbstractControl;
     private arrayDiffer: IterableDiffer<any>;

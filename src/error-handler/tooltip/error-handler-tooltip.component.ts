@@ -7,7 +7,7 @@ import { ErrorHandlerTooltipConfig, TooltipPosition } from './error-handler-tool
 import { FormHelperDirective } from '../../form-helper.directive';
 import { TooltipMessage, Message } from './tooltip-message';
 import { arrayProviderFactory, getProxyElement } from '../../utils';
-import { getOuterHeight, getOuterWidth, getStyle, isHidden } from 'cmjs-lib';
+import { getOuterHeight, getOuterWidth, getStyle, InputNumber, isHidden } from 'cmjs-lib';
 
 export const ERROR_HANDLER_TOOLTIP_CONFIG
     = new InjectionToken<ErrorHandlerTooltipConfig>('error_handler_tooltip_config');
@@ -48,21 +48,21 @@ export class ErrorHandlerTooltipComponent extends ErrorHandler implements AfterV
 
     @Input() errorMessages: TooltipMessage[] | { [ error: string ]: Message | string };
 
-    @Input() classNames: string | false = 'eh-tooltip-theme';
+    @Input() classNames: string = 'eh-tooltip-theme';
 
-    @Input() offsetX: number = 0;
+    @Input() @InputNumber() offsetX: number = 0;
 
-    @Input() offsetY: number = 0;
+    @Input() @InputNumber() offsetY: number = 0;
 
     @Input() position: TooltipPosition = TooltipPosition.BOTTOM_RIGHT;
 
     @Input() positionProxy: string;
 
-    @HostBinding('style.font-size.px') @Input() fontSize: number = 13;
+    @HostBinding('style.font-size.px') @Input() @InputNumber() fontSize: number = 13;
 
-    @HostBinding('style.z-index') @Input() zIndex: number = 1;
+    @HostBinding('style.z-index') @Input() @InputNumber() zIndex: number = 1;
 
-    @HostBinding('style.transition-duration.ms') duration: number = 200;
+    @HostBinding('style.transition-duration.ms') @Input() @InputNumber() duration: number = 200;
 
     // 消息显示/隐藏
     @HostBinding('class.visible') visible: boolean;
@@ -167,36 +167,36 @@ export class ErrorHandlerTooltipComponent extends ErrorHandler implements AfterV
             switch (this.position) {
                 default:
                 case TooltipPosition.BOTTOM_RIGHT:
-                    this.setStyle('top', offsetTop + proxyHeight + +this.offsetY + 'px');
-                    this.setStyle('right', parentWidth - offsetLeft - proxyWidth + +this.offsetX + 'px');
+                    this.setStyle('top', offsetTop + proxyHeight + this.offsetY + 'px');
+                    this.setStyle('right', parentWidth - offsetLeft - proxyWidth + this.offsetX + 'px');
                     break;
                 case TooltipPosition.BOTTOM_CENTER:
-                    this.setStyle('top', offsetTop + proxyHeight + +this.offsetY + 'px');
-                    this.setStyle('left', offsetLeft + (proxyWidth / 2) - (selfWidth / 2) + +this.offsetX + 'px');
+                    this.setStyle('top', offsetTop + proxyHeight + this.offsetY + 'px');
+                    this.setStyle('left', offsetLeft + (proxyWidth / 2) - (selfWidth / 2) + this.offsetX + 'px');
                     break;
                 case TooltipPosition.BOTTOM_LEFT:
-                    this.setStyle('top', offsetTop + proxyHeight + +this.offsetY + 'px');
-                    this.setStyle('left', offsetLeft + +this.offsetX + 'px');
+                    this.setStyle('top', offsetTop + proxyHeight + this.offsetY + 'px');
+                    this.setStyle('left', offsetLeft + this.offsetX + 'px');
                     break;
                 case TooltipPosition.TOP_RIGHT:
-                    this.setStyle('right', parentWidth - offsetLeft - proxyWidth + +this.offsetX + 'px');
-                    this.setStyle('bottom', parentHeight - offsetTop + +this.offsetY + 'px');
+                    this.setStyle('right', parentWidth - offsetLeft - proxyWidth + this.offsetX + 'px');
+                    this.setStyle('bottom', parentHeight - offsetTop + this.offsetY + 'px');
                     break;
                 case TooltipPosition.TOP_CENTER:
-                    this.setStyle('left', offsetLeft + (proxyWidth / 2) - (selfWidth / 2) + +this.offsetX + 'px');
-                    this.setStyle('bottom', parentHeight - offsetTop + +this.offsetY + 'px');
+                    this.setStyle('left', offsetLeft + (proxyWidth / 2) - (selfWidth / 2) + this.offsetX + 'px');
+                    this.setStyle('bottom', parentHeight - offsetTop + this.offsetY + 'px');
                     break;
                 case TooltipPosition.TOP_LEFT:
-                    this.setStyle('left', offsetLeft + +this.offsetX + 'px');
-                    this.setStyle('bottom', parentHeight - offsetTop + +this.offsetY + 'px');
+                    this.setStyle('left', offsetLeft + this.offsetX + 'px');
+                    this.setStyle('bottom', parentHeight - offsetTop + this.offsetY + 'px');
                     break;
                 case TooltipPosition.LEFT_CENTER:
-                    this.setStyle('top', offsetTop + (proxyHeight / 2) - (selfHeight / 2) + +this.offsetY + 'px');
-                    this.setStyle('right', parentWidth - offsetLeft + +this.offsetX + 'px');
+                    this.setStyle('top', offsetTop + (proxyHeight / 2) - (selfHeight / 2) + this.offsetY + 'px');
+                    this.setStyle('right', parentWidth - offsetLeft + this.offsetX + 'px');
                     break;
                 case TooltipPosition.RIGHT_CENTER:
-                    this.setStyle('top', offsetTop + (proxyHeight / 2) - (selfHeight / 2) + +this.offsetY + 'px');
-                    this.setStyle('left', offsetLeft + proxyWidth + +this.offsetX + 'px');
+                    this.setStyle('top', offsetTop + (proxyHeight / 2) - (selfHeight / 2) + this.offsetY + 'px');
+                    this.setStyle('left', offsetLeft + proxyWidth + this.offsetX + 'px');
                     break;
             }
         });

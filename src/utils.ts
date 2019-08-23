@@ -1,4 +1,4 @@
-import { asyncScheduler, defer, from, Observable, of, timer } from 'rxjs';
+import { asyncScheduler, Observable, of, timer } from 'rxjs';
 import { SimpleChange } from '@angular/core';
 import { ArrayOrGroupAbstractControls } from './form-helper.directive';
 import { AbstractControl, ControlContainer, NgControl } from '@angular/forms';

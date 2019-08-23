@@ -3,6 +3,7 @@ import {
     AbstractControl, FormArray, FormGroup, NG_VALIDATORS, ValidationErrors, Validator, ValidatorFn
 } from '@angular/forms';
 import { arrayOfAbstractControls } from '../utils';
+import { InputNumber } from 'cmjs-lib';
 
 export function checkboxRequired(
     { minCheckedNum, maxCheckedNum }: { minCheckedNum?: number, maxCheckedNum?: number }
@@ -48,9 +49,9 @@ export function checkboxRequired(
 })
 export class CheckboxRequiredDirective implements Validator, OnChanges {
 
-    @Input() minCheckedNum: number;
+    @Input() @InputNumber() minCheckedNum: number;
 
-    @Input() maxCheckedNum: number;
+    @Input() @InputNumber() maxCheckedNum: number;
 
     private ctrl: AbstractControl;
 

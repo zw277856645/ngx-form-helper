@@ -12,45 +12,47 @@ import { ErrorHandlerTextMessageComponent } from './error-handler/text/error-han
 import { ErrorHandlerTooltipMessageComponent } from './error-handler/tooltip/error-handler-tooltip-message.component';
 import { ControlBindElementDirective } from './error-handler/control-bind-element.directive';
 
+const MODULES = [
+    CommonModule
+];
+
+const COMPONENTS = [
+    // text error handler
+    ErrorHandlerTextComponent,
+    ErrorHandlerTextMessageComponent,
+
+    // tooltip error handler
+    ErrorHandlerTooltipComponent,
+    ErrorHandlerTooltipMessageComponent
+];
+
+const DIRECTIVES = [
+    FormHelperDirective,
+    ControlBindElementDirective,
+
+    // validations
+    TrimmedRequiredDirective,
+    ListRequiredDirective,
+    CheckboxRequiredDirective,
+
+    // submit handlers
+    SubmitHandlerLoaderDirective,
+
+    // simple error handler
+    ErrorHandlerSimpleDirective
+];
+
 @NgModule({
     imports: [
-        CommonModule
+        ...MODULES
     ],
     declarations: [
-        FormHelperDirective,
-        ControlBindElementDirective,
-
-        // validations
-        TrimmedRequiredDirective,
-        ListRequiredDirective,
-        CheckboxRequiredDirective,
-
-        // submit handlers
-        SubmitHandlerLoaderDirective,
-
-        // simple error handler
-        ErrorHandlerSimpleDirective,
-
-        // text error handler
-        ErrorHandlerTextComponent,
-        ErrorHandlerTextMessageComponent,
-
-        // tooltip error handler
-        ErrorHandlerTooltipComponent,
-        ErrorHandlerTooltipMessageComponent
+        ...COMPONENTS,
+        ...DIRECTIVES
     ],
     exports: [
-        FormHelperDirective,
-        TrimmedRequiredDirective,
-        ListRequiredDirective,
-        CheckboxRequiredDirective,
-        SubmitHandlerLoaderDirective,
-        ErrorHandlerSimpleDirective,
-        ErrorHandlerTextComponent,
-        ErrorHandlerTooltipComponent,
-        ErrorHandlerTextMessageComponent,
-        ErrorHandlerTooltipMessageComponent,
-        ControlBindElementDirective
+        ...COMPONENTS,
+        ...DIRECTIVES
     ]
 })
 export class FormHelperModule {

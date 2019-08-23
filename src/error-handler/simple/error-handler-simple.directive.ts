@@ -42,7 +42,7 @@ export function errorHandlerSimpleConfigProvider(config: ErrorHandlerSimpleConfi
 })
 export class ErrorHandlerSimpleDirective extends ErrorHandler implements AfterViewInit {
 
-    @Input() errorClassNames: string | false = 'eh-simple-error';
+    @Input() errorClassNames: string = 'eh-simple-error';
 
     constructor(private eleRef: ElementRef,
                 private renderer: Renderer2,

@@ -38,7 +38,7 @@
 
 ### iconSelector
 
-- 类型：`string | false`
+- 类型：`string`
 - 默认值：`i.icon, i.fa`
 
 寻找图标的选择器，若找到，则使用`局部图标主题样式`，否则使用`全局主题样式`

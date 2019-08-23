@@ -44,7 +44,7 @@
     <div class="field required">
       <label class="inline">性别</label>
       <input type="text" formControlName="sex" autocomplete="off">
-      <eh-text ref="sex" animation="slideDown" [inline]="false" [float]="true" [right]="true">
+      <eh-text ref="sex" animation="slideDown" [inline]="false" float right>
         <eh-text-message error="trimmedRequired">不能为空</eh-text-message>
         <eh-text-message error="pattern">请输入字符</eh-text-message>
       </eh-text>
@@ -92,7 +92,7 @@
     <div class="field">
       <label>滚动对象</label>
       <div class="ui styled fluid accordion" accordion>
-        <div class="title" ehSimple ref="gp" [validateImmediate]="true" scrollProxy="~"
+        <div class="title" ehSimple ref="gp" validateImmediate scrollProxy="~"
              (click)="formHelperCtrl.repositionMessages('gp')">
           <i class="dropdown icon"></i>
           Accordion
@@ -126,7 +126,7 @@
             <label>远程2</label>
             <input type="text" formControlName="remote2" autocomplete="off">
             <eh-tooltip ref="remote2">
-              <eh-tooltip-message error="nameUnique" [async]="true">重复</eh-tooltip-message>
+              <eh-tooltip-message error="nameUnique" async>重复</eh-tooltip-message>
             </eh-tooltip>
           </div>
         </div>

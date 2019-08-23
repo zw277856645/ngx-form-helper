@@ -1,5 +1,6 @@
 import { Component, HostBinding, Input } from '@angular/core';
 import { ErrorHandlerTooltipComponent } from './error-handler-tooltip.component';
+import { InputBoolean } from 'cmjs-lib';
 
 @Component({
     selector: 'eh-tooltip-message',
@@ -11,7 +12,7 @@ export class ErrorHandlerTooltipMessageComponent {
 
     @Input() message: string;
 
-    @Input() async: boolean;
+    @Input() @InputBoolean() async: boolean;
 
     @HostBinding('style.display') display = 'block';
 

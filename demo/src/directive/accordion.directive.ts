@@ -1,16 +1,18 @@
 import { AfterViewInit, Directive, ElementRef, Input } from '@angular/core';
 import { timer } from 'rxjs';
 import { first, map, skipWhile } from 'rxjs/operators';
+import { InputNumber } from 'cmjs-lib';
 
 declare var $: any;
 
 @Directive({
-    selector: '[accordion]'
+    selector: '[accordion]',
+    exportAs: 'accordion'
 })
 export class AccordionDirective implements AfterViewInit {
 
     @Input('accordion') options: any;
-    @Input() initialIndex: number;
+    @Input() @InputNumber() initialIndex: number = 0;
 
     $self: any;
 

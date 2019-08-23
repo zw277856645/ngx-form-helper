@@ -118,21 +118,21 @@
 
 ### classNames
 
-- 类型：`string | false`
+- 类型：`string`
 - 默认值：`fh-theme`
 
 表单域主题。指定的字符串会添加到 form 类名中。可设置多个值，空格符分割。插件已为默认值定义了一套主题样式，可通过修改配置实现自定义主题
 
 ### errorClassNames
 
-- 类型：`string | false`
+- 类型：`string`
 - 默认值：`fh-error`
 
 验证失败时`表单域`自动添加的类名
 
 ### errorGroupClassNames
 
-- 类型：`string | false`
+- 类型：`string`
 - 默认值：`fh-group-error`
 
 验证失败时`表单组`自动添加的类名。默认主题没有为 fh-group-error 设置样式，用户可在自己的样式文件中定义具体样式

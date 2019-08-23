@@ -12,7 +12,9 @@ import {
 } from './utils';
 import { catchError, finalize, first, map, skipWhile, switchMap } from 'rxjs/operators';
 import { SubmitHandler } from './submit-handler/submit-handler';
-import { async2Observable, getOffset, getScrollTop, isVisible, setScrollTop } from 'cmjs-lib';
+import {
+    async2Observable, getOffset, getScrollTop, InputBoolean, InputNumber, isVisible, setScrollTop
+} from 'cmjs-lib';
 import { ErrorHandler, RefType } from './error-handler/error-handler';
 
 const TWEEN = require('@tweenjs/tween.js');
@@ -80,25 +82,25 @@ export class FormHelperDirective implements OnDestroy, AfterViewInit {
                });
     }
 
-    @Input() autoReset: boolean = true;
+    @Input() @InputBoolean() autoReset: boolean = true;
 
     @Input() context: Window | ElementRef | HTMLElement | string = window;
 
     @Input() scrollProxy: string;
 
-    @Input() autoScroll: boolean = true;
+    @Input() @InputBoolean() autoScroll: boolean = true;
 
-    @Input() offsetTop: number = 0;
+    @Input() @InputNumber() offsetTop: number = 0;
 
-    @Input() validateImmediate: boolean;
+    @Input() @InputBoolean() validateImmediate: boolean;
 
-    @Input() validateImmediateDescendants: boolean = true;
+    @Input() @InputBoolean() validateImmediateDescendants: boolean = true;
 
-    @Input() classNames: string | false = 'fh-theme';
+    @Input() classNames: string = 'fh-theme';
 
-    @Input() errorClassNames: string | false = 'fh-error';
+    @Input() errorClassNames: string = 'fh-error';
 
-    @Input() errorGroupClassNames: string | false = 'fh-group-error';
+    @Input() errorGroupClassNames: string = 'fh-group-error';
 
     @Input() resultOkAssertion: (res: any) => boolean;
 
@@ -308,7 +310,7 @@ export class FormHelperDirective implements OnDestroy, AfterViewInit {
             minOffsetTop = getOffset(this.form).top;
         }
 
-        minOffsetTop -= +this.offsetTop;
+        minOffsetTop -= this.offsetTop;
 
         // 非window滚动窗体中表单域实际offsetTop需要减去滚动体offsetTop，加上滚动体当前scrollTop
         if (context !== window && context instanceof HTMLElement && context.nodeName.toUpperCase() !== 'HTML') {

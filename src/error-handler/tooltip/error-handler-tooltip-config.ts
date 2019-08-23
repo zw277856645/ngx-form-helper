@@ -10,7 +10,7 @@ export enum TooltipPosition {
 export class ErrorHandlerTooltipConfig {
 
     // 主题样式
-    classNames?: string | false;
+    classNames?: string;
 
     // x轴偏移
     offsetX?: number;

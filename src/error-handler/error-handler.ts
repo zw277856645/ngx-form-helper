@@ -5,6 +5,7 @@ import { ArrayOrGroupAbstractControls, FormHelperDirective } from '../form-helpe
 import { arrayOfAbstractControls, splitClassNames, waitForControlInit } from '../utils';
 import { AfterViewInit, ElementRef, Input, OnInit, Renderer2 } from '@angular/core';
 import { ControlBindElementDirective } from './control-bind-element.directive';
+import { InputBoolean } from 'cmjs-lib';
 
 export type RefType = string | NgModel | NgModelGroup;
 
@@ -24,10 +25,10 @@ export abstract class ErrorHandler implements AfterViewInit, OnInit {
     @Input() scrollProxy: string;
 
     // 覆盖FormHelperConfig中配置
-    @Input() validateImmediate: boolean;
+    @Input() @InputBoolean() validateImmediate: boolean;
 
     // 覆盖FormHelperConfig中配置
-    @Input() validateImmediateDescendants: boolean;
+    @Input() @InputBoolean() validateImmediateDescendants: boolean;
 
     controlName: string;
     controlElement: Element;
@@ -130,11 +131,11 @@ export abstract class ErrorHandler implements AfterViewInit, OnInit {
 
     onControlPrepared?(): void;
 
-    protected addClasses(ele: Element, classNames: string | boolean) {
+    protected addClasses(ele: Element, classNames: string) {
         splitClassNames(classNames).forEach(cls => this._renderer.addClass(ele, cls));
     }
 
-    protected removeClasses(ele: Element, classNames: string | boolean) {
+    protected removeClasses(ele: Element, classNames: string) {
         splitClassNames(classNames).forEach(cls => this._renderer.removeClass(ele, cls));
     }
 

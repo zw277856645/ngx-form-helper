@@ -14,7 +14,7 @@
     "@angular/platform-browser": "8.1.2",
     "@tweenjs/tween.js": "17.2.0",
     "@types/tween.js": "16.9.0",
-    "cmjs-lib": "^0.3.1",
+    "cmjs-lib": "0.4.4",
     "rxjs": "6.5.1",
     "zone.js": "0.9.1"
   },

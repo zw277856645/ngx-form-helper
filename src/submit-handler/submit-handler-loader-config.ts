@@ -11,7 +11,7 @@ export interface SubmitHandlerLoaderConfig {
     iconClassNames?: string;
 
     // 寻找图标的选择器，若找到，则用iconClassNames替换找到的图标类名，否则在整个按钮区域使用classNames
-    iconSelector?: string | false;
+    iconSelector?: string;
 
     // iconClassName替换策略
     // append: 在原有类名基础上增加

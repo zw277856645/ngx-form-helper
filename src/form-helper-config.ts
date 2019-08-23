@@ -35,15 +35,15 @@ export interface FormHelperConfig {
     validateImmediateDescendants?: boolean;
 
     // 表单域主题
-    classNames?: string | false;
+    classNames?: string;
 
     // 验证失败时表单域自动添加的类名
     // 同表单域自身配置累加
-    errorClassNames?: string | false;
+    errorClassNames?: string;
 
     // 验证失败时表单域(组)自动添加的类名
     // 同表单域(组)自身配置累加
-    errorGroupClassNames?: string | false;
+    errorGroupClassNames?: string;
 
     // 判断响应是否成功的断言函数，res为返回值
     // 请求状态码不为200时，已被自动处理。若用户自定义了错误码，需要使用此配置指定判断逻辑
