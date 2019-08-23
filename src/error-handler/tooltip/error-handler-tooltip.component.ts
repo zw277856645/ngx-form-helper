@@ -80,6 +80,7 @@ export class ErrorHandlerTooltipComponent extends ErrorHandler implements AfterV
                 private renderer: Renderer2,
                 private zone: NgZone,
                 @SkipSelf() private formHelper: FormHelperDirective,
+                // tslint:disable-next-line:prefer-inline-decorator
                 @Optional() @Inject(ERROR_HANDLER_TOOLTIP_CONFIG_ARRAY)
                 private overrideConfigs: ErrorHandlerTooltipConfig[]) {
         super(eleRef, formHelper, renderer);

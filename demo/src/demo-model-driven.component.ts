@@ -53,6 +53,7 @@ export class DemoModelDrivenComponent {
     }
 
     save(submitWrapper: SubmitWrapper) {
+        // tslint:disable-next-line:no-console
         setTimeout(() => submitWrapper().subscribe(() => console.log('save')));
     }
 

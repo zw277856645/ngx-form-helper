@@ -74,6 +74,7 @@ export class ErrorHandlerTextComponent extends ErrorHandler implements OnInit, O
     constructor(private eleRef: ElementRef,
                 private renderer: Renderer2,
                 @Optional() @SkipSelf() private formHelper: FormHelperDirective,
+                // tslint:disable-next-line:prefer-inline-decorator
                 @Optional() @Inject(ERROR_HANDLER_TEXT_CONFIG_ARRAY)
                 private overrideConfigs: ErrorHandlerTextConfig[]) {
         super(eleRef, formHelper, renderer);

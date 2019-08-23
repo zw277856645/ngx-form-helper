@@ -49,6 +49,7 @@ export class ErrorHandlerSimpleDirective extends ErrorHandler implements AfterVi
                 @Optional() private ngControl: NgControl,
                 @Optional() private controlContainer: ControlContainer,
                 @SkipSelf() private formHelper: FormHelperDirective,
+                // tslint:disable-next-line:prefer-inline-decorator
                 @Optional() @Inject(ERROR_HANDLER_SIMPLE_CONFIG_ARRAY)
                 private overrideConfigs: ErrorHandlerSimpleConfig[]) {
         super(eleRef, formHelper, renderer);

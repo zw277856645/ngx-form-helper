@@ -11,8 +11,7 @@ export class ErrorHandlerTextMessageComponent {
 
     @Input() message: string;
 
-    @HostBinding('class.active')
-    get isError() {
+    @HostBinding('class.active') get isError() {
         return this.errorHandlerText.hasError(this.error);
     }
 

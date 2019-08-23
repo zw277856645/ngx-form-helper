@@ -69,6 +69,7 @@ export class SubmitHandlerLoaderDirective implements SubmitHandler, OnChanges, A
     constructor(private eleRef: ElementRef,
                 private renderer: Renderer2,
                 @Optional() @SkipSelf() private formHelper: FormHelperDirective,
+                // tslint:disable-next-line:prefer-inline-decorator
                 @Optional() @Inject(SUBMIT_HANDLER_LOADER_CONFIG_ARRAY)
                 private overrideConfigs: SubmitHandlerLoaderConfig[]) {
         Object.assign(this, ...(overrideConfigs || []));
