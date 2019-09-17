@@ -15,8 +15,6 @@ angular 表单验证辅助插件
 
 ## 📦 安装
 > npm install ngx-form-helper --save
->
-> PS：请使用`3.0.0`及之后的版本
 
 ## 🔨 使用
 #### 1. 引入module
