@@ -1,15 +1,14 @@
 <div class="ui container">
-  <form class="ui form" [formGroup]="formGroup" formHelper #formHelperCtrl="formHelper" offsetTop="28"
-        (validPass)="save($event)">
+  <form class="ui form" [formGroup]="formGroup" formHelper #formHelperCtrl="formHelper" (validPass)="save($event)">
     <div class="field">
-      <label>名字</label>
+      <label>异步验证</label>
       <input type="text" [formControlName]="'name'" autocomplete="off">
       <eh-tooltip ref="name" [errorMessages]="nameMessages"></eh-tooltip>
     </div>
 
     <div class="field">
-      <label>说明</label>
-      <textarea formControlName="desc" autocomplete="off" rows="3" autoSize
+      <label>错误提示重定位</label>
+      <textarea formControlName="desc" autocomplete="off" rows="3" autoHeight
                 (sizeChange)="descCtrl.reposition()"></textarea>
       <eh-tooltip ref="desc" #descCtrl="ehTooltip">
         <eh-tooltip-message error="trimmedRequired">不能为空</eh-tooltip-message>
@@ -17,7 +16,7 @@
     </div>
 
     <div class="field">
-      <label>Input Hidden</label>
+      <label>定位代理 / 滚动代理</label>
       <input type="text" placeholder="占位" disabled>
       <input type="hidden" formControlName="hidden">
       <eh-tooltip ref="hidden" positionProxy="~" scrollProxy="~">
@@ -26,7 +25,7 @@
     </div>
 
     <div class="field">
-      <label class="inline">选择喜好</label>
+      <label class="inline">提示动画</label>
       <eh-text ref="love" animation="flyLeft">
         <eh-text-message error="required">至少选择一项</eh-text-message>
       </eh-text>
@@ -42,7 +41,7 @@
     </div>
 
     <div class="field required">
-      <label class="inline">性别</label>
+      <label class="inline">提示右浮动</label>
       <input type="text" formControlName="sex" autocomplete="off">
       <eh-text ref="sex" animation="slideDown" [inline]="false" float right>
         <eh-text-message error="trimmedRequired">不能为空</eh-text-message>
@@ -51,7 +50,7 @@
     </div>
 
     <div class="field">
-      <label>组(动态)</label>
+      <label>动态表单项 & 表单组验证</label>
       <div [formArrayName]="'group'" class="inline">
         <ng-container *ngFor="let ck of group.controls;index as i">
           <div class="ui checkbox">
@@ -90,56 +89,45 @@
     </div>
 
     <div class="field">
-      <label>滚动对象</label>
+      <label>折叠菜单中的表单</label>
       <div class="ui styled fluid accordion" accordion>
-        <div class="title" ehSimple ref="gp" validateImmediate scrollProxy="~"
-             (click)="formHelperCtrl.repositionMessages('gp')">
+        <div class="title" (click)="formHelperCtrl.repositionMessages('gp')">
           <i class="dropdown icon"></i>
-          Accordion
+          Accordion 1
         </div>
         <div class="content" [formGroupName]="'gp'">
           <div class="field">
             <label>生日</label>
             <input type="text" formControlName="birth">
-            <eh-tooltip ref="birth">
+            <eh-tooltip ref="birth" validateImmediate>
               <eh-tooltip-message error="required">不能为空</eh-tooltip-message>
-            </eh-tooltip>
-          </div>
-          <div class="field required">
-            <label>请求url</label>
-            <div class="ui left action input">
-              <div class="ui selection dropdown" dropdown>
-                <i class="dropdown icon"></i>
-                <div class="default text">请选择</div>
-                <div class="menu">
-                  <div class="item">GET</div>
-                  <div class="item">POST</div>
-                </div>
-              </div>
-              <input type="text" formControlName="url" autocomplete="off" maxlength="500">
-            </div>
-            <eh-tooltip ref="url">
-              <eh-tooltip-message error="required">不能为空</eh-tooltip-message>
-            </eh-tooltip>
-          </div>
-          <div class="field">
-            <label>远程2</label>
-            <input type="text" formControlName="remote2" autocomplete="off">
-            <eh-tooltip ref="remote2">
-              <eh-tooltip-message error="nameUnique" async>重复</eh-tooltip-message>
             </eh-tooltip>
           </div>
         </div>
 
         <div class="title" (click)="simpleCtrl.repositionMessages()">
           <i class="dropdown icon"></i>
-          Accordion2
+          Accordion 2
         </div>
-        <div class="content" formGroupName="gp2" ehSimple scrollProxy="~" #simpleCtrl="ehSimple">
+        <div class="content" formGroupName="gp2" ehSimple #simpleCtrl="ehSimple">
           <div class="field">
             <label>生日2</label>
             <input type="text" formControlName="birth2">
-            <eh-tooltip ref="birth2">
+            <eh-tooltip ref="birth2" validateImmediate>
+              <eh-tooltip-message error="required">不能为空</eh-tooltip-message>
+            </eh-tooltip>
+          </div>
+        </div>
+
+        <div class="title">
+          <i class="dropdown icon"></i>
+          Accordion 3
+        </div>
+        <div class="content" formGroupName="gp3">
+          <div class="field">
+            <label></label>
+            <input type="text" formControlName="birth3">
+            <eh-tooltip ref="birth3" validateImmediate>
               <eh-tooltip-message error="required">不能为空</eh-tooltip-message>
             </eh-tooltip>
           </div>
@@ -147,18 +135,9 @@
       </div>
     </div>
 
-    <div class="blank" [style.height.px]="pageHeight"></div>
-
     <div class="field buttons">
-      <button #submit type="button" class="ui button small instagram right labeled icon">
-        <i class="icon save"></i>
-        保存
-      </button>
+      <button #submit type="button" class="ui button small instagram">保存</button>
       <button #reset type="button" class="ui button small">重置</button>
     </div>
   </form>
-
-  <div class="ui divider"></div>
-  <button type="button" class="ui button tiny" (click)="pageHeight = pageHeight + 1000">增加页面高度(+1000px)</button>
-  <a class="ui tiny button teal" routerLink="/">Template Driven Form</a>
 </div>

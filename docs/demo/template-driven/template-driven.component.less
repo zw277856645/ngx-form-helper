@@ -18,17 +18,10 @@
   }
 }
 
-.out-button {
-  margin-top: 12px;
-}
-
 .modal-inner-scroll {
   .content {
     max-height: 300px;
     overflow-y: auto;
-    form {
-      height: 1000px;
-    }
   }
 }
 
@@ -37,4 +30,20 @@ label.inline,
 [formArrayName].inline,
 [ng-reflect-name].inline {
   display: inline-block !important;
+}
+
+.form .field {
+  &.large-pad {
+    padding-bottom: 2em;
+    margin-bottom: 1em;
+  }
+}
+
+.ui.info.message {
+  font-size: 13px;
+  padding: 1em;
+  margin: 0 0 0.28571429rem;
+  .red {
+    color: #db2828;
+  }
 }

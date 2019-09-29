@@ -2,7 +2,9 @@ import { Injectable } from '@angular/core';
 import { delay, map } from 'rxjs/operators';
 import { of } from 'rxjs';
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class NameValidateService {
 
     isNameUnique(name: string) {

@@ -1,15 +1,13 @@
 import {
-    Input, ElementRef, Directive, OnDestroy, HostListener, AfterViewInit, NgZone, Inject, Renderer2, Output, Optional,
-    QueryList, InjectionToken, EventEmitter, ContentChildren, SkipSelf, Provider
+    AfterViewInit, ContentChildren, Directive, ElementRef, EventEmitter, HostListener, Inject, InjectionToken, Input,
+    NgZone, OnDestroy, Optional, Output, Provider, QueryList, Renderer2, SkipSelf
 } from '@angular/core';
 import {
     AbstractControl, AbstractControlDirective, ControlContainer, FormArray, FormGroup, NgForm
 } from '@angular/forms';
 import { EMPTY, forkJoin, interval, Observable, of, Subscription } from 'rxjs';
 import { FormHelperConfig } from './form-helper-config';
-import {
-    arrayOfAbstractControls, arrayProviderFactory, getProxyElement, noop, splitClassNames
-} from './utils';
+import { arrayOfAbstractControls, arrayProviderFactory, getProxyElement, noop, splitClassNames } from './utils';
 import { catchError, finalize, first, map, skipWhile, switchMap } from 'rxjs/operators';
 import { SubmitHandler } from './submit-handler/submit-handler';
 import {

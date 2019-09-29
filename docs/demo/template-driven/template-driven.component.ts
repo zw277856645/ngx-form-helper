@@ -2,27 +2,24 @@ import { uuid } from 'cmjs-lib';
 import { Component } from '@angular/core';
 
 @Component({
-    templateUrl: './demo-template-driven.component.html',
-    styleUrls: [ './demo-template-driven.component.less' ]
+    templateUrl: './template-driven.component.html',
+    styleUrls: [ './template-driven.component.less' ]
 })
-export class DemoTemplateDrivenComponent {
+export class TemplateDrivenComponent {
 
     name: string;
     desc: string;
     type: number = 0;
     sex: string;
-    sex2: string;
     love: string;
     cks: any[] = [];
-    remote2: string;
     birth: string;
-    pageHeight = 0;
     birth2: string;
+    birth3: string;
     addr: string;
     issue: string;
     addr2: string;
     issue2: string;
-    url: string;
     hidden: string;
     assertMatch: string[] = [];
 
@@ -59,10 +56,6 @@ export class DemoTemplateDrivenComponent {
 
     trackByCk(i: number, ck: any) {
         return ck.uuid;
-    }
-
-    addHeight() {
-        this.pageHeight += 1000;
     }
 
 }

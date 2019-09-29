@@ -1,15 +1,22 @@
 <div class="ui container">
-  <form class="ui form" formHelper offsetTop="28" #formHelperCtrl="formHelper">
-    <div class="field">
-      <label>名字</label>
+  <form class="ui form" formHelper #formHelperCtrl="formHelper">
+    <div class="field large-pad">
+      <label>异步验证</label>
+      <div class="ui info message">
+        异步验证，当模型未稳定时，会显示黄色左边框和 loading 反馈。需要设置 <span class="red">async = true</span>，
+        否则没有代表验证中的黄色反馈。输入 <span class="red">admin</span> 验证重复
+      </div>
       <div class="ui input">
         <input type="text" [name]="'name'" [(ngModel)]="name" autocomplete="off" trimmedRequired nameUnique>
       </div>
       <eh-tooltip ref="name" [errorMessages]="nameMessages"></eh-tooltip>
     </div>
 
-    <div class="field">
-      <label>类型</label>
+    <div class="field large-pad">
+      <label>动态切换</label>
+      <div class="ui info message">
+        使用 *ngIf、*ngFor 等动态指令切换表单项时，所有消失的验证项验证状态清除
+      </div>
       <div class="ui checkbox radio">
         <input type="radio" (click)="type = 0" [checked]="type == 0">
         <label>类型1</label>
@@ -21,29 +28,40 @@
     </div>
 
     <div *ngIf="type == 0">
-      <div class="field">
-        <label>说明</label>
-        <textarea name="desc" trimmedRequired [(ngModel)]="desc" autocomplete="off" rows="3" autoSize
+      <div class="field large-pad">
+        <label>错误提示重定位</label>
+        <div class="ui info message">
+          eh-tooltip 错误提示是绝对定位的，每当表单项状态改变时，会自动计算位置，但插件无法跟踪页面布局变化，比如 textarea 高度
+          变化，此时需要手动调用重定位方法
+        </div>
+        <textarea name="desc" trimmedRequired [(ngModel)]="desc" autocomplete="off" rows="3" autoHeight
                   (sizeChange)="descCtrl.reposition()"></textarea>
         <eh-tooltip ref="desc" #descCtrl="ehTooltip">
           <eh-tooltip-message error="trimmedRequired">不能为空</eh-tooltip-message>
         </eh-tooltip>
       </div>
 
-      <div class="field">
-        <label>Input Hidden</label>
-        <input type="text" placeholder="占位" disabled>
+      <div class="field large-pad">
+        <label>定位代理 / 滚动代理</label>
+        <div class="ui info message">
+          当表单项本身不可见时，错误消息无法知道该显示在哪里。有错误时滚动条会自动滚动到第一个错误，
+          当不可见表单项是第一个错误项时，滚动条也不知道该滚动到哪里。此时可使用另一个可见元素作为代理
+        </div>
+        <input type="text" placeholder="我是代理对象" disabled>
         <input type="hidden" name="hidden" [(ngModel)]="hidden" required>
         <eh-tooltip ref="hidden" positionProxy="~" scrollProxy="~">
           <eh-tooltip-message error="required">不能为空</eh-tooltip-message>
         </eh-tooltip>
       </div>
 
-      <div class="field">
-        <label class="inline">选择喜好</label>
+      <div class="field large-pad">
+        <label class="inline">提示动画</label>
         <eh-text ref="love" animation="flyLeft">
           <eh-text-message error="required">至少选择一项</eh-text-message>
         </eh-text>
+        <div class="ui info message">
+          <span class="red">eh-text</span> 可以设置提示出现时的动画
+        </div>
         <div class="ui fluid selection dropdown" dropdown name="love" [(ngModel)]="love" required>
           <i class="icon dropdown"></i>
           <div class="default text">请选择</div>
@@ -55,8 +73,8 @@
         </div>
       </div>
 
-      <div class="field required">
-        <label class="inline">性别</label>
+      <div class="field required large-pad">
+        <label class="inline">提示右浮动</label>
         <input type="text" name="sex" [(ngModel)]="sex" autocomplete="off" trimmedRequired pattern="^[a-zA-Z]*$">
         <eh-text ref="sex" animation="slideDown" [inline]="false" float right>
           <eh-text-message error="trimmedRequired">不能为空</eh-text-message>
@@ -64,8 +82,13 @@
         </eh-text>
       </div>
 
-      <div class="field">
-        <label>组(动态)</label>
+      <div class="field large-pad">
+        <label>动态表单项 & 表单组验证</label>
+        <div class="ui info message">
+          动态表单项 name 必须唯一，当使用 *ngFor 渲染时，不能使用下标作为名称，比如 &lt;input [name]="'name-' + index"&gt;。
+          <span class="red">使用下标作为名称动态增/删表单项后，将出现数据混乱，这是 angular 自身的 BUG</span>，请使用 id
+          等唯一字段作为 name 名称，如果没有可用唯一字段，请使用 uuid 等工具库生成
+        </div>
         <div [ngModelGroup]="'group'" checkboxRequired minCheckedNum="2" maxCheckedNum="4" class="inline">
           <div class="ui checkbox" *ngFor="let ck of cks;trackBy:trackByCk;index as i">
             <input type="checkbox" [(ngModel)]="ck.checked" [name]="'ck-' + ck.uuid">
@@ -84,71 +107,61 @@
       </div>
 
       <div class="field">
-        <label>滚动对象</label>
+        <label>折叠菜单中的表单</label>
+        <div class="ui info message">
+          已关闭折叠菜单中的表单项是不可见的，此时错误消息提示定位是不准确的，需要在菜单即将打开前手动调用重定位方法。菜单中可能有
+          多个表单项，不要使用消息自身的重定位方法一个个去调用，使用 formHelper 对象的重定位方法或定义 ngModelGroup / formGroup，
+          使用组控件的重定位方法实现批量重定位
+        </div>
         <div class="ui styled fluid accordion" accordion>
-          <div class="title" ehSimple ref="gp" validateImmediate scrollProxy="~"
-               (click)="formHelperCtrl.repositionMessages('gp')">
+          <div class="title" (click)="formHelperCtrl.repositionMessages('gp')">
             <i class="dropdown icon"></i>
-            Accordion
+            Accordion 1
           </div>
           <div class="content" ngModelGroup="gp">
             <div class="field">
-              <label>生日</label>
-              <input type="text" name="birth" [(ngModel)]="birth" required>
-              <eh-tooltip ref="birth">
-                <eh-tooltip-message error="required">不能为空</eh-tooltip-message>
-              </eh-tooltip>
-            </div>
-            <div class="field required">
-              <label>请求url</label>
-              <div class="ui left action input">
-                <div class="ui selection dropdown" dropdown>
-                  <i class="dropdown icon"></i>
-                  <div class="default text">请选择</div>
-                  <div class="menu">
-                    <div class="item">GET</div>
-                    <div class="item">POST</div>
-                  </div>
-                </div>
-                <input type="text" name="url" [(ngModel)]="url" required autocomplete="off" maxlength="500">
+              <label></label>
+              <div class="ui info message">
+                <span class="red">validateImmediate</span> 立即验证使错误提示立即显示
               </div>
-              <eh-tooltip ref="url">
+              <input type="text" name="birth" [(ngModel)]="birth" required>
+              <eh-tooltip ref="birth" validateImmediate>
                 <eh-tooltip-message error="required">不能为空</eh-tooltip-message>
-              </eh-tooltip>
-            </div>
-            <div class="field">
-              <label>远程2</label>
-              <input type="text" name="remote2" [(ngModel)]="remote2" autocomplete="off" nameUnique>
-              <eh-tooltip ref="remote2">
-                <eh-tooltip-message error="nameUnique" async>重复</eh-tooltip-message>
               </eh-tooltip>
             </div>
           </div>
 
           <div class="title" (click)="simpleCtrl.repositionMessages()">
             <i class="dropdown icon"></i>
-            Accordion2
+            Accordion 2
           </div>
-          <div class="content" ngModelGroup="gp2" ehSimple scrollProxy="~" #simpleCtrl="ehSimple">
+          <div class="content" ngModelGroup="gp2" ehSimple #simpleCtrl="ehSimple">
             <div class="field">
-              <label>生日2</label>
+              <label></label>
               <input type="text" name="birth2" [(ngModel)]="birth2" required>
-              <eh-tooltip ref="birth2">
+              <eh-tooltip ref="birth2" validateImmediate>
+                <eh-tooltip-message error="required">不能为空</eh-tooltip-message>
+              </eh-tooltip>
+            </div>
+          </div>
+
+          <div class="title">
+            <i class="dropdown icon"></i>
+            Accordion 3
+          </div>
+          <div class="content">
+            <div class="field">
+              <label></label>
+              <div class="ui info message">
+                不使用重定位方法的情况，错误消息定位不准确
+              </div>
+              <input type="text" name="birth3" [(ngModel)]="birth3" required>
+              <eh-tooltip ref="birth3" validateImmediate>
                 <eh-tooltip-message error="required">不能为空</eh-tooltip-message>
               </eh-tooltip>
             </div>
           </div>
         </div>
-      </div>
-
-      <div class="blank" [style.height.px]="pageHeight"></div>
-
-      <div class="field buttons">
-        <button shLoader type="submit" class="ui button small instagram right labeled icon">
-          <i class="icon save"></i>
-          保存1
-        </button>
-        <button type="button" class="ui button small" #reset>重置</button>
       </div>
     </div>
 
@@ -157,14 +170,6 @@
     <!-- ng-template 必须在form内部，否则模板内的ngModel将不会注册到ngForm中 -->
     <ng-template #template let-type="type">
       <div *ngIf="type == 1">
-        <div class="field">
-          <label>性别</label>
-          <input type="text" name="sex2" required [(ngModel)]="sex2" autocomplete="off" pattern="^\d*$">
-          <eh-tooltip ref="sex2">
-            <eh-tooltip-message error="required">不能为空</eh-tooltip-message>
-            <eh-tooltip-message error="pattern">只能为数字</eh-tooltip-message>
-          </eh-tooltip>
-        </div>
         <div class="field required">
           <label>List Required</label>
           <tag-input name="assertMatch"
@@ -182,46 +187,41 @@
                      maxListNum="4"></tag-input>
           <eh-tooltip ref="assertMatch" [errorMessages]="assertMatchMessages"></eh-tooltip>
         </div>
-        <div class="field buttons">
-          <button shLoader type="submit" class="ui button small instagram">保存2</button>
-          <button type="button" class="ui button small" #reset>重置</button>
-        </div>
       </div>
     </ng-template>
+
+    <div class="field buttons">
+      <button shLoader type="submit" class="ui button small instagram">保存</button>
+      <button type="button" class="ui button small" #reset>重置</button>
+    </div>
   </form>
 
-  <div class="out-button">
-    <button shLoader [refForm]="formHelperCtrl" type="button" class="ui button small instagram right labeled icon">
-      <i class="icon save"></i>
-      保存 - 表单外部
-    </button>
-  </div>
-
   <div class="ui divider"></div>
-  <button type="button" class="ui button tiny" (click)="addHeight()">增加页面高度(+1000px)</button>
-  <button type="button" class="ui tiny button modal-button" (click)="modalCtrl.behavior('show')">Modal Scroll</button>
+  <button type="button" class="ui tiny button modal-button" (click)="modalCtrl.behavior('show')">
+    Modal Scroll
+  </button>
   <button type="button" class="ui tiny button modal-inner-button" (click)="innerModalCtrl.behavior('show')">
     Modal Inner Scroll
   </button>
-  <a class="ui tiny button teal" routerLink="/model-driven">Model Driven Form</a>
 </div>
 
 <div class="ui small modal modal-scroll" modal #modalCtrl="modal">
   <div class="header">
-    弹层表单
+    弹层表单 - 全局滚动
   </div>
   <div class="content">
+    <div class="ui info message">滚动对象为全局 window</div>
     <form class="ui form" formHelper #modalForm="formHelper" context=".ui.page.modals">
       <div class="field">
-        <label>地址</label>
+        <label>表单项</label>
         <input type="text" name="addr" [(ngModel)]="addr" autocomplete="off" required>
         <eh-tooltip ref="addr">
           <eh-tooltip-message error="required">不能为空</eh-tooltip-message>
         </eh-tooltip>
       </div>
       <div class="field">
-        <label>评论</label>
-        <textarea name="issue" required [(ngModel)]="issue" autocomplete="off" rows="60"></textarea>
+        <label>表单项</label>
+        <textarea name="issue" required [(ngModel)]="issue" autocomplete="off" rows="30"></textarea>
         <eh-tooltip ref="issue">
           <eh-tooltip-message error="required">不能为空</eh-tooltip-message>
         </eh-tooltip>
@@ -229,31 +229,35 @@
     </form>
   </div>
   <div class="actions">
+    <div class="ui info message">
+      提交按钮在 form 外部时，需使用 refForm 绑定 formHelper 控件
+    </div>
     <div class="ui deny button">关闭</div>
-    <button class="ui instagram right labeled icon button" shLoader [refForm]="modalForm">
-      提交
-      <i class="checkmark icon"></i>
-    </button>
+    <button class="ui instagram button" shLoader [refForm]="modalForm">提交</button>
   </div>
 </div>
 
 <div class="ui small modal modal-inner-scroll" modal #innerModalCtrl="modal">
   <div class="header">
-    弹层表单
+    弹层表单 - 局部滚动
   </div>
   <div class="content">
+    <div class="ui info message">
+      滚动对象为 form 自身或其某祖先元素，注意 <span class="red">context</span> 必须设置为有滚动条的元素，
+      否则失去自动滚动到第一个错误项的功能
+    </div>
     <form class="ui form" formHelper #innerModalForm="formHelper" context="..">
       <div class="field">
-        <label>地址</label>
+        <label>表单项</label>
         <input type="text" name="addr2" [(ngModel)]="addr2" autocomplete="off" required>
         <eh-tooltip ref="addr2">
           <eh-tooltip-message error="required">不能为空</eh-tooltip-message>
         </eh-tooltip>
       </div>
       <div class="field">
-        <label>评论</label>
-        <textarea name="issue2" trimmedRequired [(ngModel)]="issue2" autocomplete="off" autoSize rows="3"
-                  minHeight="100" (sizeChange)="issue2Ctrl.reposition()"></textarea>
+        <label>表单项</label>
+        <textarea name="issue2" trimmedRequired [(ngModel)]="issue2" autocomplete="off" autoHeight
+                  minHeight="300" (sizeChange)="issue2Ctrl.reposition()"></textarea>
         <eh-tooltip ref="issue2" #issue2Ctrl="ehTooltip">
           <eh-tooltip-message error="trimmedRequired">不能为空</eh-tooltip-message>
         </eh-tooltip>
@@ -261,10 +265,10 @@
     </form>
   </div>
   <div class="actions">
-    <div class="ui deny button">关闭</div>
-    <div class="ui instagram right labeled icon button" shLoader [refForm]="innerModalForm">
-      提交
-      <i class="checkmark icon"></i>
+    <div class="ui info message">
+      提交按钮在 form 外部时，需使用 refForm 绑定 formHelper 控件
     </div>
+    <div class="ui deny button">关闭</div>
+    <div class="ui instagram button" shLoader [refForm]="innerModalForm">提交</div>
   </div>
 </div>

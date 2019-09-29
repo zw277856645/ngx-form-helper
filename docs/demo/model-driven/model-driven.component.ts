@@ -1,16 +1,15 @@
 import { Component } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { nameUnique } from './directive/name-unique.directive';
-import { NameValidateService } from './directive/name-unique.service';
-import { trimmedRequired, checkboxRequired, listRequired, SubmitWrapper } from 'ngx-form-helper';
+import { checkboxRequired, listRequired, SubmitWrapper, trimmedRequired } from 'ngx-form-helper';
+import { NameValidateService } from '../directive/name-unique.service';
+import { nameUnique } from '../directive/name-unique.directive';
 
 @Component({
-    templateUrl: './demo-model-driven.component.html',
-    styleUrls: [ './demo-template-driven.component.less' ]
+    templateUrl: './model-driven.component.html',
+    styleUrls: [ '../template-driven/template-driven.component.less' ]
 })
-export class DemoModelDrivenComponent {
+export class ModelDrivenComponent {
 
-    pageHeight = 0;
     formGroup: FormGroup;
     cks: any[] = [];
 
@@ -36,12 +35,13 @@ export class DemoModelDrivenComponent {
             group: fb.array([], [ checkboxRequired({ minCheckedNum: 2, maxCheckedNum: 4 }) ]),
             assertMatch: [ [], [ listRequired({ minListNum: 2, maxListNum: 4 }) ] ],
             gp: fb.group({
-                birth: [ null, [ Validators.required ] ],
-                url: [ null, [ Validators.required ] ],
-                remote2: [ null, null, [ nameUnique(nameValidateService) ] ]
+                birth: [ null, [ Validators.required ] ]
             }),
             gp2: fb.group({
                 birth2: [ null, [ Validators.required ] ]
+            }),
+            gp3: fb.group({
+                birth3: [ null, [ Validators.required ] ]
             })
         });
 

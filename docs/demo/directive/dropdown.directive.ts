@@ -1,6 +1,4 @@
-import {
-    Directive, Input, ElementRef, EventEmitter, AfterViewInit, OnChanges, SimpleChanges
-} from '@angular/core';
+import { AfterViewInit, Directive, ElementRef, EventEmitter, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { isNullOrUndefined } from 'util';
 
