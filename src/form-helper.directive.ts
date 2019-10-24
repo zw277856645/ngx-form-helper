@@ -316,8 +316,15 @@ export class FormHelperDirective implements OnDestroy, AfterViewInit {
             minOffsetTop += context.scrollTop;
         }
 
+        let curScrollTop = getScrollTop(context);
+
+        // 如果待滚到位置在可视窗口内，则忽略
+        if (minOffsetTop >= curScrollTop) {
+            return;
+        }
+
         let animationRequest: number;
-        let currentTween = new TWEEN.Tween({ y: getScrollTop(context) })
+        let currentTween = new TWEEN.Tween({ y: curScrollTop })
             .to({ y: minOffsetTop }, 500)
             .easing(TWEEN.Easing.Quadratic.Out)
             .onUpdate((data: any) => {

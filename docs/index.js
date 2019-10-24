@@ -27,7 +27,7 @@ window.$docsify = {
                     "@angular/forms": "8.1.2",
                     "@angular/router": "8.1.2",
                     "cmjs-lib": "0.7.1",
-                    "ngx-form-helper": "3.0.12",
+                    "ngx-form-helper": "3.0.14",
                     "moment": "2.18.1",
                     "jquery": "3.2.1",
                     "semantic-ui-css": "2.4.1",
