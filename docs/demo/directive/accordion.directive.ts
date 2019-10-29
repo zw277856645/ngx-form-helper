@@ -1,7 +1,7 @@
 import { AfterViewInit, Directive, ElementRef, Input } from '@angular/core';
 import { timer } from 'rxjs';
 import { first, map, skipWhile } from 'rxjs/operators';
-import { InputNumber } from 'cmjs-lib';
+import { InputNumber } from '@demacia/cmjs-lib';
 
 declare var $: any;
 

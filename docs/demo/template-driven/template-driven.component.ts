@@ -1,4 +1,4 @@
-import { uuid } from 'cmjs-lib';
+import { uuid } from '@demacia/cmjs-lib';
 import { Component } from '@angular/core';
 
 @Component({

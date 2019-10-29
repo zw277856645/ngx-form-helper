@@ -8,7 +8,7 @@ import { interval, Observable } from 'rxjs';
 import { first, map } from 'rxjs/operators';
 import { FormHelperDirective } from '../form-helper.directive';
 import { arrayProviderFactory, isNotFirstChange, splitClassNames } from '../utils';
-import { InputBoolean, InputNumber } from 'cmjs-lib';
+import { InputBoolean, InputNumber } from '@demacia/cmjs-lib';
 
 export const SUBMIT_HANDLER_LOADER_CONFIG =
     new InjectionToken<SubmitHandlerLoaderConfig>('submit_handler_loader_config');

@@ -3,7 +3,7 @@ import {
     AbstractControl, FormArray, FormGroup, NG_VALIDATORS, ValidationErrors, Validator, ValidatorFn
 } from '@angular/forms';
 import { arrayOfAbstractControls } from '../utils';
-import { InputNumber } from 'cmjs-lib';
+import { InputNumber } from '@demacia/cmjs-lib';
 
 export function checkboxRequired(
     { minCheckedNum, maxCheckedNum }: { minCheckedNum?: number, maxCheckedNum?: number }

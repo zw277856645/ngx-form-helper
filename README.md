@@ -14,12 +14,12 @@ angular 表单验证辅助插件
 - [DEMO](https://zw277856645.gitlab.io/ngx-form-helper/#/demo)
 
 ## 📦 安装
-> npm install ngx-form-helper --save
+> npm install @demacia/ngx-form-helper --save
 
 ## 🔨 使用
 #### 1. 引入module
 ``` js
-import { FormHelperModule } from 'ngx-form-helper';
+import { FormHelperModule } from '@demacia/ngx-form-helper';
 
 @NgModule({
     imports: [

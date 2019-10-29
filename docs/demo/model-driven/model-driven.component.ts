@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { checkboxRequired, listRequired, SubmitWrapper, trimmedRequired } from 'ngx-form-helper';
+import { checkboxRequired, listRequired, SubmitWrapper, trimmedRequired } from '@demacia/ngx-form-helper';
 import { NameValidateService } from '../directive/name-unique.service';
 import { nameUnique } from '../directive/name-unique.directive';
 

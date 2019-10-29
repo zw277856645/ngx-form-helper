@@ -7,7 +7,7 @@ import { ErrorHandlerTooltipConfig, TooltipPosition } from './error-handler-tool
 import { FormHelperDirective } from '../../form-helper.directive';
 import { TooltipMessage, Message } from './tooltip-message';
 import { arrayProviderFactory, getProxyElement } from '../../utils';
-import { getOuterHeight, getOuterWidth, getStyle, InputNumber, isHidden } from 'cmjs-lib';
+import { getOuterHeight, getOuterWidth, getStyle, InputNumber, isHidden } from '@demacia/cmjs-lib';
 
 export const ERROR_HANDLER_TOOLTIP_CONFIG
     = new InjectionToken<ErrorHandlerTooltipConfig>('error_handler_tooltip_config');

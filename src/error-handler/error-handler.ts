@@ -5,7 +5,7 @@ import { ArrayOrGroupAbstractControls, FormHelperDirective } from '../form-helpe
 import { arrayOfAbstractControls, splitClassNames, waitForControlInit } from '../utils';
 import { AfterViewInit, ElementRef, Input, OnInit, Renderer2 } from '@angular/core';
 import { ControlBindElementDirective } from './control-bind-element.directive';
-import { InputBoolean } from 'cmjs-lib';
+import { InputBoolean } from '@demacia/cmjs-lib';
 
 export type RefType = string | NgModel | NgModelGroup;
 

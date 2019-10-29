@@ -12,7 +12,7 @@ import { catchError, finalize, first, map, skipWhile, switchMap } from 'rxjs/ope
 import { SubmitHandler } from './submit-handler/submit-handler';
 import {
     async2Observable, getOffset, getScrollTop, InputBoolean, InputNumber, isVisible, setScrollTop
-} from 'cmjs-lib';
+} from '@demacia/cmjs-lib';
 import { ErrorHandler, RefType } from './error-handler/error-handler';
 
 const TWEEN = require('@tweenjs/tween.js');

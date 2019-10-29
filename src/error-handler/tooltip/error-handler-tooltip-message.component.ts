@@ -1,6 +1,6 @@
 import { Component, HostBinding, Input } from '@angular/core';
 import { ErrorHandlerTooltipComponent } from './error-handler-tooltip.component';
-import { InputBoolean } from 'cmjs-lib';
+import { InputBoolean } from '@demacia/cmjs-lib';
 
 @Component({
     selector: 'eh-tooltip-message',

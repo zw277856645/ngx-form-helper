@@ -7,7 +7,7 @@ import { arrayProviderFactory } from '../../utils';
 import { FormHelperDirective } from '../../form-helper.directive';
 import { ErrorHandler } from '../error-handler';
 import { TextMessage } from './text-message';
-import { InputBoolean, InputNumber } from 'cmjs-lib';
+import { InputBoolean, InputNumber } from '@demacia/cmjs-lib';
 
 export const ERROR_HANDLER_TEXT_CONFIG
     = new InjectionToken<ErrorHandlerTextConfig>('error_handler_text_config');

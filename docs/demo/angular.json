@@ -16,7 +16,7 @@
             "polyfills": "polyfills.ts",
             "styles": [
               "node_modules/semantic-ui-css/semantic.css",
-              "node_modules/ngx-form-helper/ngx-form-helper.css",
+              "node_modules/@demacia/ngx-form-helper/ngx-form-helper.css",
               "demo/assets/tag-input.less"
             ]
           }

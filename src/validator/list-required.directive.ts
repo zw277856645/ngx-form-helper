@@ -1,7 +1,7 @@
 import { Directive, DoCheck, Input, IterableDiffer, IterableDiffers, OnChanges, SimpleChanges } from '@angular/core';
 import { AbstractControl, NG_VALIDATORS, ValidationErrors, Validator, ValidatorFn } from '@angular/forms';
 import { isNotFirstChange } from '../utils';
-import { InputNumber } from 'cmjs-lib';
+import { InputNumber } from '@demacia/cmjs-lib';
 
 export function listRequired({ minListNum, maxListNum }: { minListNum?: number, maxListNum?: number }): ValidatorFn {
     return (c: AbstractControl) => {
