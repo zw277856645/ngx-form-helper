@@ -34,7 +34,7 @@ export class AppModule {
 如果使用 webpack 打包方式，在项目中第三方插件入口文件(通常为`vendor.ts`)中添加如下代码
 ``` js
 // vendor.ts
-import 'ngx-form-helper/ngx-form-helper.css';
+import '@demacia/ngx-form-helper/ngx-form-helper.css';
 ```
 ``` js
 // webpack.js
@@ -62,7 +62,7 @@ module.exports = {
             ...
             "styles": [
               ...
-              "node_modules/ngx-form-helper/ngx-form-helper.css"
+              "node_modules/@demacia/ngx-form-helper/ngx-form-helper.css"
             ]
           }
         }
