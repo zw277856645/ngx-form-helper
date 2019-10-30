@@ -7,13 +7,16 @@
 模板驱动
 ``` html
 <input type="text" name="name" [(ngModel)]="xxx" trimmedRequired>
+<input type="text" name="name" [(ngModel)]="xxx" [trimmedRequired]="true">
+<input type="text" name="name" [(ngModel)]="xxx" [trimmedRequired]="false">
 ```
 
 模型驱动
 ``` html
 <!-- 
 // xxx.component.ts
-name = new FormControl('', [ trimmedRequired ]);
+// 省略参数默认为 true
+name = new FormControl('', [ trimmedRequired() ]);
 -->
 <input type="text" name="name" formControlName="name">
 ```
