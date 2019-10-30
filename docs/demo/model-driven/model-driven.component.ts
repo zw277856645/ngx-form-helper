@@ -27,11 +27,11 @@ export class ModelDrivenComponent {
         ];
 
         this.formGroup = fb.group({
-            name: [ null, [ trimmedRequired ], [ nameUnique(nameValidateService) ] ],
-            desc: [ null, [ trimmedRequired ] ],
+            name: [ null, [ trimmedRequired() ], [ nameUnique(nameValidateService) ] ],
+            desc: [ null, [ trimmedRequired() ] ],
             hidden: [ null, [ Validators.required ] ],
             love: [ null, [ Validators.required ] ],
-            sex: [ null, [ trimmedRequired, Validators.pattern('^[a-zA-Z]*$') ] ],
+            sex: [ null, [ trimmedRequired(), Validators.pattern('^[a-zA-Z]*$') ] ],
             group: fb.array([], [ checkboxRequired({ minCheckedNum: 2, maxCheckedNum: 4 }) ]),
             assertMatch: [ [], [ listRequired({ minListNum: 2, maxListNum: 4 }) ] ],
             gp: fb.group({
