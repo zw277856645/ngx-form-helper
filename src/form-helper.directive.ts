@@ -162,7 +162,7 @@ export class FormHelperDirective implements OnDestroy, AfterViewInit {
 
                 return async2Observable(request).pipe(
                     catchError(() => of(requestError = true)),
-                    switchMap(res => async2Observable(submitHandler ? submitHandler.end() : noop()).pipe(
+                    switchMap(res => async2Observable(submitHandler ? submitHandler.progressing() : noop()).pipe(
                         map(() => {
                             if (requestError) {
                                 throw new Error('request fail');
@@ -188,6 +188,9 @@ export class FormHelperDirective implements OnDestroy, AfterViewInit {
                             if (this.autoReset) {
                                 this.reset();
                             }
+                        }
+                        if (submitHandler) {
+                            submitHandler.complete();
                         }
                     })
                 );

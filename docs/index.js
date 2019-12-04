@@ -27,12 +27,13 @@ window.$docsify = {
                     "@angular/forms": "8.1.2",
                     "@angular/router": "8.1.2",
                     "@demacia/cmjs-lib": "0.0.1",
-                    "@demacia/ngx-form-helper": "0.0.3",
+                    "@demacia/ngx-form-helper": "0.0.4",
                     "@demacia/ngx-textarea-auto-height": "0.0.1",
                     "moment": "2.18.1",
                     "jquery": "3.2.1",
                     "semantic-ui-css": "2.4.1",
-                    "ngx-chips": "2.0.0-beta.0"
+                    "ngx-chips": "2.0.0-beta.0",
+                    "core-js": "2.5.7"
                 }
             },
             extraModules: {

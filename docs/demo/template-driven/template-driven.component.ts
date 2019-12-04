@@ -1,5 +1,7 @@
 import { uuid } from '@demacia/cmjs-lib';
 import { Component } from '@angular/core';
+import { SubmitWrapper } from '../../../src/form-helper.directive';
+import { ModalDirective } from '../directive/modal.directive';
 
 @Component({
     templateUrl: './template-driven.component.html',
@@ -56,6 +58,10 @@ export class TemplateDrivenComponent {
 
     trackByCk(i: number, ck: any) {
         return ck.uuid;
+    }
+
+    hideModal(submitWrapper: SubmitWrapper, modalCtrl: ModalDirective) {
+        submitWrapper().subscribe(() => modalCtrl.behavior('hide'));
     }
 
 }

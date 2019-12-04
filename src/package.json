@@ -1,6 +1,6 @@
 {
   "name": "@demacia/ngx-form-helper",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "angular form validation helper",
   "$schema": "../node_modules/ng-packagr/package.schema.json",
   "ngPackage": {

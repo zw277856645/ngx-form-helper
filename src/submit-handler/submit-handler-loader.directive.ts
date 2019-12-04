@@ -1,11 +1,11 @@
 import {
-    Directive, ElementRef, HostListener, Inject, InjectionToken, Input, OnChanges, Optional, Provider,
-    Renderer2, SimpleChanges, SkipSelf, AfterViewInit
+    AfterViewInit, Directive, ElementRef, HostListener, Inject, InjectionToken, Input, OnChanges, Optional, Provider,
+    Renderer2, SimpleChanges, SkipSelf
 } from '@angular/core';
 import { IconToggleStrategy, SubmitHandlerLoaderConfig } from './submit-handler-loader-config';
 import { SubmitHandler } from './submit-handler';
-import { interval, Observable } from 'rxjs';
-import { first, map } from 'rxjs/operators';
+import { interval } from 'rxjs';
+import { first } from 'rxjs/operators';
 import { FormHelperDirective } from '../form-helper.directive';
 import { arrayProviderFactory, isNotFirstChange, splitClassNames } from '../utils';
 import { InputBoolean, InputNumber } from '@demacia/cmjs-lib';
@@ -118,34 +118,33 @@ export class SubmitHandlerLoaderDirective implements SubmitHandler, OnChanges, A
         }
     }
 
-    end(): Observable<any> {
+    progressing() {
         let diff = new Date().getTime() - this.startTime;
         let duration = diff < this.duration ? this.duration - diff : 0;
 
-        return interval(duration).pipe(
-            first(),
-            map(() => {
-                if (this.ele instanceof HTMLButtonElement) {
-                    this.ele.disabled = false;
-                } else {
-                    this.renderer.removeClass(this.ele, 'disabled');
-                }
+        return interval(duration).pipe(first());
+    }
 
-                if (this.disableTheme) {
-                    return;
-                }
+    complete() {
+        if (this.ele instanceof HTMLButtonElement) {
+            this.ele.disabled = false;
+        } else {
+            this.renderer.removeClass(this.ele, 'disabled');
+        }
 
-                if (this.loading) {
-                    this.removeClasses(this.loading, this.iconClassNames);
+        if (this.disableTheme) {
+            return;
+        }
 
-                    if (this.iconToggleStrategy === IconToggleStrategy.REPLACE) {
-                        this.addClasses(this.loading, this.originIconClasses);
-                    }
-                } else {
-                    this.removeClasses(this.ele, this.classNames);
-                }
-            })
-        );
+        if (this.loading) {
+            this.removeClasses(this.loading, this.iconClassNames);
+
+            if (this.iconToggleStrategy === IconToggleStrategy.REPLACE) {
+                this.addClasses(this.loading, this.originIconClasses);
+            }
+        } else {
+            this.removeClasses(this.ele, this.classNames);
+        }
     }
 
     private addClasses(ele: Element, classNames: string) {

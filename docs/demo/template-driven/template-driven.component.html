@@ -211,7 +211,8 @@
   </div>
   <div class="content">
     <div class="ui info message">滚动对象为全局 window</div>
-    <form class="ui form" formHelper #modalForm="formHelper" context=".ui.page.modals">
+    <form class="ui form" formHelper #modalForm="formHelper" context=".ui.page.modals"
+          (validPass)="hideModal($event,modalCtrl)">
       <div class="field">
         <label>表单项</label>
         <input type="text" name="addr" [(ngModel)]="addr" autocomplete="off" required>
@@ -246,7 +247,8 @@
       滚动对象为 form 自身或其某祖先元素，注意 <span class="red">context</span> 必须设置为有滚动条的元素，
       否则失去自动滚动到第一个错误项的功能
     </div>
-    <form class="ui form" formHelper #innerModalForm="formHelper" context="..">
+    <form class="ui form" formHelper #innerModalForm="formHelper" context=".."
+          (validPass)="hideModal($event,innerModalCtrl)">
       <div class="field">
         <label>表单项</label>
         <input type="text" name="addr2" [(ngModel)]="addr2" autocomplete="off" required>
