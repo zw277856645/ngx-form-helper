@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { checkboxRequired, listRequired, SubmitWrapper, trimmedRequired } from '@demacia/ngx-form-helper';
+import { checkboxRequired, listRequired, trimmedRequired } from '@demacia/ngx-form-helper';
 import { NameValidateService } from '../directive/name-unique.service';
 import { nameUnique } from '../directive/name-unique.directive';
 
@@ -50,11 +50,6 @@ export class ModelDrivenComponent {
 
     get group() {
         return this.formGroup.get('group') as FormArray;
-    }
-
-    save(submitWrapper: SubmitWrapper) {
-        // tslint:disable-next-line:no-console
-        setTimeout(() => submitWrapper().subscribe(() => console.log('save')));
     }
 
     addCK() {

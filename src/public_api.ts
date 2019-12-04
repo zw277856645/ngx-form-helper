@@ -2,7 +2,7 @@ export { getProxyElement } from './utils';
 
 export * from './form-helper.module';
 export * from './form-helper-config';
-export { FormHelperDirective, formHelperConfigProvider, SubmitWrapper } from './form-helper.directive';
+export { FormHelperDirective, formHelperConfigProvider, SubmitCallback } from './form-helper.directive';
 
 export * from './validator/trimmed-required.directive';
 export * from './validator/list-required.directive';

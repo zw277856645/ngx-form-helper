@@ -12,15 +12,6 @@
 
 @Input() 装饰器标识的属性
 
-### autoReset
-
-- 类型：`boolean`
-- 默认值：`true`
-
-`成功提交`后是否自动重置表单
-
-> 成功提交：指`验证通过`且提交回调函数[`resultOkAssertion`](#resultokassertion)执行也符合预期
-
 ### context
 
 - 类型：`window | ElementRef | Element | string`
@@ -137,26 +128,6 @@
 
 验证失败时`表单组`自动添加的类名。默认主题没有为 fh-group-error 设置样式，用户可在自己的样式文件中定义具体样式
 
-### resultOkAssertion
-
-- 类型：`(res: any) => boolean`
-- 默认值：`undefined`
-
-判断请求是否成功的断言函数，res为请求返回值，仅当执行结果为 true 时，才会继续执行[`SubmitWrapper`](appendix#submitwrapper)
-监听函数和自动重置表单。默认根据请求状态码处理，200为请求成功，否则为失败。如果用户包装了请求响应，比如使用自定义状态码代表请求状态，
-需要使用此配置指定判断逻辑
-
-``` js
-// 示例
-function myResultOkAssertion(res: any) {
-    return 'customStatus' in res ? res.customStatus === 'SUCCESS' : true;
-}
-```
-
-``` html
-<form formHelper [resultOkAssertion]="myResultOkAssertion"></form>
-```
-
 ## 输出属性
 
 @Output() 装饰器标识的属性
@@ -169,9 +140,9 @@ function myResultOkAssertion(res: any) {
 
 ### validPass
 
-- 类型：`EventEmitter<SubmitWrapper>`
+- 类型：`EventEmitter<SubmitCallback>`
 
-验证通过事件。事件会传递[`SubmitWrapper`](appendix#submitwrapper)方法，必须由用户合理调用
+验证通过事件。事件会传递[`SubmitCallback`](appendix#submitCallback)对象
 
 ## 公共成员属性
 
@@ -202,8 +173,8 @@ ControlContainer 为两者共同基类
 
 ### submit
 
-- 类型：`(submitHandler?: SubmitHandler) => void`
-  - submitHandler：详情参见[`SubmitWrapper`](appendix#submitwrapper)章节文档
+- 类型：`(submitCallback?: SubmitCallback) => void`
+  - submitCallback：详情参见[`SubmitCallback`](appendix#submitCallback)章节文档
 
 提交处理函数，不需要用户调用，通常在实现自定义的提交处理指令时需要
 

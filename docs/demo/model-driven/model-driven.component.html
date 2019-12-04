@@ -1,5 +1,5 @@
 <div class="ui container">
-  <form class="ui form" [formGroup]="formGroup" formHelper #formHelperCtrl="formHelper" (validPass)="save($event)">
+  <form class="ui form" [formGroup]="formGroup" formHelper #formHelperCtrl="formHelper">
     <div class="field">
       <label>异步验证</label>
       <input type="text" [formControlName]="'name'" autocomplete="off">

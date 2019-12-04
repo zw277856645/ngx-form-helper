@@ -1,6 +1,6 @@
 import { uuid } from '@demacia/cmjs-lib';
 import { Component } from '@angular/core';
-import { SubmitWrapper } from '../../../src/form-helper.directive';
+import { SubmitCallback } from '../../../src/form-helper.directive';
 import { ModalDirective } from '../directive/modal.directive';
 
 @Component({
@@ -60,8 +60,11 @@ export class TemplateDrivenComponent {
         return ck.uuid;
     }
 
-    hideModal(submitWrapper: SubmitWrapper, modalCtrl: ModalDirective) {
-        submitWrapper().subscribe(() => modalCtrl.behavior('hide'));
+    hideModal(submitCallback: SubmitCallback, modalCtrl: ModalDirective) {
+        setTimeout(() => {
+            modalCtrl.behavior('hide');
+            submitCallback.complete(true);
+        }, 500);
     }
 
 }

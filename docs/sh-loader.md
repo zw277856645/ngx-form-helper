@@ -50,13 +50,6 @@
 
 图标类名的替换策略，append: 在原有类名基础上增加，replace: 完全使用新类名替换原类名
 
-### duration
-
-- 类型：`number`
-- 默认值：`400`
-
-loader动画时长(ms)
-
 ### disableTheme
 
 - 类型：`boolean`

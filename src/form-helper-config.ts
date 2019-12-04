@@ -1,8 +1,5 @@
 export interface FormHelperConfig {
 
-    // 成功提交后是否自动重置表单
-    autoReset?: boolean;
-
     // 表单域所处上下文，通常为window或含有滚动条的对象，影响滚动条正确滚动到第一条错误
     // 可用格式: 1.css选择器
     //          2.点号表达式，语法：. -> 当前form，.. -> 父元素，../../ etc
@@ -44,10 +41,5 @@ export interface FormHelperConfig {
     // 验证失败时表单域(组)自动添加的类名
     // 同表单域(组)自身配置累加
     errorGroupClassNames?: string;
-
-    // 判断响应是否成功的断言函数，res为返回值
-    // 请求状态码不为200时，已被自动处理。若用户自定义了错误码，需要使用此配置指定判断逻辑
-    // 如果断言函数返回false，则后续不会执行reset操作
-    resultOkAssertion?: (res: any) => boolean;
 
 }

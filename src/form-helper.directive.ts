@@ -5,21 +5,22 @@ import {
 import {
     AbstractControl, AbstractControlDirective, ControlContainer, FormArray, FormGroup, NgForm
 } from '@angular/forms';
-import { EMPTY, forkJoin, interval, Observable, of, Subscription } from 'rxjs';
+import { forkJoin, interval, Observable, Subscription } from 'rxjs';
 import { FormHelperConfig } from './form-helper-config';
-import { arrayOfAbstractControls, arrayProviderFactory, getProxyElement, noop, splitClassNames } from './utils';
-import { catchError, finalize, first, map, skipWhile, switchMap } from 'rxjs/operators';
+import { arrayOfAbstractControls, arrayProviderFactory, getProxyElement, splitClassNames } from './utils';
+import { first, skipWhile } from 'rxjs/operators';
 import { SubmitHandler } from './submit-handler/submit-handler';
-import {
-    async2Observable, getOffset, getScrollTop, InputBoolean, InputNumber, isVisible, setScrollTop
-} from '@demacia/cmjs-lib';
+import { getOffset, getScrollTop, InputBoolean, InputNumber, isVisible, setScrollTop } from '@demacia/cmjs-lib';
 import { ErrorHandler, RefType } from './error-handler/error-handler';
 
 const TWEEN = require('@tweenjs/tween.js');
 
-export type SubmitWrapper = (
-    request?: Observable<any> | Promise<any> | ((...args: any[]) => Observable<any> | Promise<any> | any) | any
-) => Observable<any>;
+export interface SubmitCallback {
+
+    complete: (reset?: boolean) => void;
+
+    reset: () => void;
+}
 
 export type ArrayOrGroupAbstractControls = { [ key: string ]: AbstractControl } | AbstractControl[];
 
@@ -50,11 +51,6 @@ export function formHelperConfigProvider(config: FormHelperConfig): Provider[] {
  * angular表单存在的bug
  *  1)bug：当使用ngFor迭代表单域，且name使用数组下标(如：name-{{i}})，此时若动态新增/删除表单域，会造成表单域数量混乱
  *    fix：这种情况下请保证name唯一，且必须使用trackBy返回唯一标识，推荐使用uuid等工具(如：name-{{uuid}})
- *
- * 设计不好的地方
- *  1)validPass事件中需要向用户传递 SubmitWrapper
- *    原因：以rxjs为例，请求通常写法为 request.subscribe(() => response())，需要在request与response之间插入一些操作，
- *         借助 submitWrapper(request).subscribe(() => response()) 实现功能，但需要用户调用，对用户不透明
  */
 @Directive({
     selector: '[formHelper]',
@@ -80,8 +76,6 @@ export class FormHelperDirective implements OnDestroy, AfterViewInit {
                });
     }
 
-    @Input() @InputBoolean() autoReset: boolean = true;
-
     @Input() context: Window | ElementRef | HTMLElement | string = window;
 
     @Input() scrollProxy: string;
@@ -100,10 +94,8 @@ export class FormHelperDirective implements OnDestroy, AfterViewInit {
 
     @Input() errorGroupClassNames: string = 'fh-group-error';
 
-    @Input() resultOkAssertion: (res: any) => boolean;
-
     // 验证通过
-    @Output() validPass = new EventEmitter<SubmitWrapper>();
+    @Output() validPass = new EventEmitter<SubmitCallback>();
 
     // 验证不通过
     @Output() validFail = new EventEmitter();
@@ -156,47 +148,19 @@ export class FormHelperDirective implements OnDestroy, AfterViewInit {
                 submitHandler.start();
             }
 
-            this.validPass.emit(((request?: any) => {
-                let requestError = false;
-                let assertSuc = true;
-
-                return async2Observable(request).pipe(
-                    catchError(() => of(requestError = true)),
-                    switchMap(res => async2Observable(submitHandler ? submitHandler.progressing() : noop()).pipe(
-                        map(() => {
-                            if (requestError) {
-                                throw new Error('request fail');
-                            }
-                            if (typeof this.resultOkAssertion === 'function') {
-                                assertSuc = this.resultOkAssertion(res);
-
-                                if (!assertSuc) {
-                                    throw new Error('request assertion fail');
-                                }
-                            }
-
-                            return res;
-                        })
-                    )),
-                    catchError(() => {
-                        assertSuc = false;
-
-                        return EMPTY;
-                    }),
-                    finalize(() => {
-                        Promise.resolve().then(() => {
-                            if (assertSuc) {
-                                if (this.autoReset) {
-                                    this.reset();
-                                }
-                            }
-                            if (submitHandler) {
-                                submitHandler.complete();
-                            }
-                        });
-                    })
-                );
-            }) as SubmitWrapper);
+            this.validPass.emit({
+                complete: (reset?: boolean) => {
+                    if (reset) {
+                        this.reset();
+                    }
+                    if (submitHandler) {
+                        submitHandler.end();
+                    }
+                },
+                reset: () => {
+                    this.reset();
+                }
+            });
         } else {
             this.validateControls();
 

@@ -4,11 +4,9 @@ import {
 } from '@angular/core';
 import { IconToggleStrategy, SubmitHandlerLoaderConfig } from './submit-handler-loader-config';
 import { SubmitHandler } from './submit-handler';
-import { interval } from 'rxjs';
-import { first } from 'rxjs/operators';
 import { FormHelperDirective } from '../form-helper.directive';
 import { arrayProviderFactory, isNotFirstChange, splitClassNames } from '../utils';
-import { InputBoolean, InputNumber } from '@demacia/cmjs-lib';
+import { InputBoolean } from '@demacia/cmjs-lib';
 
 export const SUBMIT_HANDLER_LOADER_CONFIG =
     new InjectionToken<SubmitHandlerLoaderConfig>('submit_handler_loader_config');
@@ -46,8 +44,6 @@ export class SubmitHandlerLoaderDirective implements SubmitHandler, OnChanges, A
     @Input() iconSelector: string = 'i.icon, i.fa';
 
     @Input() iconToggleStrategy: IconToggleStrategy = IconToggleStrategy.APPEND;
-
-    @Input() @InputNumber() duration: number = 400;
 
     @Input() @InputBoolean() disableTheme: boolean;
 
@@ -118,14 +114,7 @@ export class SubmitHandlerLoaderDirective implements SubmitHandler, OnChanges, A
         }
     }
 
-    progressing() {
-        let diff = new Date().getTime() - this.startTime;
-        let duration = diff < this.duration ? this.duration - diff : 0;
-
-        return interval(duration).pipe(first());
-    }
-
-    complete() {
+    end() {
         if (this.ele instanceof HTMLButtonElement) {
             this.ele.disabled = false;
         } else {
