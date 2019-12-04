@@ -150,11 +150,12 @@ export class FormHelperDirective implements OnDestroy, AfterViewInit {
 
             this.validPass.emit({
                 complete: (reset?: boolean) => {
-                    if (reset) {
-                        this.reset();
-                    }
                     if (submitHandler) {
-                        submitHandler.end();
+                        submitHandler.end(() => {
+                            if (reset) {
+                                this.reset();
+                            }
+                        });
                     }
                 },
                 reset: () => {

@@ -61,10 +61,8 @@ export class TemplateDrivenComponent {
     }
 
     hideModal(submitCallback: SubmitCallback, modalCtrl: ModalDirective) {
-        setTimeout(() => {
-            modalCtrl.behavior('hide');
-            submitCallback.complete(true);
-        }, 500);
+        modalCtrl.behavior('hide');
+        submitCallback.complete(true);
     }
 
 }

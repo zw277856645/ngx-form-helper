@@ -6,7 +6,7 @@ import { IconToggleStrategy, SubmitHandlerLoaderConfig } from './submit-handler-
 import { SubmitHandler } from './submit-handler';
 import { FormHelperDirective } from '../form-helper.directive';
 import { arrayProviderFactory, isNotFirstChange, splitClassNames } from '../utils';
-import { InputBoolean } from '@demacia/cmjs-lib';
+import { InputBoolean, InputNumber } from '@demacia/cmjs-lib';
 
 export const SUBMIT_HANDLER_LOADER_CONFIG =
     new InjectionToken<SubmitHandlerLoaderConfig>('submit_handler_loader_config');
@@ -47,6 +47,8 @@ export class SubmitHandlerLoaderDirective implements SubmitHandler, OnChanges, A
 
     @Input() @InputBoolean() disableTheme: boolean;
 
+    @Input() @InputNumber() minDuration: number = 500;
+
     // 当submit元素在form外部时有用，使用此属性关联formHelper实例
     @Input() refForm: FormHelperDirective;
 
@@ -57,10 +59,11 @@ export class SubmitHandlerLoaderDirective implements SubmitHandler, OnChanges, A
         }
     }
 
-    private ele: HTMLElement;
+    private readonly ele: HTMLElement;
     private loading: HTMLElement;
     private originIconClasses: string;
     private startTime: number;
+    private flag: any;
 
     constructor(private eleRef: ElementRef,
                 private renderer: Renderer2,
@@ -114,7 +117,20 @@ export class SubmitHandlerLoaderDirective implements SubmitHandler, OnChanges, A
         }
     }
 
-    end() {
+    end(cb?: () => void) {
+        clearTimeout(this.flag);
+
+        let diff = new Date().getTime() - this.startTime;
+        let duration = diff < this.minDuration ? this.minDuration - diff : 0;
+
+        if (duration > 0) {
+            this.flag = setTimeout(() => this.doEnd(cb), duration);
+        } else {
+            this.doEnd(cb);
+        }
+    }
+
+    private doEnd(cb?: () => void) {
         if (this.ele instanceof HTMLButtonElement) {
             this.ele.disabled = false;
         } else {
@@ -133,6 +149,10 @@ export class SubmitHandlerLoaderDirective implements SubmitHandler, OnChanges, A
             }
         } else {
             this.removeClasses(this.ele, this.classNames);
+        }
+
+        if (typeof cb === 'function') {
+            cb();
         }
     }
 

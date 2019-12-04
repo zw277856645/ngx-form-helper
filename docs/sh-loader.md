@@ -57,6 +57,13 @@
 
 是否禁用主题样式
 
+### minDuration
+
+- 类型：`number`
+- 默认值：`500`
+
+loader最小动画时长(ms)，在此之间按钮不可点击(防重复提交)
+
 ### refForm
 
 - 类型：`FormHelperDirective`

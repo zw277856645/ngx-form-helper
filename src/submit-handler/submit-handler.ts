@@ -4,6 +4,6 @@ export interface SubmitHandler {
     start(): void;
 
     // 流程结束
-    end(): void;
+    end(cb?: () => void): void;
 
 }

@@ -18,9 +18,9 @@ export interface SubmitHandlerLoaderConfig {
     // replace: 完全使用新类名替换原类名
     iconToggleStrategy?: IconToggleStrategy;
 
-    // loader动画时长(ms)
-    duration?: number;
-
     // 禁用主题样式
     disableTheme?: boolean;
+
+    // loader最小动画时长(ms)
+    minDuration?: number;
 }
