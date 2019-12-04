@@ -184,14 +184,16 @@ export class FormHelperDirective implements OnDestroy, AfterViewInit {
                         return EMPTY;
                     }),
                     finalize(() => {
-                        if (assertSuc) {
-                            if (this.autoReset) {
-                                this.reset();
+                        Promise.resolve().then(() => {
+                            if (assertSuc) {
+                                if (this.autoReset) {
+                                    this.reset();
+                                }
                             }
-                        }
-                        if (submitHandler) {
-                            submitHandler.complete();
-                        }
+                            if (submitHandler) {
+                                submitHandler.complete();
+                            }
+                        });
                     })
                 );
             }) as SubmitWrapper);
