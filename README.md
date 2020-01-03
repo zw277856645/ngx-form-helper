@@ -11,7 +11,7 @@ angular 表单验证辅助插件
 
 ## 🔗 链接
 - [DOCS](https://zw277856645.gitlab.io/ngx-form-helper)
-- [DEMO](https://zw277856645.gitlab.io/ngx-form-helper/components/FormHelperDirective.html#example)
+- [DEMO](https://zw277856645.gitlab.io/ngx-form-helper/directives/FormHelperDirective.html#example)
 - [PROJECT](https://gitlab.com/zw277856645/ngx-form-helper)
 
 ## 📦 安装
