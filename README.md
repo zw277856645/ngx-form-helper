@@ -138,20 +138,20 @@ export class ExampleComponent {
 ## 🎨 主要部件导航
 
 **控制中心**
-- [FormHelperDirective](directives/FormHelperDirective.html)
+- [FormHelperDirective](https://zw277856645.gitlab.io/ngx-form-helper/directives/FormHelperDirective.html)
 
 **错误处理**
-- [ErrorHandlerTextComponent](components/ErrorHandlerTextComponent.html)
-- [ErrorHandlerTooltipComponent](components/ErrorHandlerTooltipComponent.html)
-- [ErrorHandlerSimpleDirective](directives/ErrorHandlerSimpleDirective.html)
+- [ErrorHandlerTextComponent](https://zw277856645.gitlab.io/ngx-form-helper/components/ErrorHandlerTextComponent.html)
+- [ErrorHandlerTooltipComponent](https://zw277856645.gitlab.io/ngx-form-helper/components/ErrorHandlerTooltipComponent.html)
+- [ErrorHandlerSimpleDirective](https://zw277856645.gitlab.io/ngx-form-helper/directives/ErrorHandlerSimpleDirective.html)
 
 **提交按钮处理**
-- [SubmitHandlerLoaderDirective](directives/SubmitHandlerLoaderDirective.html)
+- [SubmitHandlerLoaderDirective](https://zw277856645.gitlab.io/ngx-form-helper/directives/SubmitHandlerLoaderDirective.html)
 
 **内置验证器**
-- [CheckboxRequiredDirective](directives/CheckboxRequiredDirective.html)
-- [ListRequiredDirective](directives/ListRequiredDirective.html)
-- [TrimmedRequiredDirective](directives/TrimmedRequiredDirective.html)
+- [CheckboxRequiredDirective](https://zw277856645.gitlab.io/ngx-form-helper/directives/CheckboxRequiredDirective.html)
+- [ListRequiredDirective](https://zw277856645.gitlab.io/ngx-form-helper/directives/ListRequiredDirective.html)
+- [TrimmedRequiredDirective](https://zw277856645.gitlab.io/ngx-form-helper/directives/TrimmedRequiredDirective.html)
 
 ## ❓名词解释
 
