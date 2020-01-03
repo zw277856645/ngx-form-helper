@@ -89,7 +89,7 @@
           <span class="red">使用下标作为名称动态增/删表单项后，将出现数据混乱，这是 angular 自身的 BUG</span>，请使用 id
           等唯一字段作为 name 名称，如果没有可用唯一字段，请使用 uuid 等工具库生成
         </div>
-        <div [ngModelGroup]="'group'" checkboxRequired minCheckedNum="2" maxCheckedNum="4" class="inline">
+        <div [ngModelGroup]="'group'" checkboxRequired minCheckedNum="2" maxCheckedNum="4" class="inline-content">
           <div class="ui checkbox" *ngFor="let ck of cks;trackBy:trackByCk;index as i">
             <input type="checkbox" [(ngModel)]="ck.checked" [name]="'ck-' + ck.uuid">
             <label>
