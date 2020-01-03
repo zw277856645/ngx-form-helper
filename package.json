@@ -4,9 +4,11 @@
     "build-style": "webpack --config webpack.js",
     "publish": "npm publish dist --access public",
     "lint": "tslint -c tslint.json -p tsconfig.json",
-    "clean": "rimraf dist",
-    "doc": "docsify serve docs --open",
-    "demo": "cd docs/demo && webpack-dev-server --config config/webpack.dev.js --progress --open --profile --watch"
+    "clean": "rimraf dist && rimraf docs",
+    "docs": "npm run docs:build -- -w -s -o",
+    "docs:build": "compodoc src -c compodoc.json --language=zh-CN",
+    "demo": "webpack-dev-server --config demo/config/webpack.dev.js --progress --open --profile --watch",
+    "demo:build": "webpack --config demo/config/webpack.prod.js --progress"
   },
   "dependencies": {
     "@angular/common": "8.1.2",
@@ -36,6 +38,7 @@
     "@angular/platform-browser-dynamic": "8.1.2",
     "@angular/compiler": "8.1.2",
     "@types/node": "10.14.5",
+    "@compodoc/compodoc": "1.1.11",
     "autoprefixer": "7.0.1",
     "codelyzer": "5.1.0",
     "copy-webpack-plugin": "5.0.3",
@@ -49,6 +52,7 @@
     "to-string-loader": "1.1.5",
     "rifraf": "2.0.3",
     "rimraf": "2.6.1",
+    "clean-webpack-plugin": "2.0.1",
     "rxjs-tslint": "0.1.7",
     "tslint": "5.11.0",
     "typescript": "3.4.5",

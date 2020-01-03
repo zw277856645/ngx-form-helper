@@ -1,27 +1,46 @@
+/**
+ * eh-text 配置
+ */
 export interface ErrorHandlerTextConfig {
 
-    // 主题样式
+    /**
+     * [参见]{@link ErrorHandlerTextComponent#classNames}
+     */
     classNames?: string;
 
-    // 错误文本是否与表单域/表单组在同一行
+    /**
+     * [参见]{@link ErrorHandlerTextComponent#inline}
+     */
     inline?: boolean;
 
-    // 字体大小
+    /**
+     * [参见]{@link ErrorHandlerTextComponent#fontSize}
+     */
     fontSize?: number;
 
-    // x轴偏移
+    /**
+     * [参见]{@link ErrorHandlerTextComponent#offsetX}
+     */
     offsetX?: number;
 
-    // y轴偏移
+    /**
+     * [参见]{@link ErrorHandlerTextComponent#offsetY}
+     */
     offsetY?: number;
 
-    // 是否浮动，浮动时采用绝对定位
+    /**
+     * [参见]{@link ErrorHandlerTextComponent#float}
+     */
     float?: boolean;
 
-    // 是否右对齐
+    /**
+     * [参见]{@link ErrorHandlerTextComponent#right}
+     */
     right?: boolean;
 
-    // 动画，内置选项有：fade、slideUp、slideDown、flyLeft、flyRight
+    /**
+     * [参见]{@link ErrorHandlerTextComponent#animation}
+     */
     animation?: string;
 
 }

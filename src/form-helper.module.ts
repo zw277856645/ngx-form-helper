@@ -12,10 +12,16 @@ import { ErrorHandlerTextMessageComponent } from './error-handler/text/error-han
 import { ErrorHandlerTooltipMessageComponent } from './error-handler/tooltip/error-handler-tooltip-message.component';
 import { ControlBindElementDirective } from './error-handler/control-bind-element.directive';
 
+/**
+ * @ignore
+ */
 const MODULES = [
     CommonModule
 ];
 
+/**
+ * @ignore
+ */
 const COMPONENTS = [
     // text error handler
     ErrorHandlerTextComponent,
@@ -26,6 +32,9 @@ const COMPONENTS = [
     ErrorHandlerTooltipMessageComponent
 ];
 
+/**
+ * @ignore
+ */
 const DIRECTIVES = [
     FormHelperDirective,
     ControlBindElementDirective,

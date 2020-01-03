@@ -7,12 +7,37 @@ import { arrayProviderFactory, waitForControlInit } from '../../utils';
 import { ErrorHandlerSimpleConfig } from './error-handler-simple-config';
 import { ControlContainer, NgControl } from '@angular/forms';
 
+/**
+ * @ignore
+ */
 export const ERROR_HANDLER_SIMPLE_CONFIG
     = new InjectionToken<ErrorHandlerSimpleConfig>('error_handler_simple_config');
 
+/**
+ * @ignore
+ */
 export const ERROR_HANDLER_SIMPLE_CONFIG_ARRAY
     = new InjectionToken<ErrorHandlerSimpleConfig[]>('error_handler_simple_config_array');
 
+/**
+ * [ErrorHandlerSimpleDirective]{@link ErrorHandlerSimpleDirective} 全局配置
+ *
+ * ~~~ js
+ * \@NgModule({
+ *     ...
+ *     providers: [
+ *         errorHandlerSimpleConfigProvider({
+ *             errorClassNames: 'eh-simple-error my-special-style'
+ *             ...
+ *         })
+ *     ]
+ * })
+ * export class CoreModule {
+ * }
+ * ~~~
+ *
+ * @param config 配置
+ */
 export function errorHandlerSimpleConfigProvider(config: ErrorHandlerSimpleConfig): Provider[] {
     return [
         {
@@ -30,6 +55,26 @@ export function errorHandlerSimpleConfigProvider(config: ErrorHandlerSimpleConfi
     ];
 }
 
+/**
+ * 作用：标记任意元素为错误处理控件<br>
+ * 特色：没有错误消息，仅被标记的控件自身和对应的表单域/表单组有反馈
+ *
+ * ---
+ *
+ * 作用在任意元素，引用表单域/表单组。此方式与
+ * [eh-text]{@link ErrorHandlerTextComponent} / [eh-tooltip]{@link ErrorHandlerTooltipComponent} 相同
+ *
+ * ~~~ html
+ * <input type="text" name="name" [(ngModel)]="xxx" required pattern="[a-zA-Z]*">
+ * <div ehSimple ref="name"></div>
+ * ~~~
+ *
+ * 作用在表单域/表单组上，此情况不需要设置 ref 属性
+ *
+ * ~~~ html
+ * <input type="text" name="name" [(ngModel)]="xxx" required pattern="[a-zA-Z]*" ehSimple>
+ * ~~~
+ */
 @Directive({
     selector: '[ehSimple]',
     providers: [
@@ -42,8 +87,14 @@ export function errorHandlerSimpleConfigProvider(config: ErrorHandlerSimpleConfi
 })
 export class ErrorHandlerSimpleDirective extends ErrorHandler implements AfterViewInit {
 
+    /**
+     * 验证失败时自身自动添加的类名
+     */
     @Input() errorClassNames: string = 'eh-simple-error';
 
+    /**
+     * @ignore
+     */
     constructor(private eleRef: ElementRef,
                 private renderer: Renderer2,
                 @Optional() private ngControl: NgControl,
@@ -65,18 +116,32 @@ export class ErrorHandlerSimpleDirective extends ErrorHandler implements AfterVi
         }
     }
 
+    /**
+     * @ignore
+     */
     whenValid() {
         this.removeClasses(this.eleRef.nativeElement, this.errorClassNames);
     }
 
+    /**
+     * @ignore
+     */
     whenInvalid() {
         this.addClasses(this.eleRef.nativeElement, this.errorClassNames);
     }
 
+    /**
+     * @ignore
+     */
     whenPending() {
         this.whenValid();
     }
 
+    /**
+     * 错误消息重定位，当关联控件为`表单组`时，其`子域`也会同时重定位
+     *
+     * @param delay 延时重定位时间
+     */
     repositionMessages(delay?: number) {
         if (this.control) {
             this.formHelper.repositionMessages(this.control, delay);

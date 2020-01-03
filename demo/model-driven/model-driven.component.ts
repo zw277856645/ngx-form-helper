@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { checkboxRequired, listRequired, trimmedRequired } from '@demacia/ngx-form-helper';
 import { NameValidateService } from '../directive/name-unique.service';
 import { nameUnique } from '../directive/name-unique.directive';
+import { trimmedRequired } from '../../src/validator/trimmed-required.directive';
+import { checkboxRequired } from '../../src/validator/checkbox-required.directive';
+import { listRequired } from '../../src/validator/list-required.directive';
 
 @Component({
     templateUrl: './model-driven.component.html',

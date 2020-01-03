@@ -4,12 +4,21 @@ import { ArrayOrGroupAbstractControls } from './form-helper.directive';
 import { AbstractControl, ControlContainer, NgControl } from '@angular/forms';
 import { first, map, skipWhile } from 'rxjs/operators';
 
+/**
+ * @ignore
+ */
 export const noop = (): any => null;
 
+/**
+ * @ignore
+ */
 export function isNotFirstChange(propChange: SimpleChange) {
     return propChange && !propChange.firstChange;
 }
 
+/**
+ * @ignore
+ */
 export function splitClassNames(classNames: string | boolean) {
     if (typeof classNames === 'string' && classNames) {
         return classNames.split(/\s/).filter(v => v);
@@ -18,6 +27,9 @@ export function splitClassNames(classNames: string | boolean) {
     }
 }
 
+/**
+ * @ignore
+ */
 export function getProxyElement(item: Element, expr: string) {
     if (!item) {
         return null;
@@ -58,6 +70,9 @@ export function getProxyElement(item: Element, expr: string) {
     return item;
 }
 
+/**
+ * @ignore
+ */
 function parseProxyExpression(expr: string) {
     let matches = expr.match(/[\\^~+]+?\d*/g);
     if (!matches || matches.length === 0) {
@@ -118,10 +133,16 @@ function parseProxyExpression(expr: string) {
         .filter(v => v);
 }
 
+/**
+ * @ignore
+ */
 export function arrayProviderFactory(config: any, array: any[]) {
     return Array.isArray(array) ? [ ...array, config ] : [ config ];
 }
 
+/**
+ * @ignore
+ */
 export function arrayOfAbstractControls(controls: ArrayOrGroupAbstractControls)
     : { name: string, control: AbstractControl }[] {
     if (!controls) {
@@ -136,6 +157,8 @@ export function arrayOfAbstractControls(controls: ArrayOrGroupAbstractControls)
 }
 
 /**
+ * @ignore
+ *
  * 某些控件需要时间初始化control，每次等一个周期再执行，默认最多10个周期
  */
 export function waitForControlInit(control: NgControl | ControlContainer | (() => AbstractControl | null),

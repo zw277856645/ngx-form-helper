@@ -13,18 +13,14 @@ module.exports = {
     node: false,
 
     entry: {
-        'polyfills': './polyfills.ts',
-        'vendor': './vendor.ts',
-        'app': './main.ts'
+        'polyfills': './demo/polyfills.ts',
+        'vendor': './demo/vendor.ts',
+        'app': './demo/main.ts'
     },
 
     resolve: {
         extensions: [ '.ts', '.js' ],
         alias: rxPaths()
-    },
-
-    output: {
-        path: helpers.root('dist')
     },
 
     performance: {
@@ -51,11 +47,7 @@ module.exports = {
                 ]
             },
             {
-                test: /(?<!component)\.(css|less)$/,
-                exclude: [
-                    helpers.root('template-driven'),
-                    /semantic\.css$/
-                ],
+                test: /(?<!(component|semantic))\.(css|less)$/,
                 use: [
                     MiniCssExtractPlugin.loader,
                     'css-loader',
@@ -105,15 +97,6 @@ module.exports = {
     },
 
     plugins: [
-        new IndexHtmlWebpackPlugin({
-            input: 'index.html',
-            output: 'index.html',
-            entrypoints: [
-                'polyfills',
-                'vendor',
-                'app'
-            ]
-        }),
         new ProgressPlugin(),
         // 避免样式入口文件(entry -> style.css)生成对应的js(style.js)
         new SuppressExtractedTextChunksWebpackPlugin(),

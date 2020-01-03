@@ -1,7 +1,7 @@
 import { uuid } from '@demacia/cmjs-lib';
 import { Component } from '@angular/core';
-import { SubmitCallback } from '../../../src/form-helper.directive';
 import { ModalDirective } from '../directive/modal.directive';
+import { SubmitCallback } from '../../src/form-helper.directive';
 
 @Component({
     templateUrl: './template-driven.component.html',
@@ -13,6 +13,7 @@ export class TemplateDrivenComponent {
     desc: string;
     type: number = 0;
     sex: string;
+    sex2: string;
     love: string;
     cks: any[] = [];
     birth: string;

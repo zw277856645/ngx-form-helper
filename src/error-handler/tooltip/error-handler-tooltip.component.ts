@@ -5,16 +5,41 @@ import {
 import { ErrorHandler } from '../error-handler';
 import { ErrorHandlerTooltipConfig, TooltipPosition } from './error-handler-tooltip-config';
 import { FormHelperDirective } from '../../form-helper.directive';
-import { TooltipMessage, Message } from './tooltip-message';
+import { Message, TooltipMessage } from './tooltip-message';
 import { arrayProviderFactory, getProxyElement } from '../../utils';
 import { getOuterHeight, getOuterWidth, getStyle, InputNumber, isHidden } from '@demacia/cmjs-lib';
 
+/**
+ * @ignore
+ */
 export const ERROR_HANDLER_TOOLTIP_CONFIG
     = new InjectionToken<ErrorHandlerTooltipConfig>('error_handler_tooltip_config');
 
+/**
+ * @ignore
+ */
 export const ERROR_HANDLER_TOOLTIP_CONFIG_ARRAY
     = new InjectionToken<ErrorHandlerTooltipConfig[]>('error_handler_tooltip_config_array');
 
+/**
+ * [ErrorHandlerTooltipComponent]{@link ErrorHandlerTooltipComponent} 全局配置
+ *
+ * ~~~ js
+ * \@NgModule({
+ *     ...
+ *     providers: [
+ *         errorHandlerTooltipConfigProvider({
+ *             fontSize: 14
+ *             ...
+ *         })
+ *     ]
+ * })
+ * export class CoreModule {
+ * }
+ * ~~~
+ *
+ * @param config 配置
+ */
 export function errorHandlerTooltipConfigProvider(config: ErrorHandlerTooltipConfig): Provider[] {
     return [
         {
@@ -32,6 +57,64 @@ export function errorHandlerTooltipConfigProvider(config: ErrorHandlerTooltipCon
     ];
 }
 
+/**
+ * 作用：标签形式的错误消息<br>
+ * 特色：绝对定位，所有错误消息同时展示，动态切换消息状态，异步验证有 loading 反馈
+ *
+ * ---
+ *
+ * 消息内容为文本节点
+ *
+ * ~~~ html
+ * <input type="text" name="name" [(ngModel)]="xxx" required pattern="[a-zA-Z]*">
+ * <eh-tooltip ref="name">
+ *   <eh-tooltip-message error="required">不能为空</eh-tooltip-message>
+ *   <eh-tooltip-message error="pattern">请输入字符</eh-tooltip-message>
+ * </eh-tooltip>
+ * ~~~
+ *
+ * 消息内容为 message 属性
+ *
+ * ~~~ html
+ * <input type="text" name="name" [(ngModel)]="xxx" required pattern="[a-zA-Z]*">
+ * <eh-tooltip ref="name">
+ *   <eh-tooltip-message error="required" message="不能为空"></eh-tooltip-message>
+ *   <eh-tooltip-message error="pattern" message="请输入字符"></eh-tooltip-message>
+ * </eh-tooltip>
+ * ~~~
+ *
+ * 消息对象为 errorMessages 属性
+ *
+ * ~~~ html
+ * <input type="text" name="name" [(ngModel)]="xxx" required pattern="[a-zA-Z]*">
+ * <eh-tooltip ref="name" [errorMessages]="messages"></eh-tooltip>
+ * ~~~
+ *
+ * ~~~ js
+ * \@Component({ ... })
+ * export class SimpleComponent {
+ *
+ *     // 有序
+ *     messages = [
+ *         { error: "required", message: "不能为空" },
+ *         { error: "pattern", message: "请输入字符", order: 0, async: false, context: null }
+ *     ];
+ *
+ *     // 无序 - 字符串
+ *     // 此方式将不能定义 order、async、context
+ *     messages = {
+ *         required: "不能为空",
+ *         pattern: "请输入字符"
+ *     };
+ *
+ *     // 无序 - 对象
+ *     messages = {
+ *         required: { message: "不能为空", order: 0, async: false, context: null },
+ *         pattern: { message: "请输入字符", order: 0, async: false, context: null }
+ *     };
+ * }
+ * ~~~
+ */
 @Component({
     selector: 'eh-tooltip',
     templateUrl: './error-handler-tooltip.component.html',
@@ -46,36 +129,110 @@ export function errorHandlerTooltipConfigProvider(config: ErrorHandlerTooltipCon
 })
 export class ErrorHandlerTooltipComponent extends ErrorHandler implements AfterViewInit, OnInit, OnChanges {
 
+    /**
+     * 消息定义对象。可使用占位符，占位符使用的上下文环境是`用户设定`的 [context]{@link Message#context} 属性
+     *
+     * ~~~ js
+     * messages = {
+     *     listRequired: '不能为空',
+     *     listRequiredMin: { message: '至少设置{{value}}个值', context: { value: 2 } },
+     *     listRequiredMax: { message: '至多设置{{value}}个值', context: { value: 4 } }
+     * };
+     * ~~~
+     *
+     * ~~~ html
+     * <input type="text" name="loves" [(ngModel)]="xxx" listRequired minListNum="2" maxListNum="4">
+     * <eh-text ref="loves" [errorMessages]="messages"></eh-text>
+     * ~~~
+     *
+     * ---
+     *
+     * **注意：**
+     *
+     * 与 eh-text 不同的是，eh-text 占位符上下文环境是`验证方法返回`的错误体本身，而 eh-tooltip 是`用户设定`的 context 属性，
+     * 之所以不能使用验证方法返回的错误体本身是因为 eh-tooltip 需要初始显示所有的错误消息，但含有占位符的消息仅当相应的
+     * 错误发生时才能替换占位符，所以初始无法获知所有上线文环境
+     */
     @Input() errorMessages: TooltipMessage[] | { [ error: string ]: Message | string };
 
+    /**
+     * 主题样式
+     *
+     * - 指定的字符串会添加到组件所在元素类名中。可设置多个值，空格符分割。插件已为默认值定义了一套主题样式
+     */
     @Input() classNames: string = 'eh-tooltip-theme';
 
+    /**
+     * x轴偏移，用来微调错误消息位置
+     */
     @Input() @InputNumber() offsetX: number = 0;
 
+    /**
+     * y轴偏移，用来微调错误消息位置
+     */
     @Input() @InputNumber() offsetY: number = 0;
 
+    /**
+     * 提示相对表单域/表单组的位置
+     */
     @Input() position: TooltipPosition = TooltipPosition.BOTTOM_RIGHT;
 
+    /**
+     * 错误消息定位代理
+     *
+     * - 默认相对于表单域/表单组本身定位，可使用任意其他元素作为代理
+     * - 代理元素必须包含在错误消息直接父元素下。 语法：参见 [formHelper 的 scrollProxy]{@link FormHelperDirective#scrollProxy}
+     * - `参照物为关联的表单域/表单组，而不是错误消息自身`
+     */
     @Input() positionProxy: string;
 
+    /**
+     * 字体大小
+     */
     @HostBinding('style.font-size.px') @Input() @InputNumber() fontSize: number = 13;
 
+    /**
+     * z-index 值
+     */
     @HostBinding('style.z-index') @Input() @InputNumber() zIndex: number = 1;
 
+    /**
+     * 显示/隐藏动画时长(ms)
+     */
     @HostBinding('style.transition-duration.ms') @Input() @InputNumber() duration: number = 200;
 
-    // 消息显示/隐藏
+    /**
+     * @ignore
+     *
+     * 消息显示/隐藏
+     */
     @HostBinding('class.visible') visible: boolean;
 
-    // 消息状态
+    /**
+     * @ignore
+     */
     @HostBinding('class.valid') valid: boolean;
+
+    /**
+     * @ignore
+     */
     @HostBinding('class.invalid') invalid: boolean;
+
+    /**
+     * @ignore
+     */
     @HostBinding('class.pending') pending: boolean;
 
+    /**
+     * @ignore
+     */
     messages: TooltipMessage[];
 
     private proxyEle: HTMLElement;
 
+    /**
+     * @ignore
+     */
     constructor(private eleRef: ElementRef,
                 private renderer: Renderer2,
                 private zone: NgZone,
@@ -109,11 +266,17 @@ export class ErrorHandlerTooltipComponent extends ErrorHandler implements AfterV
         this.addClasses(this.element, this.position);
     }
 
+    /**
+     * @ignore
+     */
     whenValid() {
         this.visible = false;
         this.hostStatusChange();
     }
 
+    /**
+     * @ignore
+     */
     whenInvalid() {
         this.visible = true;
         this.hostStatusChange();
@@ -122,10 +285,30 @@ export class ErrorHandlerTooltipComponent extends ErrorHandler implements AfterV
         setTimeout(() => this.reposition());
     }
 
+    /**
+     * @ignore
+     */
     whenPending() {
         this.hostStatusChange();
     }
 
+    /**
+     * 错误消息重定位，插件自动调用，当出现插件无法跟踪的页面布局变化时，需要用户手动调用
+     *
+     * - `当控件为表单组时也只重定位自身错误消息`，如需同时重定位子域错误消息，请使用
+     * [formHelper 的 repositionMessages]{@link FormHelperDirective#repositionMessages}
+     *
+     * ---
+     *
+     * 重定位示例，textarea 高度变化时，重定位错误消息
+     *
+     * ~~~ html
+     * <textarea name="name" required autoSize (sizeChange)="nameCtrl.reposition()"></textarea>
+     * <eh-tooltip ref="name" #nameCtrl="ehTooltip">
+     *   <eh-tooltip-message error="required">不能为空</eh-tooltip-message>
+     * </eh-tooltip>
+     * ~~~
+     */
     reposition() {
         this.zone.runOutsideAngular(() => {
             let parent = this.element.parentElement;
@@ -203,6 +386,9 @@ export class ErrorHandlerTooltipComponent extends ErrorHandler implements AfterV
         });
     }
 
+    /**
+     * @ignore
+     */
     trackByMessages(i: number, msg: TooltipMessage) {
         return msg.error;
     }

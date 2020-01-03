@@ -7,37 +7,48 @@ export enum TooltipPosition {
     RIGHT_CENTER = 'right center', LEFT_CENTER = 'left center'
 }
 
+/**
+ * eh-tooltip 配置
+ */
 export class ErrorHandlerTooltipConfig {
 
-    // 主题样式
+    /**
+     * [参见]{@link ErrorHandlerTooltipComponent#classNames}
+     */
     classNames?: string;
 
-    // x轴偏移
+    /**
+     * [参见]{@link ErrorHandlerTooltipComponent#offsetX}
+     */
     offsetX?: number;
 
-    // y轴偏移
+    /**
+     * [参见]{@link ErrorHandlerTooltipComponent#offsetY}
+     */
     offsetY?: number;
 
-    // 字体大小
+    /**
+     * [参见]{@link ErrorHandlerTooltipComponent#fontSize}
+     */
     fontSize?: number;
 
-    // 提示相对表单域/表单组的位置
+    /**
+     * [参见]{@link ErrorHandlerTooltipComponent#position}
+     */
     position?: TooltipPosition;
 
     /**
-     * 错误消息定位代理
-     *
-     * 默认相对于表单域本身定位，可使用任意其他元素作为代理。代理元素必须包含在错误消息直接父元素下
-     *
-     * 语法：参见FormHelperConfig的scrollProxy
-     *
-     * PS：参照物为关联的表单域，而不是错误消息自身
+     * [参见]{@link ErrorHandlerTooltipComponent#positionProxy}
      */
     positionProxy?: string;
 
-    // 显示/隐藏动画时长(ms)
+    /**
+     * [参见]{@link ErrorHandlerTooltipComponent#duration}
+     */
     duration?: number;
 
-    // tooltip z-index
+    /**
+     * [参见]{@link ErrorHandlerTooltipComponent#zIndex}
+     */
     zIndex?: number;
 }

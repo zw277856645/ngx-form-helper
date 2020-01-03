@@ -3,6 +3,9 @@ import { AbstractControl, NG_VALIDATORS, ValidationErrors, Validator, ValidatorF
 import { isNotFirstChange } from '../utils';
 import { InputNumber } from '@demacia/cmjs-lib';
 
+/**
+ * @ignore
+ */
 export function listRequired({ minListNum, maxListNum }: { minListNum?: number, maxListNum?: number }): ValidatorFn {
     return (c: AbstractControl) => {
         if (!c.value || !c.value.length) {
@@ -21,6 +24,36 @@ export function listRequired({ minListNum, maxListNum }: { minListNum?: number, 
     };
 }
 
+/**
+ * 验证数组长度在 minListNum ~ maxListNum 之间
+ *
+ * - 验证失败返回
+ *   - 数组不存在或长度为0时返回 `{ listRequired: true }`
+ *   - [minListNum]{@link #minListNum} 验证失败返回 `{ listRequiredMin: { value: xxx } }`
+ *   - [maxListNum]{@link #maxListNum} 验证失败返回 `{ listRequiredMax: { value: xxx } }`
+ *
+ * ---
+ *
+ * 模板驱动方式
+ *
+ * ~~~ html
+ * <input type="text" name="name" [(ngModel)]="xxx" listRequired minListNum="2" maxListNum="4">
+ * ~~~
+ *
+ * 模型驱动方式
+ *
+ * ~~~ html
+ * <input type="text" name="name" formControlName="name">
+ * ~~~
+ *
+ * ~~~ js
+ * \@Component({ ... })
+ * export class ExampleComponent {
+ *
+ *     name = new FormControl('', [ listRequired({ minListNum: 2, maxListNum: 4 }) ]);
+ * }
+ * ~~~
+ */
 @Directive({
     selector: '[listRequired][ngModel],[listRequired][formControl],[listRequired][formControlName]',
     providers: [
@@ -29,10 +62,19 @@ export function listRequired({ minListNum, maxListNum }: { minListNum?: number, 
 })
 export class ListRequiredDirective implements Validator, DoCheck, OnChanges {
 
+    /**
+     * @ignore
+     */
     @Input() ngModel: any;
 
+    /**
+     * 数组最小长度，非必须
+     */
     @Input() @InputNumber() minListNum: number;
 
+    /**
+     * 数组最大长度，非必须
+     */
     @Input() @InputNumber() maxListNum: number;
 
     private ctrl: AbstractControl;
@@ -59,6 +101,9 @@ export class ListRequiredDirective implements Validator, DoCheck, OnChanges {
         }
     }
 
+    /**
+     * @ignore
+     */
     validate(c: AbstractControl): ValidationErrors | null {
         if (!this.ctrl) {
             this.ctrl = c;

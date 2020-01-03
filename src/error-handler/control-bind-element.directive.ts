@@ -2,6 +2,9 @@ import { Directive, ElementRef, Host, Optional } from '@angular/core';
 import { ControlContainer, NgControl } from '@angular/forms';
 import { waitForControlInit } from '../utils';
 
+/**
+ * @ignore
+ */
 @Directive({
     selector: `
         [ngModel],[ngModelGroup],

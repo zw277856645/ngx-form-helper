@@ -1,5 +1,10 @@
+/**
+ * ehSimple 配置
+ */
 export interface ErrorHandlerSimpleConfig {
 
-    // 验证失败时自身自动添加的类名
+    /**
+     * [参见]{@link ErrorHandlerSimpleDirective#errorClassNames}
+     */
     errorClassNames?: string;
 }

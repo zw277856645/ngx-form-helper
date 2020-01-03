@@ -2,6 +2,9 @@ import { Directive, Input, OnChanges } from '@angular/core';
 import { AbstractControl, NG_VALIDATORS, Validator, ValidatorFn } from '@angular/forms';
 import { InputBoolean } from '@demacia/cmjs-lib';
 
+/**
+ * @ignore
+ */
 export function trimmedRequired(required: boolean = true): ValidatorFn {
     return (c: AbstractControl) => {
         if (required) {
@@ -14,6 +17,35 @@ export function trimmedRequired(required: boolean = true): ValidatorFn {
     };
 }
 
+/**
+ * 验证是否为空。同 angular 自带的 required 区别是本规则剔除空白符
+ *
+ * - 验证失败时返回 `{ trimmedRequired: true }`
+ *
+ * ---
+ *
+ * 模板驱动方式
+ *
+ * ~~~ html
+ * <input type="text" name="name" [(ngModel)]="xxx" trimmedRequired>
+ * <input type="text" name="name" [(ngModel)]="xxx" [trimmedRequired]="true">
+ * <input type="text" name="name" [(ngModel)]="xxx" [trimmedRequired]="false">
+ * ~~~
+ *
+ * 模型驱动方式
+ *
+ * ~~~ html
+ * <input type="text" name="name" formControlName="name">
+ * ~~~
+ *
+ * ~~~ js
+ * \@Component({ ... })
+ * export class ExampleComponent {
+ *
+ *     name = new FormControl('', [ trimmedRequired() ]);
+ * }
+ * ~~~
+ */
 @Directive({
     selector: '[trimmedRequired][ngModel],[trimmedRequired][formControl],[trimmedRequired][formControlName]',
     providers: [
@@ -22,6 +54,9 @@ export function trimmedRequired(required: boolean = true): ValidatorFn {
 })
 export class TrimmedRequiredDirective implements Validator, OnChanges {
 
+    /**
+     * 是否必须
+     */
     @Input() @InputBoolean() trimmedRequired: boolean;
 
     private ctrl: AbstractControl;
@@ -32,6 +67,9 @@ export class TrimmedRequiredDirective implements Validator, OnChanges {
         }
     }
 
+    /**
+     * @ignore
+     */
     validate(c: AbstractControl) {
         if (!this.ctrl) {
             this.ctrl = c;

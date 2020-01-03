@@ -13,21 +13,64 @@ import { SubmitHandler } from './submit-handler/submit-handler';
 import { getOffset, getScrollTop, InputBoolean, InputNumber, isVisible, setScrollTop } from '@demacia/cmjs-lib';
 import { ErrorHandler, RefType } from './error-handler/error-handler';
 
+/**
+ * @ignore
+ */
 const TWEEN = require('@tweenjs/tween.js');
 
+/**
+ * 表单提交成功后的后续处理，包括`表单重置`和`停止 SubmitHandler` 处理（如果有）
+ */
 export interface SubmitCallback {
 
+    /**
+     * 默认为停止 submitHandler 处理，如果传入参数 true，将同时重置表单
+     *
+     * @param reset 是否重置表单
+     */
     complete: (reset?: boolean) => void;
 
+    /**
+     * 表单重置
+     */
     reset: () => void;
 }
 
+/**
+ * @ignore
+ */
 export type ArrayOrGroupAbstractControls = { [ key: string ]: AbstractControl } | AbstractControl[];
 
+/**
+ * @ignore
+ */
 export const FORM_HELPER_CONFIG = new InjectionToken<FormHelperConfig>('form_helper_config');
 
+/**
+ * @ignore
+ */
 export const FORM_HELPER_CONFIG_ARRAY = new InjectionToken<FormHelperConfig[]>('form_helper_config_array');
 
+/**
+ * [FormHelperDirective]{@link FormHelperDirective} 全局配置
+ *
+ * ~~~ js
+ * \@NgModule({
+ *     ...
+ *     providers: [
+ *         formHelperConfigProvider({
+ *             autoReset: false,
+               offsetTop: 100
+ *             ...
+ *         })
+ *     ]
+ * })
+ * export class CoreModule {
+ * }
+ * ~~~
+ *
+ * @param config 配置
+ */
 export function formHelperConfigProvider(config: FormHelperConfig): Provider[] {
     return [
         {
@@ -43,14 +86,16 @@ export function formHelperConfigProvider(config: FormHelperConfig): Provider[] {
 }
 
 /**
- * validators
- *  1)trimmedRequired
- *  2)listRequired
- *  3)checkboxRequired
+ * 插件的控制中心
  *
- * angular表单存在的bug
- *  1)bug：当使用ngFor迭代表单域，且name使用数组下标(如：name-{{i}})，此时若动态新增/删除表单域，会造成表单域数量混乱
- *    fix：这种情况下请保证name唯一，且必须使用trackBy返回唯一标识，推荐使用uuid等工具(如：name-{{uuid}})
+ * ---
+ *
+ * **`angular 表单存在的 BUG`**
+ *
+ * - bug：当使用 ngFor 迭代表单域，且 name 使用数组下标(如：name-{{i}})，此时若动态新增/删除表单域，会造成表单域混乱<br>
+ *   fix：这种情况下请保证 name 唯一，且必须使用 trackBy 返回唯一标识，推荐使用 uuid 等工具(如：name-{{uuid}})
+ *
+ * <example-url>/ngx-form-helper/demo/index.html</example-url>
  */
 @Directive({
     selector: '[formHelper]',
@@ -58,8 +103,14 @@ export function formHelperConfigProvider(config: FormHelperConfig): Provider[] {
 })
 export class FormHelperDirective implements OnDestroy, AfterViewInit {
 
+    /**
+     * @ignore
+     */
     @ContentChildren(ErrorHandler, { descendants: true }) errorHandlers: QueryList<ErrorHandler>;
 
+    /**
+     * @ignore
+     */
     @ContentChildren('reset') set resets(resets: QueryList<ElementRef>) {
         resets.filter(reset => this.resetEles.indexOf(reset.nativeElement) < 0)
               .forEach(reset => {
@@ -68,6 +119,9 @@ export class FormHelperDirective implements OnDestroy, AfterViewInit {
               });
     }
 
+    /**
+     * @ignore
+     */
     @ContentChildren('submit') set submits(submits: QueryList<ElementRef>) {
         submits.filter(submit => this.submitEles.indexOf(submit.nativeElement) < 0)
                .forEach(submit => {
@@ -76,30 +130,178 @@ export class FormHelperDirective implements OnDestroy, AfterViewInit {
                });
     }
 
+    /**
+     * 表单所处上下文，通常为 window 或含有滚动条的 DOM 元素，影响滚动条正确滚动到第一条错误。
+     * 当类型为 string 时，支持 css选择器 和`点号表达式`
+     *
+     * ---
+     *
+     * **点号表达式语法**
+     *
+     * . => 当前节点，.. => 父节点，../../ etc
+     *
+     * **点号表达式示例**
+     *
+     * 设置当前 form 元素为滚动对象
+     *
+     * ~~~ html
+     * <form formHelper context="."></form>
+     * ~~~
+     *
+     * 设置当前 form `父元素`为滚动对象，本例指 id="parent" 的 div
+     *
+     * ~~~ html
+     * <div id="parent">
+     *   <form formHelper context=".."></form>
+     * </div>
+     * ~~~
+     *
+     * 设置当前 form `祖先元素`为滚动对象，本例指 id="ancestor" 的 div
+     *
+     * ~~~ html
+     * <div id="ancestor">
+     *   <div id="parent">
+     *     <form formHelper context="../../"></form>
+     *   </div>
+     * </div>
+     * ~~~
+     */
     @Input() context: Window | ElementRef | HTMLElement | string = window;
 
+    /**
+     * 表单域/表单组的滚动代理。默认滚动到错误域本身，但当错误域本身处于不可见状态时，插件无法知道应该滚动到何处，
+     * 此时可使用另一个可见对象作为代理。 若没有设置滚动代理，且错误域本身不可见，会默认寻找其父域直到 ngForm，
+     * 使用第一个可见域作为代理
+     *
+     * - 全局配置，可被表单域/表单组自身相同配置覆盖，[参见]{@link ErrorHandler#scrollProxy}
+     *
+     * ---
+     *
+     * **语法**
+     *
+     * ^ => 父节点，~ => 前一个兄弟节点，+ => 后一个兄弟节点，可与数字任意组合，示例：^^^，^2，~3^4+2
+     */
     @Input() scrollProxy: string;
 
+    /**
+     * 是否开启自动滚动到第一个错误域功能
+     */
     @Input() @InputBoolean() autoScroll: boolean = true;
 
+    /**
+     * 滚动定位使用，错误域距离浏览器顶部偏移量。默认滚动到第一个错误域与浏览器可视区域顶部重合处，
+     * 但大多数情况下页面是 有绝对定位(absolute)或固定定位(fixed)的头部的，此时会盖住滚动到此的错误域，
+     * 通过设置 offsetTop 解决此问题
+     */
     @Input() @InputNumber() offsetTop: number = 0;
 
-    @Input() @InputBoolean() validateImmediate: boolean;
+    /**
+     * 设置表单域/表单组是否`初始`就显示错误。默认只在控件 dirty 状态触发错误显示，所以表单初始不会显示错误，
+     * 当用户修改了表单或点提交按钮后才会显示错误
+     *
+     * - 全局配置，可被表单域/表单组自身相同配置覆盖，[参见]{@link ErrorHandler#validateImmediate}
+     */
+    @Input() @InputBoolean() validateImmediate: boolean = false;
 
+    /**
+     * 设置`表单组`是否`初始`就显示其所有`子域`的错误。此配置仅在`全局(formHelper) validateImmediate = false` 和
+     * `表单组自身 validateImmediate = true` 的条件下才有效，且只对`表单组`有效
+     *
+     * - 全局配置，可被表单域/表单组自身相同配置覆盖，[参见]{@link ErrorHandler#validateImmediateDescendants}
+     *
+     * ---
+     *
+     * 如下示例，group 控件自身验证状态变化时，`会`同时触发所有子域的验证
+     *
+     * ~~~ html
+     * <form formHelper [validateImmediate]="false">
+     *   <div ngModelGroup="group" ehSimple [validateImmediate]="true">
+     *     ...
+     *   </div>
+     * </form>
+     * ~~~
+     *
+     * 如下示例，group 控件自身验证状态变化时，`不会`同时触发所有子域的验证
+     *
+     * ~~~ html
+     * <form formHelper [validateImmediate]="false">
+     *   <div ngModelGroup="group" ehSimple [validateImmediate]="true" [validateImmediateDescendants]="false">
+     *     ...
+     *   </div>
+     * </form>
+     * ~~~
+     */
     @Input() @InputBoolean() validateImmediateDescendants: boolean = true;
 
+    /**
+     * 主题样式
+     *
+     * - 指定的字符串会添加到 form 类名中。可设置多个值，空格符分割。插件已为默认值定义了一套主题样式
+     */
     @Input() classNames: string = 'fh-theme';
 
+    /**
+     * 验证失败时`表单域`自动添加的类名
+     *
+     * ---
+     *
+     * **附加样式**
+     *
+     * 表单域添加 `ignore` 类，将忽略给该元素设置验证失败样式
+     *
+     * ~~~ html
+     * <input type="text" class="ignore" name="name" [(ngModel)]="xxx" required>
+     * ~~~
+     *
+     * 表单域添加 `thin` 类，将设置元素左边框为细边框样式
+     *
+     * ~~~ html
+     * <input type="text" class="thin" name="name" [(ngModel)]="xxx" required>
+     * ~~~
+     */
     @Input() errorClassNames: string = 'fh-error';
 
+    /**
+     * 验证失败时`表单组`自动添加的类名。默认主题没有为 `fh-group-error` 设置样式，用户可在自己的样式文件中定义具体样式
+     */
     @Input() errorGroupClassNames: string = 'fh-group-error';
 
-    // 验证通过
+    /**
+     * 验证通过事件。事件会传递 [`SubmitCallback`]{@link SubmitCallback} 对象
+     *
+     * ~~~ html
+     * <form formHelper (validPass)="save($event)"> ... </form>
+     * ~~~
+     *
+     * ~~~ js
+     * \@Component({ ... })
+     * export class ExampleComponent {
+     *
+     *     constructor(private exampleService: ExampleService) {
+     *     }
+     *
+     *     save(submitCallback: SubmitCallback) {
+     *         this.exampleService.save().subscribe(res => {
+     *             // do something
+     *             ...
+     *
+     *             // 固定写法，插件收尾处理
+     *             submitCallback.complete();
+     *         });
+     *     }
+     * }
+     * ~~~
+     */
     @Output() validPass = new EventEmitter<SubmitCallback>();
 
-    // 验证不通过
+    /**
+     * 验证不通过事件
+     */
     @Output() validFail = new EventEmitter();
 
+    /**
+     * @ignore
+     */
     @HostListener('keydown', [ '$event' ]) onKeydown(event: KeyboardEvent) {
         if ((event.keyCode || event.which) === 13
             && ((event.target || event.srcElement) as Element).nodeName.toUpperCase() !== 'TEXTAREA') {
@@ -107,6 +309,9 @@ export class FormHelperDirective implements OnDestroy, AfterViewInit {
         }
     }
 
+    /**
+     * @ignore
+     */
     @HostListener('window:resize') onResize() {
         this.errorHandlers.forEach(eh => {
             if (eh.reposition) {
@@ -115,13 +320,23 @@ export class FormHelperDirective implements OnDestroy, AfterViewInit {
         });
     }
 
+    /**
+     * 表单的 dom 元素
+     */
     form: HTMLFormElement;
+
+    /**
+     * @ignore
+     */
     submitted: boolean;
 
     private subscription = new Subscription();
     private resetEles: Element[] = [];
     private submitEles: Element[] = [];
 
+    /**
+     * @ignore
+     */
     constructor(public ngForm: ControlContainer,
                 private eleRef: ElementRef,
                 private zone: NgZone,
@@ -140,6 +355,11 @@ export class FormHelperDirective implements OnDestroy, AfterViewInit {
         this.subscription.unsubscribe();
     }
 
+    /**
+     * 提交处理函数，不需要用户调用，通常在实现自定义的提交处理指令时需要
+     *
+     * @param submitHandler 提交处理组件实例对象
+     */
     submit(submitHandler?: SubmitHandler) {
         this.submitted = true;
 
@@ -179,11 +399,48 @@ export class FormHelperDirective implements OnDestroy, AfterViewInit {
         }
     }
 
+    /**
+     * 重置
+     *
+     * ---
+     *
+     * 在重置按钮使用了`#reset`模板变量时可省略调用
+     *
+     * ~~~ html
+     * <form formHelper>
+     *   <button type="button" #reset>重置</button>
+     * </form>
+     * ~~~
+     *
+     * 绑定事件方式
+     *
+     * ~~~ html
+     * <form formHelper #formHelperCtrl="formHelper">
+     *   <button type="button" (click)="formHelperCtrl.reset()">重置</button>
+     * </form>
+     * ~~~
+     */
     reset() {
         this.submitted = false;
         this.resetControls();
     }
 
+    /**
+     * 重定位错误消息。页面布局变化时，某些绝对定位错误消息位置可能需要重新定位。window:resize 事件已被插件处理，
+     * 会自动重定位错误消息，其他情况需要手动调用此方法
+     *
+     * ~~~ html
+     * <form formHelper #formHelperCtrl="formHelper">
+     *   <div ngModelGroup="group">
+     *     ...
+     *   </div>
+     *   <button type="button" (click)="formHelperCtrl.repositionMessages('group')">重定位消息</div>
+     * </form>
+     * ~~~
+     *
+     * @param type 需要重定位错误信息关联的表单控件指引，当控件为`表单组`时，其`子域`也会同时重定位。省略参数将重定位所有错误消息
+     * @param delay 延时时间
+     */
     repositionMessages(type?: RefType | AbstractControl, delay?: number) {
         if (!type) {
             this.errorHandlers.forEach(errorHandler => {
@@ -224,6 +481,9 @@ export class FormHelperDirective implements OnDestroy, AfterViewInit {
         }
     }
 
+    /**
+     * 控件树，屏蔽了`模板驱动`和`模型驱动`表单之间的差异
+     */
     get controls() {
         if (this.ngForm instanceof NgForm) {
             return this.ngForm.controls;

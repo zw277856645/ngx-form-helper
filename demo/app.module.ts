@@ -10,9 +10,10 @@ import { DropdownDirective } from './directive/dropdown.directive';
 import { ModalDirective } from './directive/modal.directive';
 import { NameUniqueDirective } from './directive/name-unique.directive';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { FormHelperModule } from '../../src/form-helper.module';
+import { FormHelperModule } from '../src/form-helper.module';
 import { TagInputModule } from 'ngx-chips';
 import { TextareaAutoHeightModule } from '@demacia/ngx-textarea-auto-height';
+import { ModelDrivenComponent } from './model-driven/model-driven.component';
 
 @NgModule({
     imports: [
@@ -29,6 +30,7 @@ import { TextareaAutoHeightModule } from '@demacia/ngx-textarea-auto-height';
     declarations: [
         AppComponent,
         TemplateDrivenComponent,
+        ModelDrivenComponent,
         AccordionDirective,
         DropdownDirective,
         ModalDirective,
