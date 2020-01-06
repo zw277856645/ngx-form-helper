@@ -12,29 +12,12 @@ import { first, skipWhile } from 'rxjs/operators';
 import { SubmitHandler } from './submit-handler/submit-handler';
 import { getOffset, getScrollTop, InputBoolean, InputNumber, isVisible, setScrollTop } from '@demacia/cmjs-lib';
 import { ErrorHandler, RefType } from './error-handler/error-handler';
+import { CompleteConfig, SubmitCallback } from './submit-callback';
 
 /**
  * @ignore
  */
 const TWEEN = require('@tweenjs/tween.js');
-
-/**
- * 表单提交成功后的后续处理，包括`表单重置`和`停止 SubmitHandler` 处理（如果有）
- */
-export interface SubmitCallback {
-
-    /**
-     * 默认为停止 submitHandler 处理，如果传入参数 true，将同时重置表单
-     *
-     * @param reset 是否重置表单
-     */
-    complete: (reset?: boolean) => void;
-
-    /**
-     * 表单重置
-     */
-    reset: () => void;
-}
 
 /**
  * @ignore
@@ -369,13 +352,22 @@ export class FormHelperDirective implements OnDestroy, AfterViewInit {
             }
 
             this.validPass.emit({
-                complete: (reset?: boolean) => {
+                complete: (config?: CompleteConfig) => {
                     if (submitHandler) {
-                        submitHandler.end(() => {
-                            if (reset) {
-                                this.reset();
-                            }
-                        });
+                        let cfg = Object.assign({ delay: 0 }, config);
+                        let handler = () => {
+                            submitHandler.end(() => {
+                                if (cfg.reset) {
+                                    this.reset();
+                                }
+                            });
+                        };
+
+                        if (typeof cfg.delay === 'number' && cfg.delay >= 0) {
+                            setTimeout(() => handler(), cfg.delay);
+                        } else {
+                            handler();
+                        }
                     }
                 },
                 reset: () => {
