@@ -1,7 +1,7 @@
 import { uuid } from '@demacia/cmjs-lib';
 import { Component } from '@angular/core';
 import { ModalDirective } from '../directive/modal.directive';
-import { SubmitCallback } from '../../src/form-helper.directive';
+import { SubmitCallback } from '../../src/submit-callback';
 
 @Component({
     templateUrl: './template-driven.component.html',
