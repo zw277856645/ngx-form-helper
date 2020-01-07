@@ -42,7 +42,6 @@ export const FORM_HELPER_CONFIG_ARRAY = new InjectionToken<FormHelperConfig[]>('
  *     ...
  *     providers: [
  *         formHelperConfigProvider({
- *             autoReset: false,
                offsetTop: 100
  *             ...
  *         })
