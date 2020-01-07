@@ -12,7 +12,7 @@ import { first, skipWhile } from 'rxjs/operators';
 import { SubmitHandler } from './submit-handler/submit-handler';
 import { getOffset, getScrollTop, InputBoolean, InputNumber, isVisible, setScrollTop } from '@demacia/cmjs-lib';
 import { ErrorHandler, RefType } from './error-handler/error-handler';
-import { CompleteConfig, SubmitComplete } from './submit-callback';
+import { CompleteConfig, SubmitComplete } from './submit-complete';
 
 /**
  * @ignore
