@@ -222,6 +222,10 @@ export class SubmitHandlerLoaderDirective implements SubmitHandler, OnChanges, A
             this.renderer.removeClass(this.ele, 'disabled');
         }
 
+        if (typeof cb === 'function') {
+            cb();
+        }
+
         if (this.disableTheme) {
             return;
         }
@@ -234,10 +238,6 @@ export class SubmitHandlerLoaderDirective implements SubmitHandler, OnChanges, A
             }
         } else {
             this.removeClasses(this.ele, this.classNames);
-        }
-
-        if (typeof cb === 'function') {
-            cb();
         }
     }
 
