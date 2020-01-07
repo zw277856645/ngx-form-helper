@@ -9,6 +9,11 @@ export interface CompleteConfig {
      * 延时执行时间，默认延后一个周期，设置为 false 禁用异步
      */
     delay?: number | false;
+
+    /**
+     * 执行完成后的回调函数。在 reset 之前执行
+     */
+    callback?: () => void;
 }
 
 /**

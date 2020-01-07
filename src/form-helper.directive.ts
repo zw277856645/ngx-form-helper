@@ -352,28 +352,26 @@ export class FormHelperDirective implements OnDestroy, AfterViewInit {
 
             this.validPass.emit((config?: CompleteConfig) => {
                 let cfg = Object.assign({ delay: 0 }, config);
-                let handler: Function;
+                let handlerWrapper: Function;
+                let handler = () => {
+                    if (typeof cfg.callback === 'function') {
+                        cfg.callback();
+                    }
+                    if (cfg.reset) {
+                        this.reset();
+                    }
+                };
 
                 if (submitHandler) {
-                    handler = () => {
-                        submitHandler.end(() => {
-                            if (cfg.reset) {
-                                this.reset();
-                            }
-                        });
-                    };
+                    handlerWrapper = () => submitHandler.end(() => handler());
                 } else {
-                    handler = () => {
-                        if (cfg.reset) {
-                            this.reset();
-                        }
-                    };
+                    handlerWrapper = () => handler();
                 }
 
                 if (typeof cfg.delay === 'number' && cfg.delay >= 0) {
-                    setTimeout(() => handler(), cfg.delay);
+                    setTimeout(() => handlerWrapper(), cfg.delay);
                 } else {
-                    handler();
+                    handlerWrapper();
                 }
             });
         } else {
