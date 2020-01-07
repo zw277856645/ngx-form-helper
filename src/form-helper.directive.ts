@@ -12,7 +12,7 @@ import { first, skipWhile } from 'rxjs/operators';
 import { SubmitHandler } from './submit-handler/submit-handler';
 import { getOffset, getScrollTop, InputBoolean, InputNumber, isVisible, setScrollTop } from '@demacia/cmjs-lib';
 import { ErrorHandler, RefType } from './error-handler/error-handler';
-import { CompleteConfig, SubmitCallback } from './submit-callback';
+import { CompleteConfig, SubmitComplete } from './submit-callback';
 
 /**
  * @ignore
@@ -250,7 +250,7 @@ export class FormHelperDirective implements OnDestroy, AfterViewInit {
     @Input() errorGroupClassNames: string = 'fh-group-error';
 
     /**
-     * 验证通过事件。事件会传递 [`SubmitCallback`]{@link SubmitCallback} 对象
+     * 验证通过事件。事件会传递 [`SubmitComplete`]{@link SubmitComplete} 方法
      *
      * ~~~ html
      * <form formHelper (validPass)="save($event)"> ... </form>
@@ -263,19 +263,19 @@ export class FormHelperDirective implements OnDestroy, AfterViewInit {
      *     constructor(private exampleService: ExampleService) {
      *     }
      *
-     *     save(submitCallback: SubmitCallback) {
+     *     save(complete: SubmitComplete) {
      *         this.exampleService.save().subscribe(res => {
      *             // do something
      *             ...
      *
      *             // 固定写法，插件收尾处理
-     *             submitCallback.complete();
+     *             complete();
      *         });
      *     }
      * }
      * ~~~
      */
-    @Output() validPass = new EventEmitter<SubmitCallback>();
+    @Output() validPass = new EventEmitter<SubmitComplete>();
 
     /**
      * 验证不通过事件
@@ -351,27 +351,30 @@ export class FormHelperDirective implements OnDestroy, AfterViewInit {
                 submitHandler.start();
             }
 
-            this.validPass.emit({
-                complete: (config?: CompleteConfig) => {
-                    if (submitHandler) {
-                        let cfg = Object.assign({ delay: 0 }, config);
-                        let handler = () => {
-                            submitHandler.end(() => {
-                                if (cfg.reset) {
-                                    this.reset();
-                                }
-                            });
-                        };
+            this.validPass.emit((config?: CompleteConfig) => {
+                let cfg = Object.assign({ delay: 0 }, config);
+                let handler: Function;
 
-                        if (typeof cfg.delay === 'number' && cfg.delay >= 0) {
-                            setTimeout(() => handler(), cfg.delay);
-                        } else {
-                            handler();
+                if (submitHandler) {
+                    handler = () => {
+                        submitHandler.end(() => {
+                            if (cfg.reset) {
+                                this.reset();
+                            }
+                        });
+                    };
+                } else {
+                    handler = () => {
+                        if (cfg.reset) {
+                            this.reset();
                         }
-                    }
-                },
-                reset: () => {
-                    this.reset();
+                    };
+                }
+
+                if (typeof cfg.delay === 'number' && cfg.delay >= 0) {
+                    setTimeout(() => handler(), cfg.delay);
+                } else {
+                    handler();
                 }
             });
         } else {

@@ -1,7 +1,7 @@
 import { uuid } from '@demacia/cmjs-lib';
 import { Component } from '@angular/core';
 import { ModalDirective } from '../directive/modal.directive';
-import { SubmitCallback } from '../../src/submit-callback';
+import { SubmitComplete } from '../../src/submit-callback';
 
 @Component({
     templateUrl: './template-driven.component.html',
@@ -61,9 +61,9 @@ export class TemplateDrivenComponent {
         return ck.uuid;
     }
 
-    hideModal(submitCallback: SubmitCallback, modalCtrl: ModalDirective) {
+    hideModal(complete: SubmitComplete, modalCtrl: ModalDirective) {
         modalCtrl.behavior('hide');
-        submitCallback.complete({ reset: true });
+        complete({ reset: true });
     }
 
 }

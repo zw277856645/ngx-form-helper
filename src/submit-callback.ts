@@ -12,19 +12,6 @@ export interface CompleteConfig {
 }
 
 /**
- * 表单提交成功后的后续处理，包括`表单重置`和`停止 SubmitHandler` 处理（如果有）
+ * 表单提交成功后的后续处理，包括`表单重置`和`停止 SubmitHandler` 处理
  */
-export interface SubmitCallback {
-
-    /**
-     * 表单提交成功后的后续处理
-     *
-     * @param config 行为配置
-     */
-    complete: (config?: CompleteConfig) => void;
-
-    /**
-     * 表单重置
-     */
-    reset: () => void;
-}
+export type SubmitComplete = (config?: CompleteConfig) => void;

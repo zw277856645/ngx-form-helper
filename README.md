@@ -122,13 +122,13 @@ export class ExampleComponent {
     constructor(private exampleService: ExampleService) {
     }
 
-    save(submitCallback: SubmitCallback) {
+    save(complete: SubmitComplete) {
         this.exampleService.save(this.url, this.addr).subscribe(res => {
             // do something
             ...
             
             // 固定写法，插件收尾处理
-            submitCallback.complete();
+            complete();
         });
     }
 
