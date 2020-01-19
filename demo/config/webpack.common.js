@@ -6,8 +6,6 @@ const ProgressPlugin = require('webpack/lib/ProgressPlugin');
 const CircularDependencyPlugin = require('circular-dependency-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
-const helpers = require('./helpers');
-
 module.exports = {
 
     node: false,
