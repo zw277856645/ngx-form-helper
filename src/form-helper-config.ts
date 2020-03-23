@@ -34,6 +34,11 @@ export interface FormHelperConfig {
     validateImmediateDescendants?: boolean;
 
     /**
+     * [参见]{@link FormHelperDirective#isolation}
+     */
+    isolation?: boolean;
+
+    /**
      * [参见]{@link FormHelperDirective#classNames}
      */
     classNames?: string;

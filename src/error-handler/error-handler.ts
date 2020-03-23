@@ -125,6 +125,11 @@ export abstract class ErrorHandler implements AfterViewInit, OnInit {
     @Input() @InputBoolean() validateImmediateDescendants: boolean;
 
     /**
+     * 覆盖 [FormHelperConfig]{@link FormHelperDirective#isolation} 中配置
+     */
+    @Input() @InputBoolean() isolation: boolean;
+
+    /**
      * 关联的表单控件名称（name/ngModelGroup/formControlName/formGroupName/formArrayName）
      */
     controlName: string;
@@ -156,6 +161,9 @@ export abstract class ErrorHandler implements AfterViewInit, OnInit {
         }
         if (this.validateImmediateDescendants === undefined || this.validateImmediateDescendants === null) {
             this.validateImmediateDescendants = this._formHelper.validateImmediateDescendants;
+        }
+        if (this.isolation === undefined || this.isolation === null) {
+            this.isolation = this._formHelper.isolation;
         }
     }
 
@@ -316,7 +324,7 @@ export abstract class ErrorHandler implements AfterViewInit, OnInit {
 
             if (!this.control.pending) {
                 // 系统内置处理
-                if (this.control.disabled || this.control.pristine || this.control.valid) {
+                if (this.control.disabled || this.control.pristine || this.isControlValid()) {
                     this.removeControlEleClasses();
                 } else if (this.control.dirty && this.control.invalid) {
                     this.addControlEleClasses();
@@ -324,9 +332,9 @@ export abstract class ErrorHandler implements AfterViewInit, OnInit {
 
                 // 用户自定义处理
                 if (this.control.enabled && this.control.dirty) {
-                    if (this.control.valid && this.whenValid) {
+                    if (this.isControlValid() && this.whenValid) {
                         this.whenValid();
-                    } else if (this.control.invalid && this.whenInvalid) {
+                    } else if (!this.isControlValid() && this.whenInvalid) {
                         this.whenInvalid();
                     }
                 }
@@ -341,6 +349,18 @@ export abstract class ErrorHandler implements AfterViewInit, OnInit {
                 && (this.control instanceof FormGroup || this.control instanceof FormArray)) {
                 this.validateControls(this.control.controls);
             }
+        }
+    }
+
+    private isControlValid() {
+        if (this.control instanceof FormGroup || this.control instanceof FormArray) {
+            if (this.isolation) {
+                return !this.control.errors;
+            } else {
+                return this.control.valid;
+            }
+        } else {
+            return this.control.valid;
         }
     }
 

@@ -216,6 +216,14 @@ export class FormHelperDirective implements OnDestroy, AfterViewInit {
     @Input() @InputBoolean() validateImmediateDescendants: boolean = true;
 
     /**
+     * 自身的验证状态是否隔离子控件的影响，只对`表单组`有效
+     *
+     *  `表单组`当子控件有错误时，即使自身验证都通过(errors = null)，valid 也为 false。设置为 true 隔离子控件影响，
+     *  只受自身验证器影响
+     */
+    @Input() @InputBoolean() isolation: boolean = true;
+
+    /**
      * 主题样式
      *
      * - 指定的字符串会添加到 form 类名中。可设置多个值，空格符分割。插件已为默认值定义了一套主题样式
