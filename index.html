@@ -1,0 +1,241 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>ngx-form-helper documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="./images/favicon.ico">
+	      <link rel="stylesheet" href="./styles/style.css">
+    </head>
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top visible-xs">
+            <a href="./" class="navbar-brand">ngx-form-helper documentation</a>
+            <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="hidden-xs menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content getting-started">
+                   <div class="content-data">
+
+<h1 id="ngx-form-helper">ngx-form-helper</h1>
+<p>angular 表单验证辅助插件</p>
+<h2 id="✨-插件特性">✨ 插件特性</h2>
+<ul>
+<li>极简的使用方式，屏蔽 angular 验证底层细节</li>
+<li>内置丰富的功能，如：自动滚动到第一个错误域、防重复提交、消息动画、隐藏域滚动代理、全局配置叠加等</li>
+<li>内置两种使用最广泛的错误提示显示方式</li>
+<li>丰富的参数配置，易于适配各种使用场景</li>
+<li>可通过继承内置基类，仅仅实现个别接口实现自定义的错误提示方式</li>
+<li>template driven 和 model driven 表单都支持</li>
+</ul>
+<h2 id="🔗-链接">🔗 链接</h2>
+<ul>
+<li><a href="https://zw277856645.github.io/ngx-form-helper/">DOCS</a></li>
+<li><a href="https://zw277856645.github.io/ngx-form-helper/directives/FormHelperDirective.html#example">DEMO</a></li>
+<li><a href="https://github.com/zw277856645/ngx-form-helper">PROJECT</a></li>
+</ul>
+<h2 id="📦-安装">📦 安装</h2>
+<blockquote>
+<p>npm install @demacia/ngx-form-helper --save</p>
+</blockquote>
+<h2 id="🔨-使用">🔨 使用</h2>
+<h4 id="1-引入module">1. 引入module</h4>
+<div><pre class="line-numbers"><code class="language-js">import { FormHelperModule } from &#39;&#64;demacia/ngx-form-helper&#39;;
+
+&#64;NgModule({
+    imports: [
+        FormHelperModule
+    ]
+})
+export class AppModule {
+}</code></pre></div><h4 id="2-引入内置样式">2. 引入内置样式</h4>
+<p>如果使用 webpack 打包方式，在项目中第三方插件入口文件(通常为<code>vendor.ts</code>)中添加如下代码</p>
+<div><pre class="line-numbers"><code class="language-js">// vendor.ts
+import &#39;&#64;demacia/ngx-form-helper/ngx-form-helper.css&#39;;</code></pre></div><div><pre class="line-numbers"><code class="language-js">// webpack.js
+module.exports = {
+    ...
+    entry: {
+        ...
+        &#39;vendor&#39;: &#39;./src/vendor.ts&#39;,
+    }
+    ...
+}</code></pre></div><p>如果使用的是 angular cli，在 angular.json 中引入样式文件</p>
+<div><pre class="line-numbers"><code class="language-json">{
+  ...
+  &quot;projects&quot;: {
+    &quot;app&quot;: {
+      ...
+      &quot;architect&quot;: {
+        &quot;build&quot;: {
+          &quot;builder&quot;: &quot;&#64;angular-devkit/build-angular:browser&quot;,
+          &quot;options&quot;: {
+            ...
+            &quot;styles&quot;: [
+              ...
+              &quot;node_modules/&#64;demacia/ngx-form-helper/ngx-form-helper.css&quot;
+            ]
+          }
+        }
+      }
+    }
+  }
+}</code></pre></div><h4 id="3-使用方式">3. 使用方式</h4>
+<div><pre class="line-numbers"><code class="language-html">&lt;!-- example.component.html --&gt;
+&lt;form formHelper (validPass)=&quot;save($event)&quot;&gt;
+  &lt;!-- tooltip 形式 --&gt;
+  &lt;div class=&quot;field&quot;&gt;
+     &lt;label&gt;URL&lt;/label&gt;
+     &lt;input type=&quot;text&quot; name=&quot;url&quot; [(ngModel)]=&quot;url&quot; required urlValidator&gt;
+     &lt;eh-tooltip ref=&quot;url&quot;&gt;
+       &lt;eh-tooltip-message error=&quot;required&quot;&gt;不能为空&lt;/eh-tooltip-message&gt;
+       &lt;eh-tooltip-message error=&quot;urlValidator&quot;&gt;URL格式错误&lt;/eh-tooltip-message&gt;
+     &lt;/eh-tooltip&gt;
+   &lt;/div&gt;
+
+  &lt;!-- 文本形式 --&gt;
+  &lt;div class=&quot;field&quot;&gt;
+    &lt;label&gt;ADDRESS&lt;/label&gt;
+    &lt;div class=&quot;ui input&quot;&gt;
+      &lt;input type=&quot;text&quot; name=&quot;addr&quot; [(ngModel)]=&quot;age&quot; required pattern=&quot;^\d*$&quot;&gt;
+    &lt;/div&gt;
+    &lt;!-- 错误消息可放置在 form 内任意位置，ref 属性关联对应的表单域即可 --&gt;
+    &lt;eh-text ref=&quot;addr&quot; animation=&quot;flyLeft&quot;&gt;
+      &lt;eh-text-message error=&quot;required&quot;&gt;不能为空&lt;/eh-tooltip-message&gt;
+      &lt;eh-text-message error=&quot;pattern&quot;&gt;请输入数字&lt;/eh-tooltip-message&gt;
+    &lt;/eh-tooltip&gt;
+  &lt;/div&gt;
+
+  &lt;!-- shLoader 带有 loading 反馈，防重复提交等功能，推荐使用此方式 --&gt;
+  &lt;button type=&quot;button&quot; shLoader&gt;保存&lt;/button&gt;
+  &lt;!-- 或 --&gt;
+  &lt;button type=&quot;button&quot; #submit&gt;保存&lt;/button&gt;
+&lt;/form&gt;</code></pre></div><div><pre class="line-numbers"><code class="language-js">\&#64;Component({
+    templateUrl: &#39;./example.component.html&#39;
+})
+export class ExampleComponent {
+
+    url: string;
+    addr: string;
+
+    constructor(private exampleService: ExampleService) {
+    }
+
+    save(complete: SubmitComplete) {
+        this.exampleService.save(this.url, this.addr).subscribe(res =&gt; {
+            // do something
+            ...
+
+            // 固定写法，插件收尾处理
+            complete();
+        });
+    }
+
+}</code></pre></div><h2 id="🎨-主要部件导航">🎨 主要部件导航</h2>
+<p><strong>控制中心</strong></p>
+<ul>
+<li><a href="https://zw277856645.github.io/ngx-form-helper/directives/FormHelperDirective.html">FormHelperDirective</a></li>
+</ul>
+<p><strong>错误处理</strong></p>
+<ul>
+<li><a href="https://zw277856645.github.io/ngx-form-helper/components/ErrorHandlerTextComponent.html">ErrorHandlerTextComponent</a></li>
+<li><a href="https://zw277856645.github.io/ngx-form-helper/components/ErrorHandlerTooltipComponent.html">ErrorHandlerTooltipComponent</a></li>
+<li><a href="https://zw277856645.github.io/ngx-form-helper/directives/ErrorHandlerSimpleDirective.html">ErrorHandlerSimpleDirective</a></li>
+</ul>
+<p><strong>提交按钮处理</strong></p>
+<ul>
+<li><a href="https://zw277856645.github.io/ngx-form-helper/directives/SubmitHandlerLoaderDirective.html">SubmitHandlerLoaderDirective</a></li>
+</ul>
+<p><strong>内置验证器</strong></p>
+<ul>
+<li><a href="https://zw277856645.github.io/ngx-form-helper/directives/CheckboxRequiredDirective.html">CheckboxRequiredDirective</a></li>
+<li><a href="https://zw277856645.github.io/ngx-form-helper/directives/ListRequiredDirective.html">ListRequiredDirective</a></li>
+<li><a href="https://zw277856645.github.io/ngx-form-helper/directives/TrimmedRequiredDirective.html">TrimmedRequiredDirective</a></li>
+</ul>
+<h2 id="❓名词解释">❓名词解释</h2>
+<h4 id="表单域">表单域</h4>
+<p>指绑定了 ngModel、formControl、formControlName 中某一个指令的控件</p>
+<h4 id="表单组">表单组</h4>
+<p>指绑定了 ngModelGroup、formGroup、formGroupName、formArray、formArrayName 中某一个指令的控件</p>
+<h4 id="父域">父域</h4>
+<p>指表单域/表单组的父控件。父域必定为表单组</p>
+<h4 id="子域">子域</h4>
+<p>指表单组的子孙控件。子域可能为表单域，也可能为表单组</p>
+<h4 id="错误域">错误域</h4>
+<p>指验证失败的表单域或表单组</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                   
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> result-matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">无匹配的结果 "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 0;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'getting-started';
+            var COMPODOC_CURRENT_PAGE_URL = 'index.html';
+       </script>
+
+       <script src="./js/libs/custom-elements.min.js"></script>
+       <script src="./js/libs/lit-html.js"></script>
+       <!-- Required to polyfill modern browsers as code is ES5 for IE... -->
+       <script src="./js/libs/custom-elements-es5-adapter.js" charset="utf-8" defer></script>
+       <script src="./js/menu-wc.js" defer></script>
+
+       <script src="./js/libs/bootstrap-native.js"></script>
+
+       <script src="./js/libs/es6-shim.min.js"></script>
+       <script src="./js/libs/EventDispatcher.js"></script>
+       <script src="./js/libs/promise.min.js"></script>
+       <script src="./js/libs/zepto.min.js"></script>
+
+       <script src="./js/compodoc.js"></script>
+
+       <script src="./js/tabs.js"></script>
+       <script src="./js/menu.js"></script>
+       <script src="./js/libs/clipboard.min.js"></script>
+       <script src="./js/libs/prism.js"></script>
+       <script src="./js/sourceCode.js"></script>
+       <script src="./js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>

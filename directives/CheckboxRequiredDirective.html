@@ -1,0 +1,412 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>ngx-form-helper documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	      <link rel="stylesheet" href="../styles/style.css">
+    </head>
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top visible-xs">
+            <a href="../" class="navbar-brand">ngx-form-helper documentation</a>
+            <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="hidden-xs menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content directive">
+                   <div class="content-data">
+
+
+
+
+
+
+<ol class="breadcrumb">
+  <li>指令列表</li>
+  <li>CheckboxRequiredDirective</li>
+</ol>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="active">
+            <a href="#info" role="tab" id="info-tab" data-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li >
+            <a href="#source" role="tab" id="source-tab" data-toggle="tab" data-link="source">Source</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="c-info">
+        <p class="comment">
+            <h3>文件</h3>
+        </p>
+        <p class="comment">
+            <code>src/validator/checkbox-required.directive.ts</code>
+        </p>
+
+            <p class="comment">
+                <h3>描述</h3>
+            </p>
+            <p class="comment">
+                <p>验证某表单组下的多选框(checkbox)勾选数量在 minCheckedNum ~ maxCheckedNum 之间</p>
+<ul>
+<li>验证失败返回<ul>
+<li>勾选数量为0时返回 <code>{ checkboxRequired: true }</code></li>
+<li><a href="#minCheckedNum">minCheckedNum</a> 验证失败返回 <code>{ checkboxRequiredMin: { value: xxx } }</code></li>
+<li><a href="#maxCheckedNum">maxCheckedNum</a> 验证失败返回 <code>{ checkboxRequiredMax: { value: xxx } }</code></li>
+</ul>
+</li>
+</ul>
+<hr>
+<p>模板驱动方式</p>
+<div><pre class="line-numbers"><code class="language-html">&lt;div ngModelGroup=&quot;group&quot; checkboxRequired minCheckedNum=&quot;2&quot; maxCheckedNum=&quot;4&quot;&gt;
+   &lt;!-- checkboxes --&gt;
+   &lt;input type=&quot;checkbox&quot; name=&quot;ck-1&quot; [(ngModel)]=&quot;checked1&quot;&gt;
+   &lt;input type=&quot;checkbox&quot; name=&quot;ck-2&quot; [(ngModel)]=&quot;checked2&quot;&gt;
+   ...
+&lt;/div&gt;</code></pre></div><p>模型驱动方式</p>
+<div><pre class="line-numbers"><code class="language-html">&lt;div ngModelGroup=&quot;group&quot; formGroup=&quot;group&quot;&gt;
+   &lt;!-- checkboxes --&gt;
+   &lt;input type=&quot;checkbox&quot; name=&quot;ck-1&quot; [(ngModel)]=&quot;checked1&quot;&gt;
+   &lt;input type=&quot;checkbox&quot; name=&quot;ck-2&quot; [(ngModel)]=&quot;checked2&quot;&gt;
+   ...
+&lt;/div&gt;</code></pre></div><div><pre class="line-numbers"><code class="language-js">\&#64;Component({ ... })
+export class ExampleComponent {
+
+     group = new FormGroup([], [ checkboxRequired({ minCheckedNum: 2, maxCheckedNum: 4 }) ]);
+}</code></pre></div>
+            </p>
+
+            <p class="comment">
+                <h3>实现</h3>
+            </p>
+            <p class="comment">
+                            <code><a href="https://angular.io/api/forms/Validator" target="_blank" >Validator</a></code>
+                            <code><a href="https://angular.io/api/core/OnChanges" target="_blank" >OnChanges</a></code>
+            </p>
+
+
+        <section>
+            <h3>元数据</h3>
+            <table class="table table-sm table-hover">
+                <tbody>
+                    <tr>
+                        <td class="col-md-3">提供商列表</td>
+                        <td class="col-md-9">
+                            <code>
+                                { provide: NG_VALIDATORS, useExisting: CheckboxRequiredDirective, multi: true }
+                            </code>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="col-md-3">选择器</td>
+                        <td class="col-md-9"><code>
+        [checkboxRequired][ngModelGroup],
+        [checkboxRequired][formGroup],[checkboxRequired][formGroupName],
+        [checkboxRequired][formArray],[checkboxRequired][formArrayName]
+    </code></td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </section>
+
+            <section>
+    <h3 id="index">索引</h3>
+    <table class="table table-sm table-bordered index-table">
+        <tbody>
+
+
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>输入属性</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                <a href="#maxCheckedNum">maxCheckedNum</a>
+                            </li>
+                            <li>
+                                <a href="#minCheckedNum">minCheckedNum</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+
+
+
+        </tbody>
+    </table>
+</section>
+
+
+            <section>
+    <h3 id="inputs">输入属性</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="maxCheckedNum"></a>
+                        <b>maxCheckedNum</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>类型 : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-2" colspan="2">
+                                    <div class="io-line">被定义在 <a href="" data-line="103" class="link-to-prism">src/validator/checkbox-required.directive.ts:103</a></div>
+                            </td>
+                        </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <div class="io-description"><p>勾选数量最大值，非必须</p>
+</div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="minCheckedNum"></a>
+                        <b>minCheckedNum</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>类型 : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-2" colspan="2">
+                                    <div class="io-line">被定义在 <a href="" data-line="98" class="link-to-prism">src/validator/checkbox-required.directive.ts:98</a></div>
+                            </td>
+                        </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <div class="io-description"><p>勾选数量最小值，非必须</p>
+</div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+</section>
+
+
+
+
+
+
+    </div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="c-source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Directive, Input, OnChanges } from &#x27;@angular/core&#x27;;
+import {
+    AbstractControl, FormArray, FormGroup, NG_VALIDATORS, ValidationErrors, Validator, ValidatorFn
+} from &#x27;@angular/forms&#x27;;
+import { arrayOfAbstractControls } from &#x27;../utils&#x27;;
+import { InputNumber } from &#x27;@demacia/cmjs-lib&#x27;;
+
+/**
+ * @ignore
+ */
+export function checkboxRequired(
+    { minCheckedNum, maxCheckedNum }: { minCheckedNum?: number, maxCheckedNum?: number }
+): ValidatorFn {
+    return (c: AbstractControl) &#x3D;&gt; {
+        if (c instanceof FormGroup || c instanceof FormArray) {
+            let checkedNum &#x3D; 0;
+
+            for (let item of arrayOfAbstractControls(c.controls)) {
+                if (item.control.value) {
+                    checkedNum++;
+                }
+            }
+
+            if (!checkedNum) {
+                return { checkboxRequired: true };
+            }
+
+            let minNum &#x3D; minCheckedNum ? +minCheckedNum : 0;
+            if (minNum &amp;&amp; checkedNum &lt; minNum) {
+                return { checkboxRequiredMin: { value: minCheckedNum } };
+            }
+
+            let maxNum &#x3D; maxCheckedNum ? +maxCheckedNum : 0;
+            if (maxNum &amp;&amp; checkedNum &gt; maxNum) {
+                return { checkboxRequiredMax: { value: maxCheckedNum } };
+            }
+        }
+
+        return null;
+    };
+}
+
+/**
+ * 验证某表单组下的多选框(checkbox)勾选数量在 minCheckedNum ~ maxCheckedNum 之间
+ *
+ * - 验证失败返回
+ *   - 勾选数量为0时返回 &#x60;{ checkboxRequired: true }&#x60;
+ *   - [minCheckedNum]{@link #minCheckedNum} 验证失败返回 &#x60;{ checkboxRequiredMin: { value: xxx } }&#x60;
+ *   - [maxCheckedNum]{@link #maxCheckedNum} 验证失败返回 &#x60;{ checkboxRequiredMax: { value: xxx } }&#x60;
+ *
+ * ---
+ *
+ * 模板驱动方式
+ *
+ * ~~~ html
+ * &lt;div ngModelGroup&#x3D;&quot;group&quot; checkboxRequired minCheckedNum&#x3D;&quot;2&quot; maxCheckedNum&#x3D;&quot;4&quot;&gt;
+ *   &lt;!-- checkboxes --&gt;
+ *   &lt;input type&#x3D;&quot;checkbox&quot; name&#x3D;&quot;ck-1&quot; [(ngModel)]&#x3D;&quot;checked1&quot;&gt;
+ *   &lt;input type&#x3D;&quot;checkbox&quot; name&#x3D;&quot;ck-2&quot; [(ngModel)]&#x3D;&quot;checked2&quot;&gt;
+ *   ...
+ * &lt;/div&gt;
+ * ~~~
+ *
+ * 模型驱动方式
+ *
+ * ~~~ html
+ * &lt;div ngModelGroup&#x3D;&quot;group&quot; formGroup&#x3D;&quot;group&quot;&gt;
+ *   &lt;!-- checkboxes --&gt;
+ *   &lt;input type&#x3D;&quot;checkbox&quot; name&#x3D;&quot;ck-1&quot; [(ngModel)]&#x3D;&quot;checked1&quot;&gt;
+ *   &lt;input type&#x3D;&quot;checkbox&quot; name&#x3D;&quot;ck-2&quot; [(ngModel)]&#x3D;&quot;checked2&quot;&gt;
+ *   ...
+ * &lt;/div&gt;
+ * ~~~
+ *
+ * ~~~ js
+ * \@Component({ ... })
+ * export class ExampleComponent {
+ *
+ *     group &#x3D; new FormGroup([], [ checkboxRequired({ minCheckedNum: 2, maxCheckedNum: 4 }) ]);
+ * }
+ * ~~~
+ */
+@Directive({
+    selector: &#x60;
+        [checkboxRequired][ngModelGroup],
+        [checkboxRequired][formGroup],[checkboxRequired][formGroupName],
+        [checkboxRequired][formArray],[checkboxRequired][formArrayName]
+    &#x60;,
+    providers: [
+        { provide: NG_VALIDATORS, useExisting: CheckboxRequiredDirective, multi: true }
+    ]
+})
+export class CheckboxRequiredDirective implements Validator, OnChanges {
+
+    /**
+     * 勾选数量最小值，非必须
+     */
+    @Input() @InputNumber() minCheckedNum: number;
+
+    /**
+     * 勾选数量最大值，非必须
+     */
+    @Input() @InputNumber() maxCheckedNum: number;
+
+    private ctrl: AbstractControl;
+
+    ngOnChanges() {
+        if (this.ctrl) {
+            this.ctrl.updateValueAndValidity();
+        }
+    }
+
+    /**
+     * @ignore
+     */
+    validate(c: AbstractControl): ValidationErrors | null {
+        if (!this.ctrl) {
+            this.ctrl &#x3D; c;
+        }
+
+        return checkboxRequired({ minCheckedNum: this.minCheckedNum, maxCheckedNum: this.maxCheckedNum })(c);
+    }
+}
+</code></pre>
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
+                   
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> result-matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">无匹配的结果 "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'directive';
+            var COMPODOC_CURRENT_PAGE_URL = 'CheckboxRequiredDirective.html';
+       </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+       <!-- Required to polyfill modern browsers as code is ES5 for IE... -->
+       <script src="../js/libs/custom-elements-es5-adapter.js" charset="utf-8" defer></script>
+       <script src="../js/menu-wc.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+       <script src="../js/libs/zepto.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>

@@ -1,0 +1,1402 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>ngx-form-helper documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	      <link rel="stylesheet" href="../styles/style.css">
+    </head>
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top visible-xs">
+            <a href="../" class="navbar-brand">ngx-form-helper documentation</a>
+            <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="hidden-xs menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content class">
+                   <div class="content-data">
+
+
+
+
+
+
+
+
+
+
+
+<ol class="breadcrumb">
+  <li>类列表</li>
+  <li>ErrorHandler</li>
+</ol>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="active">
+            <a href="#info" role="tab" id="info-tab" data-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li >
+            <a href="#source" role="tab" id="source-tab" data-toggle="tab" data-link="source">Source</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="c-info">
+        <p class="comment">
+            <h3>文件</h3>
+        </p>
+        <p class="comment">
+            <code>src/error-handler/error-handler.ts</code>
+        </p>
+
+            <p class="comment">
+                <h3>描述</h3>
+            </p>
+            <p class="comment">
+                <p>错误处理组件基类，可继承此类实现自定义错误处理组件，内部已实现功能如下：</p>
+<ul>
+<li>根据 <a href="#ref">ref</a> 输入属性自动关联表单域/表单组</li>
+<li>关联表单域/表单组成功后触发 <a href="#onControlPrepared">onControlPrepared</a> 回调，该回调由继承类实现</li>
+<li>自带 <a href="#scrollProxy">scrollProxy</a>、<a href="#validateImmediate">validateImmediate</a>、
+<a href="#validateImmediateDescendants">validateImmediateDescendants</a> 输入属性，
+并覆盖<a href="../directives/FormHelperDirective.html">formHelper</a>中相应属性</li>
+<li>监听控件状态，自动触发 <a href="#whenValid">whenValid</a>、<a href="#whenInvalid">whenInvalid</a>、
+<a href="#whenPending">whenPending</a> 回调，这些回调由继承类实现</li>
+<li>继承类如果实现了 <a href="#reposition">reposition</a> 回调，插件会在 window:resize 事件中自动调用</li>
+<li>内置 <a href="#hasError">hasError</a> 方法，简化错误判断</li>
+<li>内置 <a href="#compileMessage">compileMessage</a> 方法，根据指定上下文替换消息中的占位符</li>
+</ul>
+<div><pre class="line-numbers"><code class="language-js">// 自定义消息处理组件
+export class ErrorHandlerXxxComponent extends ErrorHandler implements AfterViewInit, OnInit {
+
+     ngOnInit() {
+         super.ngOnInit();
+
+         // do something
+     }
+
+     ngAfterViewInit() {
+         super.ngAfterViewInit();
+
+         // do something
+     }
+
+     whenValid() {
+         // do something
+     }
+
+     whenInvalid() {
+         // do something
+     }
+
+     whenPending() {
+         // do something
+     }
+
+     reposition() {
+         // do something
+     }
+
+     onControlPrepared() {
+         // do something
+     }
+}</code></pre></div>
+            </p>
+
+
+            <p class="comment">
+                <h3>实现</h3>
+            </p>
+            <p class="comment">
+                            <code><a href="https://angular.io/api/core/AfterViewInit" target="_blank" >AfterViewInit</a></code>
+                            <code><a href="https://angular.io/api/core/OnInit" target="_blank" >OnInit</a></code>
+            </p>
+
+
+            <section>
+    <h3 id="index">索引</h3>
+    <table class="table table-sm table-bordered index-table">
+        <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>属性列表</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                <a href="#controlElement">controlElement</a>
+                            </li>
+                            <li>
+                                <a href="#controlName">controlName</a>
+                            </li>
+                            <li>
+                                <a href="#element">element</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>方法</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                <a href="#compileMessage">compileMessage</a>
+                            </li>
+                            <li>
+                                <a href="#hasError">hasError</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">可选的</span>
+                                <a href="#onControlPrepared">onControlPrepared</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">可选的</span>
+                                <a href="#reposition">reposition</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">可选的</span>
+                                <a href="#whenInvalid">whenInvalid</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">可选的</span>
+                                <a href="#whenPending">whenPending</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">可选的</span>
+                                <a href="#whenValid">whenValid</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>输入属性</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                <a href="#isolation">isolation</a>
+                            </li>
+                            <li>
+                                <a href="#ref">ref</a>
+                            </li>
+                            <li>
+                                <a href="#scrollProxy">scrollProxy</a>
+                            </li>
+                            <li>
+                                <a href="#validateImmediate">validateImmediate</a>
+                            </li>
+                            <li>
+                                <a href="#validateImmediateDescendants">validateImmediateDescendants</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <h6><b>存取器</b></h6>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <ul class="index-list">
+                                <li>
+                                    <a href="#control">control</a>
+                                </li>
+                            </ul>
+                        </td>
+                    </tr>
+        </tbody>
+    </table>
+</section>
+
+
+            <section>
+    
+        <h3 id="inputs">
+            属性列表
+        </h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="controlElement"></a>
+                        <span class="name">
+                            <b>
+                            controlElement</b>
+                            <a href="#controlElement"><span class="icon ion-ios-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <i>类型 : </i>    <code>Element</code>
+
+                        </td>
+                    </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                    <div class="io-line">被定义在 <a href="" data-line="140" class="link-to-prism">src/error-handler/error-handler.ts:140</a></div>
+                            </td>
+                        </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                        <div class="io-description"><p>关联的表单控件DOM对象</p>
+</div>
+                    </td>
+                </tr>
+
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="controlName"></a>
+                        <span class="name">
+                            <b>
+                            controlName</b>
+                            <a href="#controlName"><span class="icon ion-ios-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <i>类型 : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                        </td>
+                    </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                    <div class="io-line">被定义在 <a href="" data-line="135" class="link-to-prism">src/error-handler/error-handler.ts:135</a></div>
+                            </td>
+                        </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                        <div class="io-description"><p>关联的表单控件名称（name/ngModelGroup/formControlName/formGroupName/formArrayName）</p>
+</div>
+                    </td>
+                </tr>
+
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="element"></a>
+                        <span class="name">
+                            <b>
+                            element</b>
+                            <a href="#element"><span class="icon ion-ios-link"></span></a>
+                        </span>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <i>类型 : </i>    <code>Element</code>
+
+                        </td>
+                    </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                    <div class="io-line">被定义在 <a href="" data-line="145" class="link-to-prism">src/error-handler/error-handler.ts:145</a></div>
+                            </td>
+                        </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                        <div class="io-description"><p>错误处理组件DOM对象</p>
+</div>
+                    </td>
+                </tr>
+
+            </tbody>
+        </table>
+</section>
+
+            <section>
+    
+    <h3 id="methods">
+        方法
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="compileMessage"></a>
+                    <span class="name">
+                        <b>
+                            compileMessage
+                        </b>
+                        <a href="#compileMessage"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>compileMessage(context: <a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank">any</a>, message: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">被定义在 <a href="" data-line="210"
+                            class="link-to-prism">src/error-handler/error-handler.ts:210</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>替换消息中的占位符，上下文为错误返回对象(如果有)</p>
+</div>
+
+                    <div class="io-description">
+                        <b>参数列表 :</b>
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>名称</td>
+                                    <td>类型</td>
+                                    <td>可选的</td>
+                                    <td>描述</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>context</td>
+                                    <td>
+                                                <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+                                    </td>
+
+                                    <td>
+                                        否
+                                    </td>
+
+
+                                    <td>
+                                        <p>上下文</p>
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>message</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                    </td>
+
+                                    <td>
+                                        否
+                                    </td>
+
+
+                                    <td>
+                                        <p>消息占位符</p>
+
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>返回 : </b>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="hasError"></a>
+                    <span class="name">
+                        <b>
+                            hasError
+                        </b>
+                        <a href="#hasError"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>hasError(validator: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">被定义在 <a href="" data-line="196"
+                            class="link-to-prism">src/error-handler/error-handler.ts:196</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>获取某验证规则是否发生错误</p>
+</div>
+
+                    <div class="io-description">
+                        <b>参数列表 :</b>
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>名称</td>
+                                    <td>类型</td>
+                                    <td>可选的</td>
+                                    <td>描述</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>validator</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                    </td>
+
+                                    <td>
+                                        否
+                                    </td>
+
+
+                                    <td>
+                                        <p>规则名称</p>
+
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>返回 : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="onControlPrepared"></a>
+                    <span class="name">
+                        <b>
+                            <span class="modifier">可选的</span>
+                            onControlPrepared
+                        </b>
+                        <a href="#onControlPrepared"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>onControlPrepared()</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">被定义在 <a href="" data-line="276"
+                            class="link-to-prism">src/error-handler/error-handler.ts:276</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p><a href="#ref">ref</a> 关联的控件初始化完成回调</p>
+<ul>
+<li>消息处理组件关联表单域/表单组是由基类自动完成的，可根据需要在关联成功后执行一些操作</li>
+</ul>
+</div>
+
+                    <div class="io-description">
+                        <b>返回 : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="reposition"></a>
+                    <span class="name">
+                        <b>
+                            <span class="modifier">可选的</span>
+                            reposition
+                        </b>
+                        <a href="#reposition"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>reposition()</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">被定义在 <a href="" data-line="269"
+                            class="link-to-prism">src/error-handler/error-handler.ts:269</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>消息定位</p>
+<ul>
+<li>通常在每次 whenInvalid 时调用一次，防止页面布局变化导致绝对定位消息显示位置不准确</li>
+<li>window:resize 事件自动调用</li>
+</ul>
+</div>
+
+                    <div class="io-description">
+                        <b>返回 : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="whenInvalid"></a>
+                    <span class="name">
+                        <b>
+                            <span class="modifier">可选的</span>
+                            whenInvalid
+                        </b>
+                        <a href="#whenInvalid"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>whenInvalid()</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">被定义在 <a href="" data-line="256"
+                            class="link-to-prism">src/error-handler/error-handler.ts:256</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>验证失败回调</p>
+</div>
+
+                    <div class="io-description">
+                        <b>返回 : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="whenPending"></a>
+                    <span class="name">
+                        <b>
+                            <span class="modifier">可选的</span>
+                            whenPending
+                        </b>
+                        <a href="#whenPending"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>whenPending()</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">被定义在 <a href="" data-line="261"
+                            class="link-to-prism">src/error-handler/error-handler.ts:261</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>处于验证中时的回调</p>
+</div>
+
+                    <div class="io-description">
+                        <b>返回 : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="whenValid"></a>
+                    <span class="name">
+                        <b>
+                            <span class="modifier">可选的</span>
+                            whenValid
+                        </b>
+                        <a href="#whenValid"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>whenValid()</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">被定义在 <a href="" data-line="251"
+                            class="link-to-prism">src/error-handler/error-handler.ts:251</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>验证成功回调</p>
+</div>
+
+                    <div class="io-description">
+                        <b>返回 : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+            <section>
+    <h3 id="inputs">输入属性</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="isolation"></a>
+                        <b>isolation</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>类型 : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-2" colspan="2">
+                                    <div class="io-line">被定义在 <a href="" data-line="130" class="link-to-prism">src/error-handler/error-handler.ts:130</a></div>
+                            </td>
+                        </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <div class="io-description"><p>覆盖 <a href="../directives/FormHelperDirective.html#isolation">FormHelperConfig</a> 中配置</p>
+</div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="ref"></a>
+                        <b>ref</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>类型 : </i>        <code><a href="../miscellaneous/typealiases.html#RefType" target="_self" >RefType</a></code>
+
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-2" colspan="2">
+                                    <div class="io-line">被定义在 <a href="" data-line="108" class="link-to-prism">src/error-handler/error-handler.ts:108</a></div>
+                            </td>
+                        </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <div class="io-description"><p>错误信息关联的表单控件</p>
+<hr>
+<p><strong>可用格式:</strong></p>
+<p>1.控件名称方式（name/ngModelGroup/formControlName/formGroupName/formArrayName）</p>
+<div><pre class="line-numbers"><code class="language-html">&lt;!-- ngModel name --&gt;
+&lt;input type=&quot;text&quot; name=&quot;name&quot; [(ngModel)]=&quot;xxx&quot;&gt;
+&lt;eh-text ref=&quot;name&quot;&gt;&lt;/eh-text&gt;
+
+&lt;!-- ngModelGroup name --&gt;
+&lt;div ngModelGroup=&quot;name&quot;&gt;&lt;/div&gt;
+&lt;eh-text ref=&quot;name&quot;&gt;&lt;/eh-text&gt;
+
+&lt;!-- formControlName name --&gt;
+&lt;input type=&quot;text&quot; formControlName=&quot;name&quot;&gt;
+&lt;eh-text ref=&quot;name&quot;&gt;&lt;/eh-text&gt;
+
+&lt;!-- formGroupName / formArrayName name --&gt;
+&lt;div formGroupName=&quot;name&quot;&gt;&lt;/div&gt;
+&lt;eh-text ref=&quot;name&quot;&gt;&lt;/eh-text&gt;</code></pre></div><p>2.控件对象方式（表单控件对象，通常为模板变量，如：#ctrl=&quot;ngModel/ngModelGroup&quot;）</p>
+<div><pre class="line-numbers"><code class="language-html">&lt;!-- ngModel control --&gt;
+&lt;input type=&quot;text&quot; name=&quot;name&quot; [(ngModel)]=&quot;xxx&quot; #ctrl=&quot;ngModel&quot;&gt;
+&lt;eh-text [ref]=&quot;ctrl&quot;&gt;&lt;/eh-text&gt;
+
+&lt;!-- ngModelGroup control --&gt;
+&lt;div ngModelGroup=&quot;name&quot; #ctrl=&quot;ngModelGroup&quot;&gt;&lt;/div&gt;
+&lt;eh-text [ref]=&quot;ctrl&quot;&gt;&lt;/eh-text&gt;</code></pre></div></div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="scrollProxy"></a>
+                        <b>scrollProxy</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>类型 : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-2" colspan="2">
+                                    <div class="io-line">被定义在 <a href="" data-line="115" class="link-to-prism">src/error-handler/error-handler.ts:115</a></div>
+                            </td>
+                        </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <div class="io-description"><p>覆盖 <a href="../directives/FormHelperDirective.html#scrollProxy">FormHelperConfig</a> 中配置</p>
+<ul>
+<li>参照物为关联的表单域，而不是错误消息自身</li>
+</ul>
+</div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="validateImmediate"></a>
+                        <b>validateImmediate</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>类型 : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-2" colspan="2">
+                                    <div class="io-line">被定义在 <a href="" data-line="120" class="link-to-prism">src/error-handler/error-handler.ts:120</a></div>
+                            </td>
+                        </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <div class="io-description"><p>覆盖 <a href="../directives/FormHelperDirective.html#validateImmediate">FormHelperConfig</a> 中配置</p>
+</div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="validateImmediateDescendants"></a>
+                        <b>validateImmediateDescendants</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>类型 : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-2" colspan="2">
+                                    <div class="io-line">被定义在 <a href="" data-line="125" class="link-to-prism">src/error-handler/error-handler.ts:125</a></div>
+                            </td>
+                        </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <div class="io-description"><p>覆盖 <a href="../directives/FormHelperDirective.html#validateImmediateDescendants">FormHelperConfig</a> 中配置</p>
+</div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+</section>
+
+
+
+            <section>
+    <h3 id="accessors">
+        存取器
+    </h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="control"></a>
+                        <span class="name"><b>control</b><a href="#control"><span class="icon ion-ios-link"></span></a></span>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                        <span class="accessor"><b>get</b><code>control()</code></span>
+                    </td>
+                </tr>
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-line">被定义在 <a href="" data-line="234" class="link-to-prism">src/error-handler/error-handler.ts:234</a></div>
+                                </td>
+                            </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-description"><p>获取 <a href="#ref">ref</a> 关联的控件</p>
+</div>
+
+                        </td>
+                    </tr>
+
+            </tbody>
+        </table>
+</section>
+    </div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="c-source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import {
+    AbstractControl, ControlContainer, FormArray, FormControl, FormGroup, NgControl, NgModel, NgModelGroup
+} from &#x27;@angular/forms&#x27;;
+import { ArrayOrGroupAbstractControls, FormHelperDirective } from &#x27;../form-helper.directive&#x27;;
+import { arrayOfAbstractControls, splitClassNames, waitForControlInit } from &#x27;../utils&#x27;;
+import { AfterViewInit, ElementRef, Input, OnInit, Renderer2 } from &#x27;@angular/core&#x27;;
+import { ControlBindElementDirective } from &#x27;./control-bind-element.directive&#x27;;
+import { InputBoolean } from &#x27;@demacia/cmjs-lib&#x27;;
+
+/**
+ * 控件引用类型，[参见]{@link ErrorHandler#ref}
+ */
+export type RefType &#x3D; string | NgModel | NgModelGroup;
+
+/**
+ * 错误处理组件基类，可继承此类实现自定义错误处理组件，内部已实现功能如下：
+ *
+ * - 根据 [ref]{@link #ref} 输入属性自动关联表单域/表单组
+ * - 关联表单域/表单组成功后触发 [onControlPrepared]{@link #onControlPrepared} 回调，该回调由继承类实现
+ * - 自带 [scrollProxy]{@link #scrollProxy}、[validateImmediate]{@link #validateImmediate}、
+ * [validateImmediateDescendants]{@link #validateImmediateDescendants} 输入属性，
+ * 并覆盖[formHelper]{@link FormHelperDirective}中相应属性
+ * - 监听控件状态，自动触发 [whenValid]{@link #whenValid}、[whenInvalid]{@link #whenInvalid}、
+ * [whenPending]{@link #whenPending} 回调，这些回调由继承类实现
+ * - 继承类如果实现了 [reposition]{@link #reposition} 回调，插件会在 window:resize 事件中自动调用
+ * - 内置 [hasError]{@link #hasError} 方法，简化错误判断
+ * - 内置 [compileMessage]{@link #compileMessage} 方法，根据指定上下文替换消息中的占位符
+ *
+ * ~~~ js
+ * // 自定义消息处理组件
+ * export class ErrorHandlerXxxComponent extends ErrorHandler implements AfterViewInit, OnInit {
+ *
+ *     ngOnInit() {
+ *         super.ngOnInit();
+ *
+ *         // do something
+ *     }
+ *
+ *     ngAfterViewInit() {
+ *         super.ngAfterViewInit();
+ *
+ *         // do something
+ *     }
+ *
+ *     whenValid() {
+ *         // do something
+ *     }
+ *
+ *     whenInvalid() {
+ *         // do something
+ *     }
+ *
+ *     whenPending() {
+ *         // do something
+ *     }
+ *
+ *     reposition() {
+ *         // do something
+ *     }
+ *
+ *     onControlPrepared() {
+ *         // do something
+ *     }
+ * }
+ * ~~~
+ */
+export abstract class ErrorHandler implements AfterViewInit, OnInit {
+
+    /**
+     * 错误信息关联的表单控件
+     *
+     * ---
+     *
+     * **可用格式:**
+     *
+     * 1.控件名称方式（name/ngModelGroup/formControlName/formGroupName/formArrayName）
+     *
+     * ~~~ html
+     * &lt;!-- ngModel name --&gt;
+     * &lt;input type&#x3D;&quot;text&quot; name&#x3D;&quot;name&quot; [(ngModel)]&#x3D;&quot;xxx&quot;&gt;
+     * &lt;eh-text ref&#x3D;&quot;name&quot;&gt;&lt;/eh-text&gt;
+     *
+     * &lt;!-- ngModelGroup name --&gt;
+     * &lt;div ngModelGroup&#x3D;&quot;name&quot;&gt;&lt;/div&gt;
+     * &lt;eh-text ref&#x3D;&quot;name&quot;&gt;&lt;/eh-text&gt;
+     *
+     * &lt;!-- formControlName name --&gt;
+     * &lt;input type&#x3D;&quot;text&quot; formControlName&#x3D;&quot;name&quot;&gt;
+     * &lt;eh-text ref&#x3D;&quot;name&quot;&gt;&lt;/eh-text&gt;
+     *
+     * &lt;!-- formGroupName / formArrayName name --&gt;
+     * &lt;div formGroupName&#x3D;&quot;name&quot;&gt;&lt;/div&gt;
+     * &lt;eh-text ref&#x3D;&quot;name&quot;&gt;&lt;/eh-text&gt;
+     * ~~~
+     *
+     * 2.控件对象方式（表单控件对象，通常为模板变量，如：#ctrl&#x3D;&quot;ngModel/ngModelGroup&quot;）
+     *
+     * ~~~ html
+     * &lt;!-- ngModel control --&gt;
+     * &lt;input type&#x3D;&quot;text&quot; name&#x3D;&quot;name&quot; [(ngModel)]&#x3D;&quot;xxx&quot; #ctrl&#x3D;&quot;ngModel&quot;&gt;
+     * &lt;eh-text [ref]&#x3D;&quot;ctrl&quot;&gt;&lt;/eh-text&gt;
+     *
+     * &lt;!-- ngModelGroup control --&gt;
+     * &lt;div ngModelGroup&#x3D;&quot;name&quot; #ctrl&#x3D;&quot;ngModelGroup&quot;&gt;&lt;/div&gt;
+     * &lt;eh-text [ref]&#x3D;&quot;ctrl&quot;&gt;&lt;/eh-text&gt;
+     * ~~~
+     */
+    @Input() ref: RefType;
+
+    /**
+     * 覆盖 [FormHelperConfig]{@link FormHelperDirective#scrollProxy} 中配置
+     *
+     * - 参照物为关联的表单域，而不是错误消息自身
+     */
+    @Input() scrollProxy: string;
+
+    /**
+     * 覆盖 [FormHelperConfig]{@link FormHelperDirective#validateImmediate} 中配置
+     */
+    @Input() @InputBoolean() validateImmediate: boolean;
+
+    /**
+     * 覆盖 [FormHelperConfig]{@link FormHelperDirective#validateImmediateDescendants} 中配置
+     */
+    @Input() @InputBoolean() validateImmediateDescendants: boolean;
+
+    /**
+     * 覆盖 [FormHelperConfig]{@link FormHelperDirective#isolation} 中配置
+     */
+    @Input() @InputBoolean() isolation: boolean;
+
+    /**
+     * 关联的表单控件名称（name/ngModelGroup/formControlName/formGroupName/formArrayName）
+     */
+    controlName: string;
+
+    /**
+     * 关联的表单控件DOM对象
+     */
+    controlElement: Element;
+
+    /**
+     * 错误处理组件DOM对象
+     */
+    element: Element;
+
+    protected _control: AbstractControl;
+
+    protected constructor(private _eleRef: ElementRef,
+                          private _formHelper: FormHelperDirective,
+                          private _renderer: Renderer2) {
+        this.element &#x3D; _eleRef.nativeElement;
+    }
+
+    ngOnInit() {
+        if (this.scrollProxy &#x3D;&#x3D;&#x3D; undefined || this.scrollProxy &#x3D;&#x3D;&#x3D; null) {
+            this.scrollProxy &#x3D; this._formHelper.scrollProxy;
+        }
+        if (this.validateImmediate &#x3D;&#x3D;&#x3D; undefined || this.validateImmediate &#x3D;&#x3D;&#x3D; null) {
+            this.validateImmediate &#x3D; this._formHelper.validateImmediate;
+        }
+        if (this.validateImmediateDescendants &#x3D;&#x3D;&#x3D; undefined || this.validateImmediateDescendants &#x3D;&#x3D;&#x3D; null) {
+            this.validateImmediateDescendants &#x3D; this._formHelper.validateImmediateDescendants;
+        }
+        if (this.isolation &#x3D;&#x3D;&#x3D; undefined || this.isolation &#x3D;&#x3D;&#x3D; null) {
+            this.isolation &#x3D; this._formHelper.isolation;
+        }
+    }
+
+    ngAfterViewInit() {
+        // setTimeout保证动态表单正确绑定
+        setTimeout(() &#x3D;&gt; {
+            waitForControlInit(() &#x3D;&gt; this.control).subscribe(ctrl &#x3D;&gt; {
+                if (ctrl) {
+                    // 踩坑记录
+                    // 起先使用的是根据属性名dom查询的方式，如：document.querySelector(&#x27;[name&#x3D;xxx]&#x27;)，但在
+                    // 用户使用了模板变量的形式，如：[name]&#x3D;&quot;name&quot;，[formControlName]&#x3D;&quot;name&quot;的情况下不会生成 ng-reflect-name，
+                    // angular 在 prod 模式下 @Input 不会生成 ng-reflect-* 属性
+                    this.controlElement &#x3D; ctrl[ ControlBindElementDirective.ELEMENT_BIND_KEY ];
+
+                    if (this.onControlPrepared) {
+                        this.onControlPrepared();
+                    }
+
+                    this.listenStatusChanges();
+                }
+            });
+        });
+    }
+
+    /**
+     * 获取某验证规则是否发生错误
+     *
+     * @param validator 规则名称
+     */
+    hasError(validator: string) {
+        if (!this.control || !this.control.errors || !validator) {
+            return false;
+        } else {
+            return this.control.errors[ validator ];
+        }
+    }
+
+    /**
+     * 替换消息中的占位符，上下文为错误返回对象(如果有)
+     *
+     * @param context 上下文
+     * @param message 消息占位符
+     */
+    compileMessage(context: any, message: string) {
+        if (context !&#x3D;&#x3D; null &amp;&amp; typeof context &#x3D;&#x3D;&#x3D; &#x27;object&#x27;) {
+            let reg &#x3D; /{{.*?}}/g;
+            let find: RegExpExecArray | null;
+            let parsedMessage &#x3D; &#x27;&#x27;;
+            let lastIndex &#x3D; 0;
+
+            while ((find &#x3D; reg.exec(message))) {
+                parsedMessage +&#x3D; message.substring(lastIndex, find.index);
+                parsedMessage +&#x3D; context[ find[ 0 ].replace(&#x27;{{&#x27;, &#x27;&#x27;).replace(&#x27;}}&#x27;, &#x27;&#x27;) ];
+                lastIndex &#x3D; find.index + find[ 0 ].length;
+            }
+
+            parsedMessage +&#x3D; message.substring(lastIndex);
+
+            return parsedMessage;
+        }
+
+        return message;
+    }
+
+    /**
+     * 获取 [ref]{@link #ref} 关联的控件
+     */
+    get control() {
+        if (!this._control &amp;&amp; this.ref) {
+            if (this._formHelper &amp;&amp; typeof this.ref &#x3D;&#x3D;&#x3D; &#x27;string&#x27;) {
+                this._control &#x3D; this.findControlByName(this.ref);
+                this.controlName &#x3D; this.ref;
+            } else if (this.ref instanceof NgControl || this.ref instanceof ControlContainer) {
+                this._control &#x3D; this.ref.control;
+                this.controlName &#x3D; this.ref.name;
+            }
+        }
+
+        return this._control;
+    }
+
+    /**
+     * 验证成功回调
+     */
+    whenValid?(): void;
+
+    /**
+     * 验证失败回调
+     */
+    whenInvalid?(): void;
+
+    /**
+     * 处于验证中时的回调
+     */
+    whenPending?(): void;
+
+    /**
+     * 消息定位
+     *
+     * - 通常在每次 whenInvalid 时调用一次，防止页面布局变化导致绝对定位消息显示位置不准确
+     * - window:resize 事件自动调用
+     */
+    reposition?(): void;
+
+    /**
+     * [ref]{@link #ref} 关联的控件初始化完成回调
+     *
+     * - 消息处理组件关联表单域/表单组是由基类自动完成的，可根据需要在关联成功后执行一些操作
+     */
+    onControlPrepared?(): void;
+
+    protected addClasses(ele: Element, classNames: string) {
+        splitClassNames(classNames).forEach(cls &#x3D;&gt; this._renderer.addClass(ele, cls));
+    }
+
+    protected removeClasses(ele: Element, classNames: string) {
+        splitClassNames(classNames).forEach(cls &#x3D;&gt; this._renderer.removeClass(ele, cls));
+    }
+
+    private findControlByName(
+        name: string,
+        controls: ArrayOrGroupAbstractControls &#x3D; this._formHelper.controls
+    ): AbstractControl {
+        if (controls) {
+            let arrayControls &#x3D; arrayOfAbstractControls(controls);
+
+            for (let item of arrayControls) {
+                if (item.name &#x3D;&#x3D;&#x3D; name) {
+                    return item.control;
+                }
+            }
+
+            // 当前group下没有找到，从group中的group继续寻找
+            for (let item of arrayControls) {
+                if (item.control instanceof FormGroup || item.control instanceof FormArray) {
+                    let find &#x3D; this.findControlByName(name, item.control.controls);
+                    if (find) {
+                        return find;
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
+
+    private listenStatusChanges() {
+        this.control.statusChanges.subscribe(() &#x3D;&gt; {
+            if (this.control.pending) {
+                // 系统内置处理
+                this.removeControlEleClasses();
+
+                // 用户自定义处理
+                if (this.whenPending) {
+                    this.whenPending();
+                }
+            }
+
+            if (!this.control.pending) {
+                // 系统内置处理
+                if (this.control.disabled || this.control.pristine || this.isControlValid()) {
+                    this.removeControlEleClasses();
+                } else if (this.control.dirty &amp;&amp; this.control.invalid) {
+                    this.addControlEleClasses();
+                }
+
+                // 用户自定义处理
+                if (this.control.enabled &amp;&amp; this.control.dirty) {
+                    if (this.isControlValid() &amp;&amp; this.whenValid) {
+                        this.whenValid();
+                    } else if (!this.isControlValid() &amp;&amp; this.whenInvalid) {
+                        this.whenInvalid();
+                    }
+                }
+            }
+        });
+
+        if (this.validateImmediate) {
+            this.control.markAsDirty();
+            this.control.updateValueAndValidity();
+
+            if (this.validateImmediateDescendants
+                &amp;&amp; (this.control instanceof FormGroup || this.control instanceof FormArray)) {
+                this.validateControls(this.control.controls);
+            }
+        }
+    }
+
+    private isControlValid() {
+        if (this.control instanceof FormGroup || this.control instanceof FormArray) {
+            if (this.isolation) {
+                return !this.control.errors;
+            } else {
+                return this.control.valid;
+            }
+        } else {
+            return this.control.valid;
+        }
+    }
+
+    private validateControls(controls: ArrayOrGroupAbstractControls) {
+        setTimeout(() &#x3D;&gt; {
+            arrayOfAbstractControls(controls).forEach(item &#x3D;&gt; {
+                item.control.markAsDirty({ onlySelf: true });
+                item.control.updateValueAndValidity({ onlySelf: true });
+
+                if (item.control instanceof FormGroup || item.control instanceof FormArray) {
+                    this.validateControls(item.control.controls);
+                }
+            });
+        });
+    }
+
+    private addControlEleClasses() {
+        if (this.controlElement) {
+            if (this.control instanceof FormControl) {
+                this.addClasses(this.controlElement, this._formHelper.errorClassNames);
+            } else {
+                this.addClasses(this.controlElement, this._formHelper.errorGroupClassNames);
+            }
+        }
+    }
+
+    private removeControlEleClasses() {
+        if (this.controlElement) {
+            if (this.control instanceof FormControl) {
+                this.removeClasses(this.controlElement, this._formHelper.errorClassNames);
+            } else {
+                this.removeClasses(this.controlElement, this._formHelper.errorGroupClassNames);
+            }
+        }
+    }
+
+}</code></pre>
+    </div>
+</div>
+
+
+
+                   
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> result-matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">无匹配的结果 "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'class';
+            var COMPODOC_CURRENT_PAGE_URL = 'ErrorHandler.html';
+       </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+       <!-- Required to polyfill modern browsers as code is ES5 for IE... -->
+       <script src="../js/libs/custom-elements-es5-adapter.js" charset="utf-8" defer></script>
+       <script src="../js/menu-wc.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+       <script src="../js/libs/zepto.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>

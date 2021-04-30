@@ -1,0 +1,695 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>ngx-form-helper documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	      <link rel="stylesheet" href="../styles/style.css">
+    </head>
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top visible-xs">
+            <a href="../" class="navbar-brand">ngx-form-helper documentation</a>
+            <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="hidden-xs menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content directive">
+                   <div class="content-data">
+
+
+
+
+
+
+<ol class="breadcrumb">
+  <li>指令列表</li>
+  <li>SubmitHandlerLoaderDirective</li>
+</ol>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="active">
+            <a href="#info" role="tab" id="info-tab" data-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li >
+            <a href="#source" role="tab" id="source-tab" data-toggle="tab" data-link="source">Source</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="c-info">
+        <p class="comment">
+            <h3>文件</h3>
+        </p>
+        <p class="comment">
+            <code>src/submit-handler/submit-handler-loader.directive.ts</code>
+        </p>
+
+            <p class="comment">
+                <h3>描述</h3>
+            </p>
+            <p class="comment">
+                <p>防重复提交和设定等待请求返回前的 loading 反馈</p>
+<div><pre class="line-numbers"><code class="language-html">&lt;form formHelper&gt;
+   &lt;button type=&quot;button&quot; shLoader&gt; ... &lt;/button&gt;
+&lt;/form&gt;</code></pre></div>
+            </p>
+
+            <p class="comment">
+                <h3>实现</h3>
+            </p>
+            <p class="comment">
+                            <code><a href="../interfaces/SubmitHandler.html" target="_self" >SubmitHandler</a></code>
+                            <code><a href="https://angular.io/api/core/OnChanges" target="_blank" >OnChanges</a></code>
+                            <code><a href="https://angular.io/api/core/AfterViewInit" target="_blank" >AfterViewInit</a></code>
+            </p>
+
+
+        <section>
+            <h3>元数据</h3>
+            <table class="table table-sm table-hover">
+                <tbody>
+
+                    <tr>
+                        <td class="col-md-3">选择器</td>
+                        <td class="col-md-9"><code>[shLoader]</code></td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </section>
+
+            <section>
+    <h3 id="index">索引</h3>
+    <table class="table table-sm table-bordered index-table">
+        <tbody>
+
+
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>输入属性</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                <a href="#classNames">classNames</a>
+                            </li>
+                            <li>
+                                <a href="#disableTheme">disableTheme</a>
+                            </li>
+                            <li>
+                                <a href="#iconClassNames">iconClassNames</a>
+                            </li>
+                            <li>
+                                <a href="#iconSelector">iconSelector</a>
+                            </li>
+                            <li>
+                                <a href="#iconToggleStrategy">iconToggleStrategy</a>
+                            </li>
+                            <li>
+                                <a href="#minDuration">minDuration</a>
+                            </li>
+                            <li>
+                                <a href="#refForm">refForm</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+
+
+
+        </tbody>
+    </table>
+</section>
+
+
+            <section>
+    <h3 id="inputs">输入属性</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="classNames"></a>
+                        <b>classNames</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>类型 : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>缺省值 : </i><code>&#x27;sh-loader-theme&#x27;</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-2" colspan="2">
+                                    <div class="io-line">被定义在 <a href="" data-line="79" class="link-to-prism">src/submit-handler/submit-handler-loader.directive.ts:79</a></div>
+                            </td>
+                        </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <div class="io-description"><p>全局主题样式</p>
+<ul>
+<li>指定的字符串会添加到指令所在元素类名中。可设置多个值，空格符分割。插件已为默认值定义了一套主题样式</li>
+</ul>
+</div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="disableTheme"></a>
+                        <b>disableTheme</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>类型 : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>缺省值 : </i><code>false</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-2" colspan="2">
+                                    <div class="io-line">被定义在 <a href="" data-line="99" class="link-to-prism">src/submit-handler/submit-handler-loader.directive.ts:99</a></div>
+                            </td>
+                        </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <div class="io-description"><p>是否禁用主题样式</p>
+</div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="iconClassNames"></a>
+                        <b>iconClassNames</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>类型 : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>缺省值 : </i><code>&#x27;sh-loader-theme-icon&#x27;</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-2" colspan="2">
+                                    <div class="io-line">被定义在 <a href="" data-line="84" class="link-to-prism">src/submit-handler/submit-handler-loader.directive.ts:84</a></div>
+                            </td>
+                        </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <div class="io-description"><p>局部图标主题样式</p>
+</div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="iconSelector"></a>
+                        <b>iconSelector</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>类型 : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>缺省值 : </i><code>&#x27;i.icon, i.fa&#x27;</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-2" colspan="2">
+                                    <div class="io-line">被定义在 <a href="" data-line="89" class="link-to-prism">src/submit-handler/submit-handler-loader.directive.ts:89</a></div>
+                            </td>
+                        </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <div class="io-description"><p>寻找图标的选择器，若找到，则使用<code>局部图标主题样式(iconClassNames)</code>，否则使用<code>全局主题样式(classNames)</code></p>
+</div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="iconToggleStrategy"></a>
+                        <b>iconToggleStrategy</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>类型 : </i>        <code><a href="../miscellaneous/enumerations.html#IconToggleStrategy" target="_self" >IconToggleStrategy</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>缺省值 : </i><code>IconToggleStrategy.APPEND</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-2" colspan="2">
+                                    <div class="io-line">被定义在 <a href="" data-line="94" class="link-to-prism">src/submit-handler/submit-handler-loader.directive.ts:94</a></div>
+                            </td>
+                        </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <div class="io-description"><p>图标类名的替换策略，append: 在原有类名基础上增加，replace: 完全使用新类名替换原类名</p>
+</div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="minDuration"></a>
+                        <b>minDuration</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>类型 : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>缺省值 : </i><code>500</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-2" colspan="2">
+                                    <div class="io-line">被定义在 <a href="" data-line="104" class="link-to-prism">src/submit-handler/submit-handler-loader.directive.ts:104</a></div>
+                            </td>
+                        </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <div class="io-description"><p>loader最小动画时长(ms)，在此之间按钮不可点击(防重复提交)</p>
+</div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="refForm"></a>
+                        <b>refForm</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>类型 : </i>    <code>FormHelperDirective</code>
+
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-2" colspan="2">
+                                    <div class="io-line">被定义在 <a href="" data-line="126" class="link-to-prism">src/submit-handler/submit-handler-loader.directive.ts:126</a></div>
+                            </td>
+                        </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <div class="io-description"><p>当 submit 元素在 form 外部时有用，使用此属性关联 formHelper 实例</p>
+<hr>
+<p>提交按钮在表单内部</p>
+<div><pre class="line-numbers"><code class="language-html">&lt;form formHelper&gt;
+   &lt;button type=&quot;button&quot; shLoader&gt;保存&lt;/button&gt;
+&lt;/form&gt;</code></pre></div><p>提交按钮在表单外部</p>
+<div><pre class="line-numbers"><code class="language-html">&lt;form formHelper #formHelperCtrl=&quot;formHelper&quot;&gt;&lt;/form&gt;
+&lt;button type=&quot;button&quot; shLoader [refForm]=&quot;formHelperCtrl&quot;&gt;保存&lt;/button&gt;</code></pre></div></div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+</section>
+
+
+
+
+
+
+    </div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="c-source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import {
+    AfterViewInit, Directive, ElementRef, HostListener, Inject, InjectionToken, Input, OnChanges, Optional, Provider,
+    Renderer2, SimpleChanges, SkipSelf
+} from &#x27;@angular/core&#x27;;
+import { IconToggleStrategy, SubmitHandlerLoaderConfig } from &#x27;./submit-handler-loader-config&#x27;;
+import { SubmitHandler } from &#x27;./submit-handler&#x27;;
+import { FormHelperDirective } from &#x27;../form-helper.directive&#x27;;
+import { arrayProviderFactory, isNotFirstChange, splitClassNames } from &#x27;../utils&#x27;;
+import { InputBoolean, InputNumber } from &#x27;@demacia/cmjs-lib&#x27;;
+
+/**
+ * @ignore
+ */
+export const SUBMIT_HANDLER_LOADER_CONFIG &#x3D;
+    new InjectionToken&lt;SubmitHandlerLoaderConfig&gt;(&#x27;submit_handler_loader_config&#x27;);
+
+/**
+ * @ignore
+ */
+export const SUBMIT_HANDLER_LOADER_CONFIG_ARRAY &#x3D;
+    new InjectionToken&lt;SubmitHandlerLoaderConfig[]&gt;(&#x27;submit_handler_loader_config_array&#x27;);
+
+/**
+ * [SubmitHandlerLoaderDirective]{@link SubmitHandlerLoaderDirective} 全局配置
+ *
+ * ~~~ js
+ * \@NgModule({
+ *     ...
+ *     providers: [
+ *         submitHandlerLoaderConfigProvider({
+ *             duration: 300
+ *             ...
+ *         })
+ *     ]
+ * })
+ * export class CoreModule {
+ * }
+ * ~~~
+ *
+ * @param config 配置
+ */
+export function submitHandlerLoaderConfigProvider(config: SubmitHandlerLoaderConfig): Provider[] {
+    return [
+        {
+            provide: SUBMIT_HANDLER_LOADER_CONFIG,
+            useValue: config
+        },
+        {
+            provide: SUBMIT_HANDLER_LOADER_CONFIG_ARRAY,
+            useFactory: arrayProviderFactory,
+            deps: [
+                SUBMIT_HANDLER_LOADER_CONFIG,
+                [ new SkipSelf(), new Optional(), SUBMIT_HANDLER_LOADER_CONFIG_ARRAY ]
+            ]
+        }
+    ];
+}
+
+/**
+ * 防重复提交和设定等待请求返回前的 loading 反馈
+ *
+ * ~~~ html
+ * &lt;form formHelper&gt;
+ *   &lt;button type&#x3D;&quot;button&quot; shLoader&gt; ... &lt;/button&gt;
+ * &lt;/form&gt;
+ * ~~~
+ */
+@Directive({
+    selector: &#x27;[shLoader]&#x27;,
+    exportAs: &#x27;shLoader&#x27;
+})
+export class SubmitHandlerLoaderDirective implements SubmitHandler, OnChanges, AfterViewInit {
+
+    /**
+     * 全局主题样式
+     *
+     * - 指定的字符串会添加到指令所在元素类名中。可设置多个值，空格符分割。插件已为默认值定义了一套主题样式
+     */
+    @Input() classNames: string &#x3D; &#x27;sh-loader-theme&#x27;;
+
+    /**
+     * 局部图标主题样式
+     */
+    @Input() iconClassNames: string &#x3D; &#x27;sh-loader-theme-icon&#x27;;
+
+    /**
+     * 寻找图标的选择器，若找到，则使用&#x60;局部图标主题样式(iconClassNames)&#x60;，否则使用&#x60;全局主题样式(classNames)&#x60;
+     */
+    @Input() iconSelector: string &#x3D; &#x27;i.icon, i.fa&#x27;;
+
+    /**
+     * 图标类名的替换策略，append: 在原有类名基础上增加，replace: 完全使用新类名替换原类名
+     */
+    @Input() iconToggleStrategy: IconToggleStrategy &#x3D; IconToggleStrategy.APPEND;
+
+    /**
+     * 是否禁用主题样式
+     */
+    @Input() @InputBoolean() disableTheme: boolean &#x3D; false;
+
+    /**
+     * loader最小动画时长(ms)，在此之间按钮不可点击(防重复提交)
+     */
+    @Input() @InputNumber() minDuration: number &#x3D; 500;
+
+    /**
+     * 当 submit 元素在 form 外部时有用，使用此属性关联 formHelper 实例
+     *
+     * ---
+     *
+     * 提交按钮在表单内部
+     *
+     * ~~~ html
+     * &lt;form formHelper&gt;
+     *   &lt;button type&#x3D;&quot;button&quot; shLoader&gt;保存&lt;/button&gt;
+     * &lt;/form&gt;
+     * ~~~
+     *
+     * 提交按钮在表单外部
+     *
+     * ~~~ html
+     * &lt;form formHelper #formHelperCtrl&#x3D;&quot;formHelper&quot;&gt;&lt;/form&gt;
+     * &lt;button type&#x3D;&quot;button&quot; shLoader [refForm]&#x3D;&quot;formHelperCtrl&quot;&gt;保存&lt;/button&gt;
+     * ~~~
+     */
+    @Input() refForm: FormHelperDirective;
+
+    /**
+     * @ignore
+     */
+    @HostListener(&#x27;click&#x27;) onClick() {
+        let finalForm &#x3D; this.formHelper || this.refForm;
+        if (finalForm) {
+            finalForm.submit(this);
+        }
+    }
+
+    private readonly ele: HTMLElement;
+    private loading: HTMLElement;
+    private originIconClasses: string;
+    private startTime: number;
+    private flag: any;
+
+    /**
+     * @ignore
+     */
+    constructor(private eleRef: ElementRef,
+                private renderer: Renderer2,
+                @Optional() @SkipSelf() private formHelper: FormHelperDirective,
+                // tslint:disable-next-line:prefer-inline-decorator
+                @Optional() @Inject(SUBMIT_HANDLER_LOADER_CONFIG_ARRAY)
+                private overrideConfigs: SubmitHandlerLoaderConfig[]) {
+        Object.assign(this, ...(overrideConfigs || []));
+        this.ele &#x3D; eleRef.nativeElement;
+    }
+
+    ngOnChanges(changes: SimpleChanges) {
+        if (isNotFirstChange(changes.iconSelector) &amp;&amp; changes.iconSelector.currentValue) {
+            this.ngAfterViewInit();
+        }
+    }
+
+    ngAfterViewInit() {
+        if (typeof this.iconSelector &#x3D;&#x3D;&#x3D; &#x27;string&#x27;) {
+            this.loading &#x3D; this.ele.querySelector(this.iconSelector);
+        }
+        if (this.loading) {
+            this.originIconClasses &#x3D; this.loading.className;
+        }
+    }
+
+    /**
+     * @ignore
+     */
+    start() {
+        this.startTime &#x3D; new Date().getTime();
+
+        if (this.ele instanceof HTMLButtonElement) {
+            this.ele.disabled &#x3D; true;
+        } else {
+            this.renderer.addClass(this.ele, &#x27;disabled&#x27;);
+        }
+
+        if (this.disableTheme) {
+            return;
+        }
+
+        if (this.loading) {
+            if (this.iconToggleStrategy &#x3D;&#x3D;&#x3D; IconToggleStrategy.REPLACE) {
+                this.loading.className &#x3D; &#x27;&#x27;;
+            }
+            if (getComputedStyle(this.loading).position &#x3D;&#x3D;&#x3D; &#x27;static&#x27;) {
+                this.renderer.setStyle(this.loading, &#x27;position&#x27;, &#x27;relative&#x27;);
+            }
+
+            this.addClasses(this.loading, this.iconClassNames);
+        } else {
+            this.addClasses(this.ele, this.classNames);
+        }
+    }
+
+    /**
+     * @ignore
+     */
+    end(cb?: () &#x3D;&gt; void) {
+        clearTimeout(this.flag);
+
+        let diff &#x3D; new Date().getTime() - this.startTime;
+        let duration &#x3D; diff &lt; this.minDuration ? this.minDuration - diff : 0;
+
+        if (duration &gt; 0) {
+            this.flag &#x3D; setTimeout(() &#x3D;&gt; this.doEnd(cb), duration);
+        } else {
+            this.doEnd(cb);
+        }
+    }
+
+    private doEnd(cb?: () &#x3D;&gt; void) {
+        if (this.ele instanceof HTMLButtonElement) {
+            this.ele.disabled &#x3D; false;
+        } else {
+            this.renderer.removeClass(this.ele, &#x27;disabled&#x27;);
+        }
+
+        if (typeof cb &#x3D;&#x3D;&#x3D; &#x27;function&#x27;) {
+            cb();
+        }
+
+        if (this.disableTheme) {
+            return;
+        }
+
+        if (this.loading) {
+            this.removeClasses(this.loading, this.iconClassNames);
+
+            if (this.iconToggleStrategy &#x3D;&#x3D;&#x3D; IconToggleStrategy.REPLACE) {
+                this.addClasses(this.loading, this.originIconClasses);
+            }
+        } else {
+            this.removeClasses(this.ele, this.classNames);
+        }
+    }
+
+    private addClasses(ele: Element, classNames: string) {
+        splitClassNames(classNames).forEach(cls &#x3D;&gt; this.renderer.addClass(ele, cls));
+    }
+
+    private removeClasses(ele: Element, classNames: string) {
+        splitClassNames(classNames).forEach(cls &#x3D;&gt; this.renderer.removeClass(ele, cls));
+    }
+
+}</code></pre>
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
+                   
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> result-matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">无匹配的结果 "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'directive';
+            var COMPODOC_CURRENT_PAGE_URL = 'SubmitHandlerLoaderDirective.html';
+       </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+       <!-- Required to polyfill modern browsers as code is ES5 for IE... -->
+       <script src="../js/libs/custom-elements-es5-adapter.js" charset="utf-8" defer></script>
+       <script src="../js/menu-wc.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+       <script src="../js/libs/zepto.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>

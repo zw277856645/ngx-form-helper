@@ -1,0 +1,322 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>ngx-form-helper documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	      <link rel="stylesheet" href="../styles/style.css">
+    </head>
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top visible-xs">
+            <a href="../" class="navbar-brand">ngx-form-helper documentation</a>
+            <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="hidden-xs menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content directive">
+                   <div class="content-data">
+
+
+
+
+
+
+<ol class="breadcrumb">
+  <li>指令列表</li>
+  <li>TrimmedRequiredDirective</li>
+</ol>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="active">
+            <a href="#info" role="tab" id="info-tab" data-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li >
+            <a href="#source" role="tab" id="source-tab" data-toggle="tab" data-link="source">Source</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="c-info">
+        <p class="comment">
+            <h3>文件</h3>
+        </p>
+        <p class="comment">
+            <code>src/validator/trimmed-required.directive.ts</code>
+        </p>
+
+            <p class="comment">
+                <h3>描述</h3>
+            </p>
+            <p class="comment">
+                <p>验证是否为空。同 angular 自带的 required 区别是本规则剔除空白符</p>
+<ul>
+<li>验证失败时返回 <code>{ trimmedRequired: true }</code></li>
+</ul>
+<hr>
+<p>模板驱动方式</p>
+<div><pre class="line-numbers"><code class="language-html">&lt;input type=&quot;text&quot; name=&quot;name&quot; [(ngModel)]=&quot;xxx&quot; trimmedRequired&gt;
+&lt;input type=&quot;text&quot; name=&quot;name&quot; [(ngModel)]=&quot;xxx&quot; [trimmedRequired]=&quot;true&quot;&gt;
+&lt;input type=&quot;text&quot; name=&quot;name&quot; [(ngModel)]=&quot;xxx&quot; [trimmedRequired]=&quot;false&quot;&gt;</code></pre></div><p>模型驱动方式</p>
+<div><pre class="line-numbers"><code class="language-html">&lt;input type=&quot;text&quot; name=&quot;name&quot; formControlName=&quot;name&quot;&gt;</code></pre></div><div><pre class="line-numbers"><code class="language-js">\&#64;Component({ ... })
+export class ExampleComponent {
+
+     name = new FormControl(&#39;&#39;, [ trimmedRequired() ]);
+}</code></pre></div>
+            </p>
+
+            <p class="comment">
+                <h3>实现</h3>
+            </p>
+            <p class="comment">
+                            <code><a href="https://angular.io/api/forms/Validator" target="_blank" >Validator</a></code>
+                            <code><a href="https://angular.io/api/core/OnChanges" target="_blank" >OnChanges</a></code>
+            </p>
+
+
+        <section>
+            <h3>元数据</h3>
+            <table class="table table-sm table-hover">
+                <tbody>
+                    <tr>
+                        <td class="col-md-3">提供商列表</td>
+                        <td class="col-md-9">
+                            <code>
+                                { provide: NG_VALIDATORS, useExisting: TrimmedRequiredDirective, multi: true }
+                            </code>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="col-md-3">选择器</td>
+                        <td class="col-md-9"><code>[trimmedRequired][ngModel],[trimmedRequired][formControl],[trimmedRequired][formControlName]</code></td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </section>
+
+            <section>
+    <h3 id="index">索引</h3>
+    <table class="table table-sm table-bordered index-table">
+        <tbody>
+
+
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>输入属性</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                <a href="#trimmedRequired">trimmedRequired</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+
+
+
+        </tbody>
+    </table>
+</section>
+
+
+            <section>
+    <h3 id="inputs">输入属性</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="trimmedRequired"></a>
+                        <b>trimmedRequired</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>类型 : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-2" colspan="2">
+                                    <div class="io-line">被定义在 <a href="" data-line="60" class="link-to-prism">src/validator/trimmed-required.directive.ts:60</a></div>
+                            </td>
+                        </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <div class="io-description"><p>是否必须</p>
+</div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+</section>
+
+
+
+
+
+
+    </div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="c-source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Directive, Input, OnChanges } from &#x27;@angular/core&#x27;;
+import { AbstractControl, NG_VALIDATORS, Validator, ValidatorFn } from &#x27;@angular/forms&#x27;;
+import { InputBoolean } from &#x27;@demacia/cmjs-lib&#x27;;
+
+/**
+ * @ignore
+ */
+export function trimmedRequired(required: boolean &#x3D; true): ValidatorFn {
+    return (c: AbstractControl) &#x3D;&gt; {
+        if (required) {
+            let v &#x3D; (c.value &#x3D;&#x3D;&#x3D; null || c.value &#x3D;&#x3D;&#x3D; undefined) ? &#x27;&#x27; : String(c.value);
+
+            return v &amp;&amp; v.trim().length &gt; 0 ? null : { trimmedRequired: true };
+        }
+
+        return null;
+    };
+}
+
+/**
+ * 验证是否为空。同 angular 自带的 required 区别是本规则剔除空白符
+ *
+ * - 验证失败时返回 &#x60;{ trimmedRequired: true }&#x60;
+ *
+ * ---
+ *
+ * 模板驱动方式
+ *
+ * ~~~ html
+ * &lt;input type&#x3D;&quot;text&quot; name&#x3D;&quot;name&quot; [(ngModel)]&#x3D;&quot;xxx&quot; trimmedRequired&gt;
+ * &lt;input type&#x3D;&quot;text&quot; name&#x3D;&quot;name&quot; [(ngModel)]&#x3D;&quot;xxx&quot; [trimmedRequired]&#x3D;&quot;true&quot;&gt;
+ * &lt;input type&#x3D;&quot;text&quot; name&#x3D;&quot;name&quot; [(ngModel)]&#x3D;&quot;xxx&quot; [trimmedRequired]&#x3D;&quot;false&quot;&gt;
+ * ~~~
+ *
+ * 模型驱动方式
+ *
+ * ~~~ html
+ * &lt;input type&#x3D;&quot;text&quot; name&#x3D;&quot;name&quot; formControlName&#x3D;&quot;name&quot;&gt;
+ * ~~~
+ *
+ * ~~~ js
+ * \@Component({ ... })
+ * export class ExampleComponent {
+ *
+ *     name &#x3D; new FormControl(&#x27;&#x27;, [ trimmedRequired() ]);
+ * }
+ * ~~~
+ */
+@Directive({
+    selector: &#x27;[trimmedRequired][ngModel],[trimmedRequired][formControl],[trimmedRequired][formControlName]&#x27;,
+    providers: [
+        { provide: NG_VALIDATORS, useExisting: TrimmedRequiredDirective, multi: true }
+    ]
+})
+export class TrimmedRequiredDirective implements Validator, OnChanges {
+
+    /**
+     * 是否必须
+     */
+    @Input() @InputBoolean() trimmedRequired: boolean;
+
+    private ctrl: AbstractControl;
+
+    ngOnChanges() {
+        if (this.ctrl) {
+            this.ctrl.updateValueAndValidity();
+        }
+    }
+
+    /**
+     * @ignore
+     */
+    validate(c: AbstractControl) {
+        if (!this.ctrl) {
+            this.ctrl &#x3D; c;
+        }
+
+        return trimmedRequired(this.trimmedRequired)(c);
+    }
+}
+</code></pre>
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
+                   
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> result-matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">无匹配的结果 "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'directive';
+            var COMPODOC_CURRENT_PAGE_URL = 'TrimmedRequiredDirective.html';
+       </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+       <!-- Required to polyfill modern browsers as code is ES5 for IE... -->
+       <script src="../js/libs/custom-elements-es5-adapter.js" charset="utf-8" defer></script>
+       <script src="../js/menu-wc.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+       <script src="../js/libs/zepto.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>

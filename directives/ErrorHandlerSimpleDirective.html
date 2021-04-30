@@ -1,0 +1,502 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>ngx-form-helper documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	      <link rel="stylesheet" href="../styles/style.css">
+    </head>
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top visible-xs">
+            <a href="../" class="navbar-brand">ngx-form-helper documentation</a>
+            <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="hidden-xs menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content directive">
+                   <div class="content-data">
+
+
+
+
+
+
+<ol class="breadcrumb">
+  <li>指令列表</li>
+  <li>ErrorHandlerSimpleDirective</li>
+</ol>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="active">
+            <a href="#info" role="tab" id="info-tab" data-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li >
+            <a href="#source" role="tab" id="source-tab" data-toggle="tab" data-link="source">Source</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="c-info">
+        <p class="comment">
+            <h3>文件</h3>
+        </p>
+        <p class="comment">
+            <code>src/error-handler/simple/error-handler-simple.directive.ts</code>
+        </p>
+
+            <p class="comment">
+                <h3>描述</h3>
+            </p>
+            <p class="comment">
+                <p>作用：标记任意元素为错误处理控件<br>
+特色：没有错误消息，仅被标记的控件自身和对应的表单域/表单组有反馈</p>
+<hr>
+<p>作用在任意元素，引用表单域/表单组。此方式与
+<a href="../components/ErrorHandlerTextComponent.html">eh-text</a> / <a href="../components/ErrorHandlerTooltipComponent.html">eh-tooltip</a> 相同</p>
+<div><pre class="line-numbers"><code class="language-html">&lt;input type=&quot;text&quot; name=&quot;name&quot; [(ngModel)]=&quot;xxx&quot; required pattern=&quot;[a-zA-Z]*&quot;&gt;
+&lt;div ehSimple ref=&quot;name&quot;&gt;&lt;/div&gt;</code></pre></div><p>作用在表单域/表单组上，此情况不需要设置 ref 属性</p>
+<div><pre class="line-numbers"><code class="language-html">&lt;input type=&quot;text&quot; name=&quot;name&quot; [(ngModel)]=&quot;xxx&quot; required pattern=&quot;[a-zA-Z]*&quot; ehSimple&gt;</code></pre></div>
+            </p>
+
+            <p class="comment">
+                <h3>实现</h3>
+            </p>
+            <p class="comment">
+                            <code><a href="https://angular.io/api/core/AfterViewInit" target="_blank" >AfterViewInit</a></code>
+            </p>
+
+
+        <section>
+            <h3>元数据</h3>
+            <table class="table table-sm table-hover">
+                <tbody>
+                    <tr>
+                        <td class="col-md-3">提供商列表</td>
+                        <td class="col-md-9">
+                            <code>
+                                {
+    provide: ErrorHandler, useExisting: ErrorHandlerSimpleDirective
+}
+                            </code>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="col-md-3">选择器</td>
+                        <td class="col-md-9"><code>[ehSimple]</code></td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </section>
+
+            <section>
+    <h3 id="index">索引</h3>
+    <table class="table table-sm table-bordered index-table">
+        <tbody>
+
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>方法</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                <a href="#repositionMessages">repositionMessages</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>输入属性</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                <a href="#errorClassNames">errorClassNames</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+
+
+
+        </tbody>
+    </table>
+</section>
+
+
+            <section>
+    <h3 id="inputs">输入属性</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <a name="errorClassNames"></a>
+                        <b>errorClassNames</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>类型 : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>缺省值 : </i><code>&#x27;eh-simple-error&#x27;</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-2" colspan="2">
+                                    <div class="io-line">被定义在 <a href="" data-line="93" class="link-to-prism">src/error-handler/simple/error-handler-simple.directive.ts:93</a></div>
+                            </td>
+                        </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <div class="io-description"><p>验证失败时自身自动添加的类名</p>
+</div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+</section>
+
+
+
+            <section>
+    
+    <h3 id="methods">
+        方法
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="repositionMessages"></a>
+                    <span class="name">
+                        <b>
+                            repositionMessages
+                        </b>
+                        <a href="#repositionMessages"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+<code>repositionMessages(delay?: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank">number</a>)</code>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-line">被定义在 <a href="" data-line="145"
+                            class="link-to-prism">src/error-handler/simple/error-handler-simple.directive.ts:145</a></div>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+                    <div class="io-description"><p>错误消息重定位，当关联控件为<code>表单组</code>时，其<code>子域</code>也会同时重定位</p>
+</div>
+
+                    <div class="io-description">
+                        <b>参数列表 :</b>
+                        <table class="params">
+                            <thead>
+                                <tr>
+                                    <td>名称</td>
+                                    <td>类型</td>
+                                    <td>可选的</td>
+                                    <td>描述</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>delay</td>
+                                    <td>
+                                                <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/number" target="_blank" >number</a></code>
+                                    </td>
+
+                                    <td>
+                                        是
+                                    </td>
+
+
+                                    <td>
+                                        <p>延时重定位时间</p>
+
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                    </div>
+                    <div class="io-description">
+                        <b>返回 : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >void</a></code>
+
+                    </div>
+                    <div class="io-description">
+                        
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+
+    </div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="c-source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import {
+    AfterViewInit, Directive, ElementRef, Inject, InjectionToken, Input, Optional, Provider, Renderer2, SkipSelf
+} from &#x27;@angular/core&#x27;;
+import { ErrorHandler } from &#x27;../error-handler&#x27;;
+import { FormHelperDirective } from &#x27;../../form-helper.directive&#x27;;
+import { arrayProviderFactory, waitForControlInit } from &#x27;../../utils&#x27;;
+import { ErrorHandlerSimpleConfig } from &#x27;./error-handler-simple-config&#x27;;
+import { ControlContainer, NgControl } from &#x27;@angular/forms&#x27;;
+
+/**
+ * @ignore
+ */
+export const ERROR_HANDLER_SIMPLE_CONFIG
+    &#x3D; new InjectionToken&lt;ErrorHandlerSimpleConfig&gt;(&#x27;error_handler_simple_config&#x27;);
+
+/**
+ * @ignore
+ */
+export const ERROR_HANDLER_SIMPLE_CONFIG_ARRAY
+    &#x3D; new InjectionToken&lt;ErrorHandlerSimpleConfig[]&gt;(&#x27;error_handler_simple_config_array&#x27;);
+
+/**
+ * [ErrorHandlerSimpleDirective]{@link ErrorHandlerSimpleDirective} 全局配置
+ *
+ * ~~~ js
+ * \@NgModule({
+ *     ...
+ *     providers: [
+ *         errorHandlerSimpleConfigProvider({
+ *             errorClassNames: &#x27;eh-simple-error my-special-style&#x27;
+ *             ...
+ *         })
+ *     ]
+ * })
+ * export class CoreModule {
+ * }
+ * ~~~
+ *
+ * @param config 配置
+ */
+export function errorHandlerSimpleConfigProvider(config: ErrorHandlerSimpleConfig): Provider[] {
+    return [
+        {
+            provide: ERROR_HANDLER_SIMPLE_CONFIG,
+            useValue: config
+        },
+        {
+            provide: ERROR_HANDLER_SIMPLE_CONFIG_ARRAY,
+            useFactory: arrayProviderFactory,
+            deps: [
+                ERROR_HANDLER_SIMPLE_CONFIG,
+                [ new SkipSelf(), new Optional(), ERROR_HANDLER_SIMPLE_CONFIG_ARRAY ]
+            ]
+        }
+    ];
+}
+
+/**
+ * 作用：标记任意元素为错误处理控件&lt;br&gt;
+ * 特色：没有错误消息，仅被标记的控件自身和对应的表单域/表单组有反馈
+ *
+ * ---
+ *
+ * 作用在任意元素，引用表单域/表单组。此方式与
+ * [eh-text]{@link ErrorHandlerTextComponent} / [eh-tooltip]{@link ErrorHandlerTooltipComponent} 相同
+ *
+ * ~~~ html
+ * &lt;input type&#x3D;&quot;text&quot; name&#x3D;&quot;name&quot; [(ngModel)]&#x3D;&quot;xxx&quot; required pattern&#x3D;&quot;[a-zA-Z]*&quot;&gt;
+ * &lt;div ehSimple ref&#x3D;&quot;name&quot;&gt;&lt;/div&gt;
+ * ~~~
+ *
+ * 作用在表单域/表单组上，此情况不需要设置 ref 属性
+ *
+ * ~~~ html
+ * &lt;input type&#x3D;&quot;text&quot; name&#x3D;&quot;name&quot; [(ngModel)]&#x3D;&quot;xxx&quot; required pattern&#x3D;&quot;[a-zA-Z]*&quot; ehSimple&gt;
+ * ~~~
+ */
+@Directive({
+    selector: &#x27;[ehSimple]&#x27;,
+    providers: [
+        {
+            provide: ErrorHandler,
+            useExisting: ErrorHandlerSimpleDirective
+        }
+    ],
+    exportAs: &#x27;ehSimple&#x27;
+})
+export class ErrorHandlerSimpleDirective extends ErrorHandler implements AfterViewInit {
+
+    /**
+     * 验证失败时自身自动添加的类名
+     */
+    @Input() errorClassNames: string &#x3D; &#x27;eh-simple-error&#x27;;
+
+    /**
+     * @ignore
+     */
+    constructor(private eleRef: ElementRef,
+                private renderer: Renderer2,
+                @Optional() private ngControl: NgControl,
+                @Optional() private controlContainer: ControlContainer,
+                @SkipSelf() private formHelper: FormHelperDirective,
+                // tslint:disable-next-line:prefer-inline-decorator
+                @Optional() @Inject(ERROR_HANDLER_SIMPLE_CONFIG_ARRAY)
+                private overrideConfigs: ErrorHandlerSimpleConfig[]) {
+        super(eleRef, formHelper, renderer);
+        Object.assign(this, ...(overrideConfigs || []));
+    }
+
+    ngAfterViewInit() {
+        // 省略ref时，从DI系统解析关联的控件
+        if (this.ref &#x3D;&#x3D;&#x3D; null || this.ref &#x3D;&#x3D;&#x3D; undefined) {
+            setTimeout(() &#x3D;&gt; this.initControlByDI());
+        } else {
+            super.ngAfterViewInit();
+        }
+    }
+
+    /**
+     * @ignore
+     */
+    whenValid() {
+        this.removeClasses(this.eleRef.nativeElement, this.errorClassNames);
+    }
+
+    /**
+     * @ignore
+     */
+    whenInvalid() {
+        this.addClasses(this.eleRef.nativeElement, this.errorClassNames);
+    }
+
+    /**
+     * @ignore
+     */
+    whenPending() {
+        this.whenValid();
+    }
+
+    /**
+     * 错误消息重定位，当关联控件为&#x60;表单组&#x60;时，其&#x60;子域&#x60;也会同时重定位
+     *
+     * @param delay 延时重定位时间
+     */
+    repositionMessages(delay?: number) {
+        if (this.control) {
+            this.formHelper.repositionMessages(this.control, delay);
+        }
+    }
+
+    private initControlByDI() {
+        let finalControl &#x3D; this.ngControl || this.controlContainer;
+
+        if (finalControl) {
+            this.controlName &#x3D; finalControl.name;
+        }
+
+        waitForControlInit(finalControl).subscribe(ctrl &#x3D;&gt; {
+            if (ctrl) {
+                this._control &#x3D; ctrl;
+                super.ngAfterViewInit();
+            }
+        });
+    }
+}</code></pre>
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
+                   
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> result-matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">无匹配的结果 "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'directive';
+            var COMPODOC_CURRENT_PAGE_URL = 'ErrorHandlerSimpleDirective.html';
+       </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+       <!-- Required to polyfill modern browsers as code is ES5 for IE... -->
+       <script src="../js/libs/custom-elements-es5-adapter.js" charset="utf-8" defer></script>
+       <script src="../js/menu-wc.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+       <script src="../js/libs/zepto.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>
