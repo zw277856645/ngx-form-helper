@@ -10,9 +10,9 @@ angular 表单验证辅助插件
 - template driven 和 model driven 表单都支持
 
 ## 🔗 链接
-- [DOCS](https://zw277856645.gitlab.io/ngx-form-helper)
-- [DEMO](https://zw277856645.gitlab.io/ngx-form-helper/directives/FormHelperDirective.html#example)
-- [PROJECT](https://gitlab.com/zw277856645/ngx-form-helper)
+- [DOCS](https://zw277856645.github.io/ngx-form-helper/)
+- [DEMO](https://zw277856645.github.io/ngx-form-helper/directives/FormHelperDirective.html#example)
+- [PROJECT](https://github.com/zw277856645/ngx-form-helper)
 
 ## 📦 安装
 > npm install @demacia/ngx-form-helper --save
@@ -138,20 +138,20 @@ export class ExampleComponent {
 ## 🎨 主要部件导航
 
 **控制中心**
-- [FormHelperDirective](https://zw277856645.gitlab.io/ngx-form-helper/directives/FormHelperDirective.html)
+- [FormHelperDirective](https://zw277856645.github.io/ngx-form-helper/directives/FormHelperDirective.html)
 
 **错误处理**
-- [ErrorHandlerTextComponent](https://zw277856645.gitlab.io/ngx-form-helper/components/ErrorHandlerTextComponent.html)
-- [ErrorHandlerTooltipComponent](https://zw277856645.gitlab.io/ngx-form-helper/components/ErrorHandlerTooltipComponent.html)
-- [ErrorHandlerSimpleDirective](https://zw277856645.gitlab.io/ngx-form-helper/directives/ErrorHandlerSimpleDirective.html)
+- [ErrorHandlerTextComponent](https://zw277856645.github.io/ngx-form-helper/components/ErrorHandlerTextComponent.html)
+- [ErrorHandlerTooltipComponent](https://zw277856645.github.io/ngx-form-helper/components/ErrorHandlerTooltipComponent.html)
+- [ErrorHandlerSimpleDirective](https://zw277856645.github.io/ngx-form-helper/directives/ErrorHandlerSimpleDirective.html)
 
 **提交按钮处理**
-- [SubmitHandlerLoaderDirective](https://zw277856645.gitlab.io/ngx-form-helper/directives/SubmitHandlerLoaderDirective.html)
+- [SubmitHandlerLoaderDirective](https://zw277856645.github.io/ngx-form-helper/directives/SubmitHandlerLoaderDirective.html)
 
 **内置验证器**
-- [CheckboxRequiredDirective](https://zw277856645.gitlab.io/ngx-form-helper/directives/CheckboxRequiredDirective.html)
-- [ListRequiredDirective](https://zw277856645.gitlab.io/ngx-form-helper/directives/ListRequiredDirective.html)
-- [TrimmedRequiredDirective](https://zw277856645.gitlab.io/ngx-form-helper/directives/TrimmedRequiredDirective.html)
+- [CheckboxRequiredDirective](https://zw277856645.github.io/ngx-form-helper/directives/CheckboxRequiredDirective.html)
+- [ListRequiredDirective](https://zw277856645.github.io/ngx-form-helper/directives/ListRequiredDirective.html)
+- [TrimmedRequiredDirective](https://zw277856645.github.io/ngx-form-helper/directives/TrimmedRequiredDirective.html)
 
 ## ❓名词解释
 
